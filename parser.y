@@ -9,7 +9,6 @@
 	extern char* yytext;
 	extern FILE* yyin;
 	extern FILE* yyout;
-	extern FILE* yyerror;	
 %}
 
 
@@ -279,7 +278,6 @@ int yyerror(const char *yaccProvidedMessage){
 
 
 int main(int argc,char** argv){
-	initHT();
 	if(argc>1){
 		if(!(yyin=fopen(argv[1],"r"))){
 				fprintf(stderr,"Cannot read file %s \n",argv[1]);

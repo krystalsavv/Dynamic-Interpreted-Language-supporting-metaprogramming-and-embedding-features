@@ -1,4 +1,9 @@
 .vscode
+.vscode/ipch/11aea2ea3b5ecafd/HASHTABLE.ipch
+.vscode/ipch/11aea2ea3b5ecafd/HASHTABLE.ipch
 
-.vscode/ipch/11aea2ea3b5ecafd/HASHTABLE.ipch
-.vscode/ipch/11aea2ea3b5ecafd/HASHTABLE.ipch
+parser.hpp
+parser.cpp
+scanner.cpp
+parser.tab.h
+parser.output

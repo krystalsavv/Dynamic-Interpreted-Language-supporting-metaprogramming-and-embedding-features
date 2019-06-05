@@ -23,72 +23,79 @@ comment1 	"//".*
 comment2 	"#".*
 punc 		[\[\]\{\}\(\)\;\,]|(\:{1,2})|(\.{1,2})
 
-
-%x COMMENT3
 %x STRING
 %x STRING_BACKSLASH
+%x COMMENT3
 
 %%
 
-"\"" {
-	stringVal = "";
-	BEGIN(STRING);
-}
+"\"" 						{
+								stringVal = "";
+								BEGIN(STRING);
+							}
 
-<STRING> "\"" {
-	std::cout << yytext << std::endl; 
-	yylval.stringVal = stringVal; 
-	BEGIN(INITIAL);
-	return STRING;
-}
+<STRING>"\""				{
+								printf(yytext);
+								printf("\n"); 
+								yylval.stringVal = stringVal; 
+								BEGIN(INITIAL);
+								return STRING;
+							}
 
-<STRING> '\\' {
-	BEGIN(STRING_BACKSLASH);
-}
+<STRING>"\\" 				{ BEGIN(STRING_BACKSLASH); }
 
-<STRING_BACKSLASH> [ntr"] {
-	stringVal += "\" + yytext;
-	BEGIN(STRING);
-}
+<STRING_BACKSLASH>"n" 		{
+								stringVal += "\n";
+								BEGIN(STRING);
+							}		
 
-<STRING_BACKSLASH> '\\' {
-	stringVal += "\\";
-	BEGIN(STRING);
-}
+<STRING_BACKSLASH>"t" 		{
+								stringVal += "\t";
+								BEGIN(STRING);
+							}	
 
-<STRING_BACKSLASH><<EOF>> { fprintf(stderr, "ERROR: not closed string at line %d\n", yylineno); yyterminate(); // mporoume na to enosoyme me to parakarqw 
-} 
+<STRING_BACKSLASH>"r" 		{
+								stringVal += "\r";
+								BEGIN(STRING);
+							}					
 
-<STRING_BACKSLASH> . { 
-	fprintf(yyerror,"WARNING: invalid escape character %c in line %d\n",c,yylineno);  
-	BEGIN(STRING);
-}
+<STRING_BACKSLASH>"\"" 		{
+								stringVal += "\"";
+								BEGIN(STRING);
+							}
 
-<STRING><<EOF>> { fprintf(stderr, "ERROR: not closed string at line %d\n", yylineno); yyterminate(); } 	
-<STRING> . { stringVal += yytext; }
+<STRING_BACKSLASH>"\\" 		{
+								stringVal += "\\";
+								BEGIN(STRING);
+							}
+
+<STRING_BACKSLASH><<EOF>>	{ fprintf(stderr, "ERROR: not closed string at line %d\n", yylineno); yyterminate();} 
+
+<STRING_BACKSLASH>.			{	 
+								fprintf(stderr,"WARNING: invalid escape character %c in line %d\n",yytext,yylineno);  
+								BEGIN(STRING);
+							}
+<STRING><<EOF>> 			{ fprintf(stderr, "ERROR: not closed string at line %d\n", yylineno); yyterminate(); } 	
+
+<STRING>.					{ stringVal += yytext; }
 
 
 
-"/*" {
-	commentCounter++;
-	BEGIN(COMMENT3);
-}
+"/*" 						{ BEGIN(COMMENT3); }
 
-<COMMENT3> "/*" {
-	commentCounter++;
-}
+<COMMENT3>"/*" 				{ commentCounter++; }
 
-<COMMENT3> "*/" {
-	commentCounter--;
-	if(!commentCounter) {
-		BEGIN(INITIAL);
-	}
-}
+<COMMENT3>"*/" 				{
+								commentCounter--;
+								if(!commentCounter)
+									BEGIN(INITIAL);
+							}
 
-<COMMENT3><<EOF>>  fprintf(stderr, "ERROR: not closed comment at line %d\n", yylineno); yyterminate(); } 	
-<COMMENT3> . {}
+<COMMENT3><<EOF>>  			{ fprintf(stderr, "ERROR: not closed comment at line %d\n", yylineno); yyterminate(); } 	
 
-"*/" { fprintf(stderr, "ERROR: not closed comment at line %d\n", yylineno); yyterminate(); } 	
+<COMMENT3>. 				{}
+
+"*/" 						{ fprintf(stderr, "ERROR: not closed comment at line %d\n", yylineno); yyterminate(); } 	
 
 
 {keyword}	{return keywords_to_enum(yytext);}
@@ -100,12 +107,12 @@ punc 		[\[\]\{\}\(\)\;\,]|(\:{1,2})|(\.{1,2})
 {comment2}	{}
 {punc}		{return keywords_to_enum(yytext);}
 {id}		{yylval.stringVal = yytext; return IDENT; }
-. 			{fprintf(yyerror,"Line %d: Lexical analysis error:You can not have an identifier starting with number or symbol $ (WRONG DEFINITION). \n",yylineno);return WRONG_DEFINITION;}
+. 			{fprintf(stderr,"Line %d: Lexical analysis error:You can not have an identifier starting with number or symbol $ (WRONG DEFINITION). \n",yylineno);return WRONG_DEFINITION;}
 
 %%
 
 int keywords_to_enum(std::string text){
-	if(text == "if) 			return IF;
+	if(text == "if") 			return IF;
 	else if(text == "else") 	return ELSE;
 	else if(text == "while") 	return WHILE;
 	else if(text == "for") 		return FOR;

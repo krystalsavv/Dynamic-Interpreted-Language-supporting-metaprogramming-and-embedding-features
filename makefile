@@ -1,13 +1,13 @@
-all: calc
+all: calc 
 
-calc: parser.cpp scanner.cpp
-	g++ -o calc scanner.cpp parser.cpp
+calc: bison flex
+	g++ -g -std=c++14 -o calc parser.cpp scanner.cpp
 
-parser.c: parser.y hashTable.c hashTable.h
-	bison++ --yacc --defines --output=parser.cpp parser.y
+bison: parser.y
+	bison --yacc --defines -o parser.cpp parser.y
 
-scanner.c: scanner.l
-	flex++ --outfile=scanner.cpp scanner.l
+flex: scanner.l
+	flex -o scanner.cpp scanner.l
 
 clean:
-	rm calc parser.c scanner.c parser.h
+	rm calc parser.cpp scanner.cpp parser.hpp
