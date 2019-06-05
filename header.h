@@ -1,6 +1,8 @@
 #ifndef HEADER_H
 #define HEADER_H
 
+#include <string>
+
 /*typedef enum type {            
 	IF,
 	ELSE,
@@ -57,22 +59,22 @@
 	ERROR
 } types;*/	
 
-typedef struct token a_token_t;
+// typedef struct token a_token_t;
 
-struct token{
-	int numline;
-	int numToken;
-	//types type;
-	int int_val;
-	float float_val;
-	char *content;
-	a_token_t *next;
-};
+// struct a_token_t {
+// 	int numline;
+// 	int numToken;
+// 	//types type;
+// 	int int_val;
+// 	float float_val;
+// 	std::string content;
+// 	a_token_t *next;
+// };
 
 /* This counter is used for the token no */
 // int token_counter = 0;
 
-int keywords_to_enum(char* text);
+int keywords_to_enum(std::string text);
 
 //const char* get_type(types key);
 

@@ -1,8 +1,8 @@
 %{
 	#include <stdio.h>
-	#include <string.h>
+	#include <string>
 	#include <stdlib.h>
-	#include "hashTable.c"
+
 	int yyerror (const char* yaccProvidedMessage);
 	int yylex (void);
 	extern int yylineno;
@@ -10,21 +10,11 @@
 	extern FILE* yyin;
 	extern FILE* yyout;
 	extern FILE* yyerror;	
-
-	int scope =  0;	
-	int func_scope = 0;	// kataei to bathos thn pio "bathias" function
-	int loop_scope = 0; 	// elegxei an yparxei break/continue ektws loop
-	int func_flag = 0;
-	int call_flag = 0;
-	int lib_flag = 0;
-	int fcount = 0;
-	SymbolTableEntry *func_tmp;
-	
 %}
 
 
 %union{
-	char *stringVal;
+	std::string stringVal;
 	int intVal;
 	double doubleVal;
 }
@@ -79,20 +69,14 @@ stmt : expr SEMICOLON {printf("Expresion\n");}
 	| returnstmt	
 			{	
 				printf("RETURN statement\n");
-				if(func_scope == 0)
-					fprintf(yyout,"Syntax Error in line %d :RETURN outside of any function.\n",yylineno);
 			}
 	| BREAK SEMICOLON	
 			{
 				printf("BREAK\n");
-				if(loop_scope == 0)
-					fprintf(yyout,"Syntax Error in line %d :BREAK outside of any loop.\n",yylineno);
 			}
 	| CONTINUE SEMICOLON	
 			{
 				printf("CONTINUE\n");
-				if(loop_scope == 0)
-					fprintf(yyout,"Syntax Error in line %d :CONTINUE outside of any loop.\n",yylineno);
 			}
 	| block 	{printf("Block\n");}
 	| funcdef	{printf("Function definition\n");}
@@ -100,19 +84,19 @@ stmt : expr SEMICOLON {printf("Expresion\n");}
 	;
 
 expr :	 assignexpr		{}
-	| expr PLUS expr	{printf("expression  + expression -> %d+%d\n",$1,$3); 	$$ = $1 + $3;}
-	| expr MINUS expr	{printf("expression  - expression -> %d-%d\n",$1,$3); 	$$ = $1 - $3;}
-	| expr MULTI expr		{printf("expression  * expression -> %d*%d\n",$1,$3); 	$$ = $1 * $3;}
-	| expr DIV expr		{printf("expression  / expression -> %d/%d\n",$1,$3); 	$$ = $1 / $3;}
-	| expr MOD expr		{printf("expression %% expression -> %d %% %d\n",$1,$3); 	$$ = $1 % $3;}
-	| expr GREATER expr	{printf("expression  > expression -> %d>%d\n",$1,$3); 	$$ = ($1 > $3)?1:0;}
-	| expr GREATER_OR_EQUAL expr	{printf("expression >= expression -> %d>=%d\n",$1,$3); 	$$ = ($1>=$3)?1:0;}
-	| expr LESS expr	{printf("expression  < expression -> %d<%d\n",$1,$3); 	$$ = ($1<$3)?1:0;}
-	| expr LESS_OR_EQUAL expr	{printf("expression <= expression -> %d<=%d\n",$1,$3); 	$$ = ($1<=$3)?1:0;}
-	| expr EQUAL expr		{printf("expression == expression -> %d==%d\n",$1,$3); 	$$ = ($1==$3)?1:0;}
-	| expr NOT_EQUAL expr	{printf("expression != expression -> %d!=%d\n",$1,$3); 	$$ = ($1!=$3)?1:0;}
-	| expr AND expr		{printf("expression && expression -> %d&&%d\n",$1,$3); 	$$ = ($1&&$3)?1:0;}
-	| expr OR expr		{printf("expression || expression -> %d/%d\n",$1,$3); 	$$ = ($1||$3)?1:0;}
+	| expr PLUS expr	{printf("expression  + expression -> %d+%d\n",$1,$3); }
+	| expr MINUS expr	{printf("expression  - expression -> %d-%d\n",$1,$3); }
+	| expr MULTI expr		{printf("expression  * expression -> %d*%d\n",$1,$3); }
+	| expr DIV expr		{printf("expression  / expression -> %d/%d\n",$1,$3); }
+	| expr MOD expr		{printf("expression %% expression -> %d %% %d\n",$1,$3); }
+	| expr GREATER expr	{printf("expression  > expression -> %d>%d\n",$1,$3); }
+	| expr GREATER_OR_EQUAL expr	{printf("expression >= expression -> %d>=%d\n",$1,$3); }
+	| expr LESS expr	{printf("expression  < expression -> %d<%d\n",$1,$3); }
+	| expr LESS_OR_EQUAL expr	{printf("expression <= expression -> %d<=%d\n",$1,$3); }
+	| expr EQUAL expr		{printf("expression == expression -> %d==%d\n",$1,$3); }
+	| expr NOT_EQUAL expr	{printf("expression != expression -> %d!=%d\n",$1,$3);}
+	| expr AND expr		{printf("expression && expression -> %d&&%d\n",$1,$3); }
+	| expr OR expr		{printf("expression || expression -> %d/%d\n",$1,$3); }
 	| term			{printf("Terminal\n");}
 	| error 	{}
 	;
@@ -121,65 +105,32 @@ term :	 LEFT_PARENTHESIS expr RIGHT_PARENTHESIS	{printf("( expression )\n");}
 	| MINUS expr %prec UMINUS	
 			{
 				printf("- expression\n");
-				if(func_flag == 1)
-				{
-					func_flag = 0;
-					fprintf(yyout,"Syntax Error in line %d :Cannot do operetions to functions.\n",yylineno);  
-				}
 			}
 	| NOT expr
 			{
 				printf("!expression\n");
-				if(func_flag == 1)
-				{
-					func_flag = 0;
-					fprintf(yyout,"Syntax Error in line %d :Cannot do operetions to functions.\n",yylineno);  
-				}
 			}
 	| INCREMENT lvalue
 			{
 				printf("++ lvalue\n");
-				if(func_flag == 1)
-				{
-					func_flag = 0;
-					fprintf(yyout,"Syntax Error in line %d :Cannot do operetions to functions.\n",yylineno);  
-				}
 			}
 	| lvalue INCREMENT 
 			{
 				printf("lvalue ++\n");
-				if(func_flag == 1)
-				{
-					func_flag = 0;
-					fprintf(yyout,"Syntax Error in line %d :Cannot do operetions to functions.\n",yylineno);  
-				}
 			}
 	| DECREMENT lvalue
 			{
 				printf("-- lvalue\n");
-				if(func_flag == 1)
-				{
-					func_flag = 0;
-					fprintf(yyout,"Syntax Error in line %d :Cannot do operetions to functions.\n",yylineno);  
-				}
 			}
 	| lvalue DECREMENT
 			{
 				printf("lvalue --\n");
-				if(func_flag == 1)
-				{
-					func_flag = 0;
-					fprintf(yyout,"Syntax Error in line %d :Cannot do operetions to functions.\n",yylineno);  
-				}
 			}
 	| primary	{printf("Primary\n");}
 	;
 
 assignexpr : lvalue ASSIGN expr {printf("lvalue = expression \n");
-					if(func_flag == 1)
-						fprintf(yyout,"Syntax Error in line %d :Cannot do assignment to functions.\n",yylineno);
-					func_flag = 0;
-				}
+			}
 			;
 
 primary : lvalue	{printf("lvalue\n");}
@@ -192,52 +143,14 @@ primary : lvalue	{printf("lvalue\n");}
 lvalue : IDENT	
 			{
 				printf("ID\n");
-
-				SymbolTableEntry *sym_ret = lookupHT($1, func_scope);
-				if(sym_ret == NULL){
-					if(scope!=0)
-						insertHT($1, scope, yylineno, func_scope, LOCAL_V);
-					else
-						insertHT($1, scope, yylineno, func_scope, GLOBAL);
-				}
-				else{
-					if(sym_ret->func_scope != func_scope && scopeST(*sym_ret)!=0)	{
-						if(sym_ret->type!=USERFUNC && sym_ret->type!=LIBFUNC)
-							fprintf(yyout,"Syntax Error in line %d :%s no access to this variable.\n",yylineno, $1);					
-					}
-					if(sym_ret->type==USERFUNC) { 
-						func_flag = 1;	
-					}	
-					else if(sym_ret->type==LIBFUNC){ 
-						func_flag = 1;
-						lib_flag = 1;
-					}
-				}
 			}
 	| LOCAL IDENT	
 			{
 				printf("Local ID\n");
-				
-				SymbolTableEntry *sym_ret = lookupHT($2, func_scope);
-				if(sym_ret == NULL){
-					if(scope==0)
-						insertHT($2, scope, yylineno, func_scope, GLOBAL);
-					else
-						insertHT($2, scope, yylineno, func_scope, LOCAL_V);
-				}
-				else if(scope!=scopeST(*sym_ret)){
-					if(sym_ret->type == LIBFUNC) fprintf(yyout,"Syntax Error in line %d :%s is lib function.\n",yylineno, $2);
-					else insertHT($2, scope, yylineno, func_scope, LOCAL_V);
-				}
-
 			}
 	| SCOPE IDENT	
 			{
-				printf("::ID\n");
-				SymbolTableEntry *sym_ret=lookup_scopelist($2,0);//psaxnei ta global
-				if(sym_ret == NULL){
-					fprintf(yyout,"Syntax Error in line %d :%s is not a global.\n",yylineno, $2);
-				}						
+				printf("::ID\n");					
 			}
 	| member	{printf("member\n");}
 	;
@@ -253,8 +166,8 @@ call : call LEFT_PARENTHESIS elist RIGHT_PARENTHESIS {printf("call(elist)\n");}
 	| LEFT_PARENTHESIS funcdef RIGHT_PARENTHESIS LEFT_PARENTHESIS elist RIGHT_PARENTHESIS {printf("(funcdef)(elist)\n");}
 	;
 
-callsuffix : normcall {printf("normcall\n");func_flag=0;lib_flag=0;}
-	| methodcall {printf("methodcall\n");func_flag=0;lib_flag=0;}
+callsuffix : normcall {printf("normcall\n");}
+	| methodcall {printf("methodcall\n");}
 	;
 
 normcall: LEFT_PARENTHESIS elist RIGHT_PARENTHESIS {printf("(elist)\n");}
@@ -278,7 +191,6 @@ indexed : indexedelem {printf("indexedelem\n");}
 	;
 
 indexedelem : LEFT_BRACKET{scope++;} expr COLON expr RIGHT_BRACKET  {printf("{ expresion : expresion }\n");
-							hideHT(scope--);
 				}
 			;
 
@@ -287,48 +199,24 @@ tmp_block: tmp_block stmt
 		;
 
 block : LEFT_BRACKET{scope++;} tmp_block RIGHT_BRACKET{ printf("{ stmt }\n");
-														hideHT(scope--);
 													  }
 		;
 
 funcdef : FUNCTION IDENT 
 				{
-					SymbolTableEntry *sym_ret = lookupHT($2, func_scope);
-					if(sym_ret == NULL){
-						insertHT($2, scope, yylineno, func_scope, USERFUNC);
-						func_tmp=lookupHT($2, func_scope);
-					}
-					else if(scopeST(*sym_ret)==scope)
-						if(sym_ret->type==LIBFUNC)
-							fprintf(yyout,"Syntax Error in line %d :Cannot redeclear a Lib Function.\n",yylineno);
-						else							
-							fprintf(yyout,"Syntax Error in line %d :Cannot declear this Function,already in this scope.\n",yylineno);
-					else {
-						if(sym_ret->type==LIBFUNC)
-							fprintf(yyout,"Syntax Error in line %d :Cannot redeclear a Lib Function.\n",yylineno);
-						else{
-							insertHT($2, scope, yylineno, func_scope, USERFUNC);
-							func_tmp=lookupHT($2, func_scope);
-						}
-					}
-					func_scope++;				
+					printf("function ident");			
 				}
 			
 			LEFT_PARENTHESIS idlist RIGHT_PARENTHESIS block
 				{
-					func_scope--;
 					printf("function id(idlist) block\n");
 				}
 		| FUNCTION 
 				{
-					char *name = Anonymous_func_name(++fcount);
-					insertHT(name, scope, yylineno, func_scope, USERFUNC);
-					func_tmp=lookupHT(name,func_scope);
-					func_scope++;				
+				printf("function");				
 				}
 			LEFT_PARENTHESIS idlist RIGHT_PARENTHESIS block
 				{
-					func_scope--;
 					printf("function (idlist) block\n");
 				}
 		; 
@@ -343,43 +231,11 @@ const : INTEGER {printf("Integer\n");}
 
 idlist : IDENT 
 		{
-			printf("id list\n");
-			SymbolTableEntry *sym_ret = lookupHT($1, func_scope);
-			if(sym_ret == NULL){
-				insertHT($1, scope+1, yylineno, func_scope, FORMAL);
-				ArgInsert(func_tmp, $1);
-			}
-			else if (scope+1==scopeST(*sym_ret)){
-				fprintf(yyout,"Syntax Error in line %d :Cannot redeclear a parametre with this name.\n",yylineno);
-			}
-			else{
-				if(sym_ret->type==LIBFUNC)
-					fprintf(yyout,"Syntax Error in line %d :Cannot redeclear a Lib Function as a parametre.\n",yylineno);
-				else{
-					insertHT($1, scope+1, yylineno, func_scope, FORMAL);
-					ArgInsert(func_tmp, $1);
-				}		
-			}								
+			printf("id list\n");							
 		}
 	| idlist COMMA IDENT  
 		{
-			printf("idlist, id\n");
-			SymbolTableEntry *sym_ret = lookupHT($3, func_scope);
-			if(sym_ret == NULL){
-				insertHT($3, scope+1, yylineno, func_scope, FORMAL);
-				ArgInsert(func_tmp, $3);
-			}
-			else if (scope+1==scopeST(*sym_ret)){
-				fprintf(yyout,"Syntax Error in line %d :Cannot redeclear a parametre with this name.\n",yylineno);
-			}
-			else{
-				if(sym_ret->type==LIBFUNC)
-					fprintf(yyout,"Syntax Error in line %d :Cannot redeclear a Lib Function as a parametre.\n",yylineno);
-				else{
-					insertHT($3, scope+1, yylineno, func_scope, FORMAL);
-					ArgInsert(func_tmp, $3);
-				}		
-			}		
+			printf("idlist, id\n");	
 		}
 	|  {printf("Empty (idlist)\n");}
 	;
@@ -391,11 +247,9 @@ ifstmt : IF LEFT_PARENTHESIS expr RIGHT_PARENTHESIS stmt {printf("IF (expresion)
 whilestmt : WHILE
 			{
 				printf("While (expresion) stmt\n");
-				loop_scope++;
 			}
 			 LEFT_PARENTHESIS expr RIGHT_PARENTHESIS stmt 
 			{
-				loop_scope--;
 			}
 			
 		;
@@ -403,11 +257,9 @@ whilestmt : WHILE
 forstmt : FOR 
 			{
 				printf("for (elist;elist;elist) stmt\n");
-				loop_scope++;
 			}
 			LEFT_PARENTHESIS elist SEMICOLON expr SEMICOLON elist RIGHT_PARENTHESIS stmt
 			{
-				loop_scope--;
 			}
 		;
 
@@ -446,6 +298,5 @@ int main(int argc,char** argv){
 		
 	}
 	yyparse();
-	printHT(yyout);
 return 0;
 }
