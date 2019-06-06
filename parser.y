@@ -274,39 +274,38 @@ returnstmt : RETURN SEMICOLON {printf("RETURN;\n");}
 %%
 
 int yyerror(yyscan_t scanner, const char *yaccProvidedMessage){
-	std::cout  << yaccProvidedMessage << ": at line ";// << yylineno << " before token : " << yytext << std::endl;
+	std::cout  << yaccProvidedMessage << ": at line " << yyget_lineno(scanner) << " before token : " << yyget_text(scanner) << std::endl;
 	std::cout << "INPUT NOT VALID \n";
 	return 0;
 }
 
-// void input_pars(std::string& filename) {
-// 	std::ifstream ifs;
-// 	ifs.open(filename);
-// 	while 
 
+std::string InputToString(const char * filename) {
+	std::ifstream ifs(filename);
+	std::string str((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
+	std::cout << "--------------------------\n";
+	std::cout << str; 
+	std::cout << "\n--------------------------\n";
 
-// }
-
-
+	return str;
+}
 
 
 int main(int argc,char** argv){
-	// std::cout << "NO  PASSSS\n";
-	// if(argc>1){
-	// 	yyin.open(argv[1]);
-	// 	if(argc==3){
-	// 		yyout.open(argv[2]);
-	// 	}
-	// } 
-
-	// std::cout << "PASSSS\n";
-	//yyparse();
-
 	yyscan_t scanner;
 	yylex_init(&scanner);
-	yyset_in(stdin, scanner);
-	yyparse(scanner);
 
+	if(argc>1) {
+		std::string inputString = InputToString(argv[1]);
+		yy_scan_string(inputString.c_str(), scanner);
+		// if(argc==3){
+		//	FILE * output = fopen(argv[2], "w");
+	 	// 	yyset_out(output, scanner);
+	 	// }
+	} else {
+		yyset_in(stdin, scanner);
+	}
+	yyparse(scanner);
 	yylex_destroy(scanner);
 	return 0;
 }

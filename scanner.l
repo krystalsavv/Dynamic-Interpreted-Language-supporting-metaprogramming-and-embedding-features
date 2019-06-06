@@ -2,6 +2,7 @@
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include <string>
+	#include <iostream>
 	#include "parser.hpp"
 
 	int keywords_to_enum(std::string text);
@@ -38,8 +39,8 @@ punc 		[\[\]\{\}\(\)\;\,]|(\:{1,2})|(\.{1,2})
 							}
 
 <STRING_>"\""				{
-								printf("\n"); 
 								yylval->stringVal = &stringVal; 
+								std::cout << stringVal << std::endl;
 								BEGIN(INITIAL);
 								return STRING;
 							}

@@ -10,4 +10,4 @@ flex: scanner.l
 	flex -o scanner.cpp scanner.l
 
 clean:
-	rm calc parser.cpp scanner.cpp parser.hpp
+	rm calc parser.cpp scanner.cpp parser.hpp scanner.h
