@@ -1,6 +1,6 @@
 all: calc 
 
-calc: bison flex
+calc: flex bison
 	g++ -g -std=c++14 -o calc parser.cpp scanner.cpp
 
 bison: parser.y

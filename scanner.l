@@ -12,6 +12,9 @@
 %option noyywrap 
 %option yylineno 
 %option case-insensitive
+%option reentrant
+%option header-file="scanner.h"
+%option bison-bridge
 
 keyword 	(function)|(while)|(for)|(if)|(else)|(continue)|(break)|(return)|(and)|(or)|(not)|(local)|(true)|(false)|(nil)
 operator 	[\*\/\%]|(\={1,2})|(\>\=?)|(\<\=?)|(\!\=)|(\+{1,2})|(\-{1,2})
@@ -23,7 +26,7 @@ comment1 	"//".*
 comment2 	"#".*
 punc 		[\[\]\{\}\(\)\;\,]|(\:{1,2})|(\.{1,2})
 
-%x STRING
+%x STRING_
 %x STRING_BACKSLASH
 %x COMMENT3
 
@@ -31,53 +34,52 @@ punc 		[\[\]\{\}\(\)\;\,]|(\:{1,2})|(\.{1,2})
 
 "\"" 						{
 								stringVal = "";
-								BEGIN(STRING);
+								BEGIN(STRING_);
 							}
 
-<STRING>"\""				{
-								printf(yytext);
+<STRING_>"\""				{
 								printf("\n"); 
-								yylval.stringVal = stringVal; 
+								yylval->stringVal = &stringVal; 
 								BEGIN(INITIAL);
 								return STRING;
 							}
 
-<STRING>"\\" 				{ BEGIN(STRING_BACKSLASH); }
+<STRING_>"\\" 				{ BEGIN(STRING_BACKSLASH); }
 
 <STRING_BACKSLASH>"n" 		{
 								stringVal += "\n";
-								BEGIN(STRING);
+								BEGIN(STRING_);
 							}		
 
 <STRING_BACKSLASH>"t" 		{
 								stringVal += "\t";
-								BEGIN(STRING);
+								BEGIN(STRING_);
 							}	
 
 <STRING_BACKSLASH>"r" 		{
 								stringVal += "\r";
-								BEGIN(STRING);
+								BEGIN(STRING_);
 							}					
 
 <STRING_BACKSLASH>"\"" 		{
 								stringVal += "\"";
-								BEGIN(STRING);
+								BEGIN(STRING_);
 							}
 
 <STRING_BACKSLASH>"\\" 		{
 								stringVal += "\\";
-								BEGIN(STRING);
+								BEGIN(STRING_);
 							}
 
 <STRING_BACKSLASH><<EOF>>	{ fprintf(stderr, "ERROR: not closed string at line %d\n", yylineno); yyterminate();} 
 
 <STRING_BACKSLASH>.			{	 
-								fprintf(stderr,"WARNING: invalid escape character %c in line %d\n",yytext,yylineno);  
-								BEGIN(STRING);
+								fprintf(stderr,"WARNING: invalid escape character %s in line %d\n",yytext,yylineno);  
+								BEGIN(STRING_);
 							}
-<STRING><<EOF>> 			{ fprintf(stderr, "ERROR: not closed string at line %d\n", yylineno); yyterminate(); } 	
+<STRING_><<EOF>> 			{ fprintf(stderr, "ERROR: not closed string at line %d\n", yylineno); yyterminate(); } 	
 
-<STRING>.					{ stringVal += yytext; }
+<STRING_>.					{ stringVal += yytext; }
 
 
 
@@ -100,13 +102,18 @@ punc 		[\[\]\{\}\(\)\;\,]|(\:{1,2})|(\.{1,2})
 
 {keyword}	{return keywords_to_enum(yytext);}
 {operator}	{return keywords_to_enum(yytext);}
-{integer} 	{yylval.intVal = atoi(yytext);return INTEGER;}
-{real} 		{yylval.doubleVal = atof(yytext);return REALNUMBER;}
+{integer} 	{yylval->intVal = atoi(yytext);
+					return INTEGER;}
+{real} 		{yylval->doubleVal = atof(yytext);
+return REALNUMBER;}
 {space}		{}
 {comment1}	{}
 {comment2}	{}
 {punc}		{return keywords_to_enum(yytext);}
-{id}		{yylval.stringVal = yytext; return IDENT; }
+{id}		{	stringVal.assign(yytext); 
+				yylval->stringVal = &stringVal; 
+				return IDENT; }
+
 . 			{fprintf(stderr,"Line %d: Lexical analysis error:You can not have an identifier starting with number or symbol $ (WRONG DEFINITION). \n",yylineno);return WRONG_DEFINITION;}
 
 %%

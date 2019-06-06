@@ -1,23 +1,27 @@
 %{
 	#include <stdio.h>
 	#include <string>
-	#include <stdlib.h>
+	#include <errno.h>
+	#include <iostream>
+	#include <fstream>
+	#include "parser.hpp"
+	#include "scanner.h"
 
-	int yyerror (const char* yaccProvidedMessage);
-	int yylex (void);
-	extern int yylineno;
-	extern char* yytext;
-	extern FILE* yyin;
-	extern FILE* yyout;
+	int yyerror (yyscan_t scanner, const char* yaccProvidedMessage);
 %}
 
-
 %union{
-	std::string stringVal;
+	std::string* stringVal=nullptr;
 	int intVal;
 	double doubleVal;
 }
 %error-verbose
+
+
+%pure-parser
+%lex-param {void * scanner}
+%parse-param {void * scanner}
+
 %start program
 
 %token	<stringVal>IDENT
@@ -189,7 +193,7 @@ indexed : indexedelem {printf("indexedelem\n");}
 	//|   {printf("empty (indexed)\n");}
 	;
 
-indexedelem : LEFT_BRACKET{scope++;} expr COLON expr RIGHT_BRACKET  {printf("{ expresion : expresion }\n");
+indexedelem : LEFT_BRACKET expr COLON expr RIGHT_BRACKET  {printf("{ expresion : expresion }\n");
 				}
 			;
 
@@ -197,7 +201,7 @@ tmp_block: tmp_block stmt
 		| {}
 		;
 
-block : LEFT_BRACKET{scope++;} tmp_block RIGHT_BRACKET{ printf("{ stmt }\n");
+block : LEFT_BRACKET tmp_block RIGHT_BRACKET{ printf("{ stmt }\n");
 													  }
 		;
 
@@ -269,32 +273,40 @@ returnstmt : RETURN SEMICOLON {printf("RETURN;\n");}
 
 %%
 
-int yyerror(const char *yaccProvidedMessage){
-
-	fprintf(yyout,"%s: at line %d before token :%s \n",yaccProvidedMessage,yylineno,yytext);
-	fprintf(yyout,"INPUT NOT VALID \n");
+int yyerror(yyscan_t scanner, const char *yaccProvidedMessage){
+	std::cout  << yaccProvidedMessage << ": at line ";// << yylineno << " before token : " << yytext << std::endl;
+	std::cout << "INPUT NOT VALID \n";
 	return 0;
 }
 
+// void input_pars(std::string& filename) {
+// 	std::ifstream ifs;
+// 	ifs.open(filename);
+// 	while 
+
+
+// }
+
+
+
 
 int main(int argc,char** argv){
-	if(argc>1){
-		if(!(yyin=fopen(argv[1],"r"))){
-				fprintf(stderr,"Cannot read file %s \n",argv[1]);
-				return 1;
-		}
-		yyout = stdout;
-		if(argc==3){
-			if(!(yyout=fopen(argv[2],"w"))){
-				fprintf(stderr,"Cannot write to file %s \n",argv[2]);
-				return 1;
-			}
-		}
-	} 
-	else {
-		yyin =stdin;
-		
-	}
-	yyparse();
-return 0;
+	// std::cout << "NO  PASSSS\n";
+	// if(argc>1){
+	// 	yyin.open(argv[1]);
+	// 	if(argc==3){
+	// 		yyout.open(argv[2]);
+	// 	}
+	// } 
+
+	// std::cout << "PASSSS\n";
+	//yyparse();
+
+	yyscan_t scanner;
+	yylex_init(&scanner);
+	yyset_in(stdin, scanner);
+	yyparse(scanner);
+
+	yylex_destroy(scanner);
+	return 0;
 }
