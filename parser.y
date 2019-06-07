@@ -62,138 +62,138 @@
 
 %%
 program : stmt program 
-		|	{printf("Program\n");}
+		|	{std::cout << ("Program\n");}
 		;
 
-stmt : expr SEMICOLON {printf("Expresion\n");}		
-	| ifstmt	{printf("IF statement\n");}
-	| whilestmt	{printf("WHILE statement\n");}
-	| forstmt	{printf("FOR statement\n");}
+stmt : expr SEMICOLON {std::cout << ("Expresion\n");}		
+	| ifstmt	{std::cout << ("IF statement\n");}
+	| whilestmt	{std::cout << ("WHILE statement\n");}
+	| forstmt	{std::cout << ("FOR statement\n");}
 	| returnstmt	
 			{	
-				printf("RETURN statement\n");
+				std::cout << ("RETURN statement\n");
 			}
 	| BREAK SEMICOLON	
 			{
-				printf("BREAK\n");
+				std::cout << ("BREAK\n");
 			}
 	| CONTINUE SEMICOLON	
 			{
-				printf("CONTINUE\n");
+				std::cout << ("CONTINUE\n");
 			}
-	| block 	{printf("Block\n");}
-	| funcdef	{printf("Function definition\n");}
-	| SEMICOLON	{printf("SEMICOLON ;\n");}
+	| block 	{std::cout << ("Block\n");}
+	| funcdef	{std::cout << ("Function definition\n");}
+	| SEMICOLON	{std::cout << ("SEMICOLON ;\n");}
 	;
 
 expr :	 assignexpr		{}
-	| expr PLUS expr	{printf("expression  + expression -> %d+%d\n",$1,$3); }
-	| expr MINUS expr	{printf("expression  - expression -> %d-%d\n",$1,$3); }
-	| expr MULTI expr		{printf("expression  * expression -> %d*%d\n",$1,$3); }
-	| expr DIV expr		{printf("expression  / expression -> %d/%d\n",$1,$3); }
-	| expr MOD expr		{printf("expression %% expression -> %d %% %d\n",$1,$3); }
-	| expr GREATER expr	{printf("expression  > expression -> %d>%d\n",$1,$3); }
-	| expr GREATER_OR_EQUAL expr	{printf("expression >= expression -> %d>=%d\n",$1,$3); }
-	| expr LESS expr	{printf("expression  < expression -> %d<%d\n",$1,$3); }
-	| expr LESS_OR_EQUAL expr	{printf("expression <= expression -> %d<=%d\n",$1,$3); }
-	| expr EQUAL expr		{printf("expression == expression -> %d==%d\n",$1,$3); }
-	| expr NOT_EQUAL expr	{printf("expression != expression -> %d!=%d\n",$1,$3);}
-	| expr AND expr		{printf("expression && expression -> %d&&%d\n",$1,$3); }
-	| expr OR expr		{printf("expression || expression -> %d/%d\n",$1,$3); }
-	| term			{printf("Terminal\n");}
+	| expr PLUS expr	{std::cout << ("expression  + expression -> %d+%d\n",$1,$3); }
+	| expr MINUS expr	{std::cout << ("expression  - expression -> %d-%d\n",$1,$3); }
+	| expr MULTI expr		{std::cout << ("expression  * expression -> %d*%d\n",$1,$3); }
+	| expr DIV expr		{std::cout << ("expression  / expression -> %d/%d\n",$1,$3); }
+	| expr MOD expr		{std::cout << ("expression %% expression -> %d %% %d\n",$1,$3); }
+	| expr GREATER expr	{std::cout << ("expression  > expression -> %d>%d\n",$1,$3); }
+	| expr GREATER_OR_EQUAL expr	{std::cout << ("expression >= expression -> %d>=%d\n",$1,$3); }
+	| expr LESS expr	{std::cout << ("expression  < expression -> %d<%d\n",$1,$3); }
+	| expr LESS_OR_EQUAL expr	{std::cout << ("expression <= expression -> %d<=%d\n",$1,$3); }
+	| expr EQUAL expr		{std::cout << ("expression == expression -> %d==%d\n",$1,$3); }
+	| expr NOT_EQUAL expr	{std::cout << ("expression != expression -> %d!=%d\n",$1,$3);}
+	| expr AND expr		{std::cout << ("expression && expression -> %d&&%d\n",$1,$3); }
+	| expr OR expr		{std::cout << ("expression || expression -> %d/%d\n",$1,$3); }
+	| term			{std::cout << ("Terminal\n");}
 	| error 	{}
 	;
 
-term :	 LEFT_PARENTHESIS expr RIGHT_PARENTHESIS	{printf("( expression )\n");}
+term :	 LEFT_PARENTHESIS expr RIGHT_PARENTHESIS	{std::cout << ("( expression )\n");}
 	| MINUS expr %prec UMINUS	
 			{
-				printf("- expression\n");
+				std::cout << ("- expression\n");
 			}
 	| NOT expr
 			{
-				printf("!expression\n");
+				std::cout << ("!expression\n");
 			}
 	| INCREMENT lvalue
 			{
-				printf("++ lvalue\n");
+				std::cout << ("++ lvalue\n");
 			}
 	| lvalue INCREMENT 
 			{
-				printf("lvalue ++\n");
+				std::cout << ("lvalue ++\n");
 			}
 	| DECREMENT lvalue
 			{
-				printf("-- lvalue\n");
+				std::cout << ("-- lvalue\n");
 			}
 	| lvalue DECREMENT
 			{
-				printf("lvalue --\n");
+				std::cout << ("lvalue --\n");
 			}
-	| primary	{printf("Primary\n");}
+	| primary	{std::cout << ("Primary\n");}
 	;
 
-assignexpr : lvalue ASSIGN expr {printf("lvalue = expression \n");
+assignexpr : lvalue ASSIGN expr {std::cout << ("lvalue = expression \n");
 			}
 			;
 
-primary : lvalue	{printf("lvalue\n");}
-	| call	{printf("Call\n");}
-	| objectdef		{printf("object definition\n");}
-	| LEFT_PARENTHESIS funcdef RIGHT_PARENTHESIS	{printf("(function definition)\n");}
-	| const	{printf("constant\n");}
+primary : lvalue	{std::cout << ("lvalue\n");}
+	| call	{std::cout << ("Call\n");}
+	| objectdef		{std::cout << ("object definition\n");}
+	| LEFT_PARENTHESIS funcdef RIGHT_PARENTHESIS	{std::cout << ("(function definition)\n");}
+	| const	{std::cout << ("constant\n");}
 	;
 
 lvalue : IDENT	
 			{
-				printf("ID\n");
+				std::cout << ("ID\n");
 			}
 	| LOCAL IDENT	
 			{
-				printf("Local ID\n");
+				std::cout << ("Local ID\n");
 			}
 	| SCOPE IDENT	
 			{
-				printf("::ID\n");					
+				std::cout << ("::ID\n");					
 			}
-	| member	{printf("member\n");}
+	| member	{std::cout << ("member\n");}
 	;
 
-member : lvalue DOT IDENT {printf("lvalue dot ident\n");}
-	| lvalue LEFT_SQUARE_BRACKET expr RIGHT_SQUARE_BRACKET {printf("lvalue dot ident\n");}
-	| call DOT IDENT {printf("call dot ident\n");}
-	| call LEFT_SQUARE_BRACKET expr RIGHT_SQUARE_BRACKET {printf("[expr]\n");}
+member : lvalue DOT IDENT {std::cout << ("lvalue dot ident\n");}
+	| lvalue LEFT_SQUARE_BRACKET expr RIGHT_SQUARE_BRACKET {std::cout << ("lvalue dot ident\n");}
+	| call DOT IDENT {std::cout << ("call dot ident\n");}
+	| call LEFT_SQUARE_BRACKET expr RIGHT_SQUARE_BRACKET {std::cout << ("[expr]\n");}
 	;
 
-call : call LEFT_PARENTHESIS elist RIGHT_PARENTHESIS {printf("call(elist)\n");}
-	| lvalue callsuffix {printf("lvalue callsufix\n");}
-	| LEFT_PARENTHESIS funcdef RIGHT_PARENTHESIS LEFT_PARENTHESIS elist RIGHT_PARENTHESIS {printf("(funcdef)(elist)\n");}
+call : call LEFT_PARENTHESIS elist RIGHT_PARENTHESIS {std::cout << ("call(elist)\n");}
+	| lvalue callsuffix {std::cout << ("lvalue callsufix\n");}
+	| LEFT_PARENTHESIS funcdef RIGHT_PARENTHESIS LEFT_PARENTHESIS elist RIGHT_PARENTHESIS {std::cout << ("(funcdef)(elist)\n");}
 	;
 
-callsuffix : normcall {printf("normcall\n");}
-	| methodcall {printf("methodcall\n");}
+callsuffix : normcall {std::cout << ("normcall\n");}
+	| methodcall {std::cout << ("methodcall\n");}
 	;
 
-normcall: LEFT_PARENTHESIS elist RIGHT_PARENTHESIS {printf("(elist)\n");}
+normcall: LEFT_PARENTHESIS elist RIGHT_PARENTHESIS {std::cout << ("(elist)\n");}
 		;
 
-methodcall : DOUBLE_DOT IDENT LEFT_PARENTHESIS elist RIGHT_PARENTHESIS {printf("..ident(elist)\n");}
+methodcall : DOUBLE_DOT IDENT LEFT_PARENTHESIS elist RIGHT_PARENTHESIS {std::cout << ("..ident(elist)\n");}
 			;
 
-elist :  expr {printf("exprecion\n");}
-	| elist COMMA expr  {printf("elist, expresion\n");}
-	|  {printf("empty (elist)\n");}
+elist :  expr {std::cout << ("exprecion\n");}
+	| elist COMMA expr  {std::cout << ("elist, expresion\n");}
+	|  {std::cout << ("empty (elist)\n");}
 	;
 
-objectdef : LEFT_SQUARE_BRACKET elist RIGHT_SQUARE_BRACKET 	{printf("[elist]\n");}
-		| LEFT_SQUARE_BRACKET indexed RIGHT_SQUARE_BRACKET	{printf("[indexed]\n");}
+objectdef : LEFT_SQUARE_BRACKET elist RIGHT_SQUARE_BRACKET 	{std::cout << ("[elist]\n");}
+		| LEFT_SQUARE_BRACKET indexed RIGHT_SQUARE_BRACKET	{std::cout << ("[indexed]\n");}
 		;
 
-indexed : indexedelem {printf("indexedelem\n");}
-	| indexed COMMA indexedelem	{printf("indexedelem, intexedelem\n");}
-	//|   {printf("empty (indexed)\n");}
+indexed : indexedelem {std::cout << ("indexedelem\n");}
+	| indexed COMMA indexedelem	{std::cout << ("indexedelem, intexedelem\n");}
+	//|   {std::cout << ("empty (indexed)\n");}
 	;
 
-indexedelem : LEFT_BRACKET expr COLON expr RIGHT_BRACKET  {printf("{ expresion : expresion }\n");
+indexedelem : LEFT_BRACKET expr COLON expr RIGHT_BRACKET  {std::cout << ("{ expresion : expresion }\n");
 				}
 			;
 
@@ -201,55 +201,55 @@ tmp_block: tmp_block stmt
 		| {}
 		;
 
-block : LEFT_BRACKET tmp_block RIGHT_BRACKET{ printf("{ stmt }\n");
+block : LEFT_BRACKET tmp_block RIGHT_BRACKET{ std::cout << ("{ stmt }\n");
 													  }
 		;
 
 funcdef : FUNCTION IDENT 
 				{
-					printf("function ident");			
+					std::cout << ("function ident");			
 				}
 			
 			LEFT_PARENTHESIS idlist RIGHT_PARENTHESIS block
 				{
-					printf("function id(idlist) block\n");
+					std::cout << ("function id(idlist) block\n");
 				}
 		| FUNCTION 
 				{
-				printf("function");				
+				std::cout << ("function");				
 				}
 			LEFT_PARENTHESIS idlist RIGHT_PARENTHESIS block
 				{
-					printf("function (idlist) block\n");
+					std::cout << ("function (idlist) block\n");
 				}
 		; 
 
-const : INTEGER {printf("Integer\n");}
-		| REALNUMBER {printf("Real number\n");}
-		| STRING {printf("String\n");}
-		| NIL 	{printf("NIL\n");}
-		| TRUE 	{printf("TRUE\n");}
-		| FALSE {printf("FALSE\n");}
+const : INTEGER {std::cout << ("Integer\n");}
+		| REALNUMBER {std::cout << ("Real number\n");}
+		| STRING {std::cout << ("String\n");}
+		| NIL 	{std::cout << ("NIL\n");}
+		| TRUE 	{std::cout << ("TRUE\n");}
+		| FALSE {std::cout << ("FALSE\n");}
 		;
 
 idlist : IDENT 
 		{
-			printf("id list\n");							
+			std::cout << ("id list\n");							
 		}
 	| idlist COMMA IDENT  
 		{
-			printf("idlist, id\n");	
+			std::cout << ("idlist, id\n");	
 		}
-	|  {printf("Empty (idlist)\n");}
+	|  {std::cout << ("Empty (idlist)\n");}
 	;
 
-ifstmt : IF LEFT_PARENTHESIS expr RIGHT_PARENTHESIS stmt {printf("IF (expresion) stmt\n");}
-		| ifstmt ELSE stmt {printf("ifstmt ELSE stmt\n");}
+ifstmt : IF LEFT_PARENTHESIS expr RIGHT_PARENTHESIS stmt {std::cout << ("IF (expresion) stmt\n");}
+		| ifstmt ELSE stmt {std::cout << ("ifstmt ELSE stmt\n");}
 		;
 
 whilestmt : WHILE
 			{
-				printf("While (expresion) stmt\n");
+				std::cout << ("While (expresion) stmt\n");
 			}
 			 LEFT_PARENTHESIS expr RIGHT_PARENTHESIS stmt 
 			{
@@ -259,15 +259,15 @@ whilestmt : WHILE
 
 forstmt : FOR 
 			{
-				printf("for (elist;elist;elist) stmt\n");
+				std::cout << ("for (elist;elist;elist) stmt\n");
 			}
 			LEFT_PARENTHESIS elist SEMICOLON expr SEMICOLON elist RIGHT_PARENTHESIS stmt
 			{
 			}
 		;
 
-returnstmt : RETURN SEMICOLON {printf("RETURN;\n");}
-		| RETURN expr SEMICOLON {printf("RETURN expresion;\n");}
+returnstmt : RETURN SEMICOLON {std::cout << ("RETURN;\n");}
+		| RETURN expr SEMICOLON {std::cout << ("RETURN expresion;\n");}
 		;
 
 
@@ -283,9 +283,6 @@ int yyerror(yyscan_t scanner, const char *yaccProvidedMessage){
 std::string InputToString(const char * filename) {
 	std::ifstream ifs(filename);
 	std::string str((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
-	std::cout << "--------------------------\n";
-	std::cout << str; 
-	std::cout << "\n--------------------------\n";
 
 	return str;
 }

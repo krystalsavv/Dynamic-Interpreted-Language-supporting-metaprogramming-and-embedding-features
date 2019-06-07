@@ -68,9 +68,9 @@ punc 		[\[\]\{\}\(\)\;\,]|(\:{1,2})|(\.{1,2})
 
 
 <STRING_>"\\"				{	   
-								fprintf(stderr,"WARNING: invalid escape character %s in line %d, will be ignored.\n",yytext,yylineno);  
+							 	std::cerr << "WARNING: invalid escape character "<< yytext << " in line "<< yylineno << " will be ignored.\n";  
 							}
-<STRING_><<EOF>> 			{ fprintf(stderr, "ERROR: not closed string at line %d\n", yylineno); yyterminate(); } 	
+<STRING_><<EOF>> 			{ std::cerr << "ERROR: not closed string at line " << yylineno << std::endl; yyterminate(); } 	
 
 <STRING_>.					{ stringVal += yytext; }
 
@@ -85,11 +85,11 @@ punc 		[\[\]\{\}\(\)\;\,]|(\:{1,2})|(\.{1,2})
 									BEGIN(INITIAL);
 							}
 
-<COMMENT3><<EOF>>  			{ fprintf(stderr, "ERROR: not closed comment at line %d\n", yylineno); yyterminate(); } 	
+<COMMENT3><<EOF>>  			{ std::cerr << "ERROR: not closed comment at line " << yylineno << std::endl; yyterminate(); } 	
 
 <COMMENT3>. 				{}
 
-"*/" 						{ fprintf(stderr, "ERROR: not closed comment at line %d\n", yylineno); yyterminate(); } 	
+"*/" 						{ std::cerr << "ERROR: not closed comment at line " << yylineno << std::endl; yyterminate(); } 	
 
 
 {keyword}	{return keywords_to_enum(yytext);}
@@ -106,7 +106,7 @@ return REALNUMBER;}
 				yylval->stringVal = &stringVal; 
 				return IDENT; }
 
-. 			{fprintf(stderr,"Line %d: Lexical analysis error:You can not have an identifier starting with number or symbol $ (WRONG DEFINITION). \n",yylineno);return WRONG_DEFINITION;}
+. 			{std::cerr << "Line " << yylineno << " : Lexical analysis error:You can not have an identifier starting with number or symbol $ (WRONG DEFINITION). \n"; return WRONG_DEFINITION;}
 
 %%
 
