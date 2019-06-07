@@ -28,7 +28,6 @@ comment2 	"#".*
 punc 		[\[\]\{\}\(\)\;\,]|(\:{1,2})|(\.{1,2})
 
 %x STRING_
-%x STRING_BACKSLASH
 %x COMMENT3
 
 %%
@@ -45,43 +44,37 @@ punc 		[\[\]\{\}\(\)\;\,]|(\:{1,2})|(\.{1,2})
 								return STRING;
 							}
 
-<STRING_>"\\" 				{ BEGIN(STRING_BACKSLASH); }
-
-<STRING_BACKSLASH>"n" 		{
+<STRING_>"\n" 				{
 								stringVal += "\n";
-								BEGIN(STRING_);
+							}
+
+<STRING_>"\\n" 				{
+								stringVal += "\n";
 							}		
 
-<STRING_BACKSLASH>"t" 		{
+<STRING_>"\\t" 				{
 								stringVal += "\t";
-								BEGIN(STRING_);
 							}	
 
-<STRING_BACKSLASH>"r" 		{
+<STRING_>"\\r" 				{
 								stringVal += "\r";
-								BEGIN(STRING_);
 							}					
 
-<STRING_BACKSLASH>"\"" 		{
+<STRING_>"\\\"" 	{
 								stringVal += "\"";
-								BEGIN(STRING_);
 							}
 
-<STRING_BACKSLASH>"\\" 		{
+<STRING_>"\\\\" 	{
 								stringVal += "\\";
-								BEGIN(STRING_);
 							}
 
-<STRING_BACKSLASH><<EOF>>	{ fprintf(stderr, "ERROR: not closed string at line %d\n", yylineno); yyterminate();} 
 
-<STRING_BACKSLASH>.			{	 
-								fprintf(stderr,"WARNING: invalid escape character %s in line %d\n",yytext,yylineno);  
-								BEGIN(STRING_);
+<STRING_>"\\"				{	   
+								fprintf(stderr,"WARNING: invalid escape character %s in line %d, will be ignored.\n",yytext,yylineno);  
 							}
 <STRING_><<EOF>> 			{ fprintf(stderr, "ERROR: not closed string at line %d\n", yylineno); yyterminate(); } 	
 
 <STRING_>.					{ stringVal += yytext; }
-
 
 
 "/*" 						{ BEGIN(COMMENT3); }
