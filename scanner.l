@@ -11,7 +11,7 @@
 %}
 
 %option noyywrap 
-%option yylineno 
+%option yylineno
 %option case-insensitive
 %option reentrant
 %option header-file="scanner.h"
@@ -44,14 +44,12 @@ punc 		[\[\]\{\}\(\)\;\,]|(\:{1,2})|(\.{1,2})
 								return STRING;
 							}
 
-<STRING_>"\n" 				{
+<STRING_>"\n"|"\\n"			{
+
 								stringVal += "\n";
 							}
 
-<STRING_>"\\n" 				{
-								stringVal += "\n";
-							}		
-
+		
 <STRING_>"\\t" 				{
 								stringVal += "\t";
 							}	
