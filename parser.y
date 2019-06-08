@@ -82,23 +82,23 @@ stmt : expr SEMICOLON {std::cout << ("Expression ;\n");}
 			}
 	| block 	{std::cout << ("Block\n");}
 	| funcdef	{std::cout << ("Function definition\n");}
-	| SEMICOLON	{std::cout << ("SEMICOLON ;\n");}
+	| SEMICOLON	{std::cout << ("Semicolon ;\n");}
 	;
 
 expr :	 assignexpr		{}
-	| expr PLUS expr	{std::cout << ("expression  + expression -> %d+%d\n",$1,$3); }
-	| expr MINUS expr	{std::cout << ("expression  - expression -> %d-%d\n",$1,$3); }
-	| expr MULTI expr		{std::cout << ("expression  * expression -> %d*%d\n",$1,$3); }
-	| expr DIV expr		{std::cout << ("expression  / expression -> %d/%d\n",$1,$3); }
-	| expr MOD expr		{std::cout << ("expression %% expression -> %d %% %d\n",$1,$3); }
-	| expr GREATER expr	{std::cout << ("expression  > expression -> %d>%d\n",$1,$3); }
-	| expr GREATER_OR_EQUAL expr	{std::cout << ("expression >= expression -> %d>=%d\n",$1,$3); }
-	| expr LESS expr	{std::cout << ("expression  < expression -> %d<%d\n",$1,$3); }
-	| expr LESS_OR_EQUAL expr	{std::cout << ("expression <= expression -> %d<=%d\n",$1,$3); }
-	| expr EQUAL expr		{std::cout << ("expression == expression -> %d==%d\n",$1,$3); }
-	| expr NOT_EQUAL expr	{std::cout << ("expression != expression -> %d!=%d\n",$1,$3);}
-	| expr AND expr		{std::cout << ("expression && expression -> %d&&%d\n",$1,$3); }
-	| expr OR expr		{std::cout << ("expression || expression -> %d/%d\n",$1,$3); }
+	| expr PLUS expr	{std::cout << ("expression + expression \n"); }
+	| expr MINUS expr	{std::cout << ("expression - expression \n"); }
+	| expr MULTI expr		{std::cout << ("expression * expression \n"); }
+	| expr DIV expr		{std::cout << ("expression / expression \n"); }
+	| expr MOD expr		{std::cout << ("expression %% expression \n"); }
+	| expr GREATER expr	{std::cout << ("expression > expression \n"); }
+	| expr GREATER_OR_EQUAL expr	{std::cout << ("expression >= expression \n"); }
+	| expr LESS expr	{std::cout << ("expression  < expression \n"); }
+	| expr LESS_OR_EQUAL expr	{std::cout << ("expression <= expression \n" ); }
+	| expr EQUAL expr		{std::cout << ("expression == expression \n"); }
+	| expr NOT_EQUAL expr	{std::cout << ("expression != expression \n");}
+	| expr AND expr		{std::cout << ("expression && expression \n"); }
+	| expr OR expr		{std::cout << ("expression || expression \n"); }
 	| term			{std::cout << ("Terminal\n");}
 	| error 	{}
 	;
