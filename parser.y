@@ -42,8 +42,7 @@
 %type <stringVal> ifstmt whilestmt forstmt returnstmt block funcdef
 %type <stringVal> assignexpr term
 %type <stringVal> lvalue primary call objectdef const member
-%type <stringVal> elist idlist callsuffix normcall methodcall indexed indexedelem
-
+%type <stringVal> elist idlist arg argList formal callsuffix normcall methodcall indexed indexedelem
 
 
 %right ASSIGN
@@ -164,20 +163,29 @@ member : lvalue DOT IDENT {std::cout << ("lvalue dot ident\n");}
 	| call LEFT_SQUARE_BRACKET expr RIGHT_SQUARE_BRACKET {std::cout << ("[expr]\n");}
 	;
 
-call : call LEFT_PARENTHESIS elist RIGHT_PARENTHESIS {std::cout << ("call(elist)\n");}
+call : call LEFT_PARENTHESIS argList RIGHT_PARENTHESIS {std::cout << ("call(argList)\n");}
 	| lvalue callsuffix {std::cout << ("lvalue callsufix\n");}
-	| LEFT_PARENTHESIS funcdef RIGHT_PARENTHESIS LEFT_PARENTHESIS elist RIGHT_PARENTHESIS {std::cout << ("(funcdef)(elist)\n");}
+	| LEFT_PARENTHESIS funcdef RIGHT_PARENTHESIS LEFT_PARENTHESIS argList RIGHT_PARENTHESIS {std::cout << ("(funcdef)(argList)\n");}
 	;
 
 callsuffix : normcall {std::cout << ("normcall\n");}
 	| methodcall {std::cout << ("methodcall\n");}
 	;
 
-normcall: LEFT_PARENTHESIS elist RIGHT_PARENTHESIS {std::cout << ("(elist)\n");}
+normcall: LEFT_PARENTHESIS argList RIGHT_PARENTHESIS {std::cout << ("(argList)\n");}
 		;
 
-methodcall : DOUBLE_DOT IDENT LEFT_PARENTHESIS elist RIGHT_PARENTHESIS {std::cout << ("..ident(elist)\n");}
+methodcall : DOUBLE_DOT IDENT LEFT_PARENTHESIS argList RIGHT_PARENTHESIS {std::cout << ("..ident(argList)\n");}
 			;
+
+arg : expr { std::cout << "expr\n"; } 
+	| IDENT COLON expr { std::cout << "ID : expr\n"; } 
+	;
+
+argList : arg { std::cout << "arg\n"; }	
+	| argList COMMA arg { std::cout << "argList, arg\n"; }
+	| { std::cout << "empty argList\n"; }
+	;
 
 elist :  expr {std::cout << ("expression\n");}
 	| elist COMMA expr  {std::cout << ("elist, expression\n");}
