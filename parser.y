@@ -65,7 +65,7 @@ program : stmt program
 		|	{std::cout << ("Program\n");}
 		;
 
-stmt : expr SEMICOLON {std::cout << ("Expresion\n");}		
+stmt : expr SEMICOLON {std::cout << ("Expression ;\n");}		
 	| ifstmt	{std::cout << ("IF statement\n");}
 	| whilestmt	{std::cout << ("WHILE statement\n");}
 	| forstmt	{std::cout << ("FOR statement\n");}
@@ -179,8 +179,8 @@ normcall: LEFT_PARENTHESIS elist RIGHT_PARENTHESIS {std::cout << ("(elist)\n");}
 methodcall : DOUBLE_DOT IDENT LEFT_PARENTHESIS elist RIGHT_PARENTHESIS {std::cout << ("..ident(elist)\n");}
 			;
 
-elist :  expr {std::cout << ("exprecion\n");}
-	| elist COMMA expr  {std::cout << ("elist, expresion\n");}
+elist :  expr {std::cout << ("expression\n");}
+	| elist COMMA expr  {std::cout << ("elist, expression\n");}
 	|  {std::cout << ("empty (elist)\n");}
 	;
 
@@ -193,7 +193,7 @@ indexed : indexedelem {std::cout << ("indexedelem\n");}
 	//|   {std::cout << ("empty (indexed)\n");}
 	;
 
-indexedelem : LEFT_BRACKET expr COLON expr RIGHT_BRACKET  {std::cout << ("{ expresion : expresion }\n");
+indexedelem : LEFT_BRACKET expr COLON expr RIGHT_BRACKET  {std::cout << ("{ expression : expression }\n");
 				}
 			;
 
@@ -207,7 +207,7 @@ block : LEFT_BRACKET tmp_block RIGHT_BRACKET{ std::cout << ("{ stmt }\n");
 
 funcdef : FUNCTION IDENT 
 				{
-					std::cout << ("function ident");			
+					std::cout << ("function ident\n");			
 				}
 			
 			LEFT_PARENTHESIS idlist RIGHT_PARENTHESIS block
@@ -216,7 +216,7 @@ funcdef : FUNCTION IDENT
 				}
 		| FUNCTION 
 				{
-				std::cout << ("function");				
+				std::cout << ("function\n");				
 				}
 			LEFT_PARENTHESIS idlist RIGHT_PARENTHESIS block
 				{
@@ -243,13 +243,13 @@ idlist : IDENT
 	|  {std::cout << ("Empty (idlist)\n");}
 	;
 
-ifstmt : IF LEFT_PARENTHESIS expr RIGHT_PARENTHESIS stmt {std::cout << ("IF (expresion) stmt\n");}
+ifstmt : IF LEFT_PARENTHESIS expr RIGHT_PARENTHESIS stmt {std::cout << ("IF (expression) stmt\n");}
 		| ifstmt ELSE stmt {std::cout << ("ifstmt ELSE stmt\n");}
 		;
 
 whilestmt : WHILE
 			{
-				std::cout << ("While (expresion) stmt\n");
+				std::cout << ("While (expression) stmt\n");
 			}
 			 LEFT_PARENTHESIS expr RIGHT_PARENTHESIS stmt 
 			{
@@ -267,7 +267,7 @@ forstmt : FOR
 		;
 
 returnstmt : RETURN SEMICOLON {std::cout << ("RETURN;\n");}
-		| RETURN expr SEMICOLON {std::cout << ("RETURN expresion;\n");}
+		| RETURN expr SEMICOLON {std::cout << ("RETURN expression;\n");}
 		;
 
 

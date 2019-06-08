@@ -10,6 +10,7 @@
 	int commentCounter = 0; 	
 %}
 
+%option noyywrap
 %option yylineno
 %option case-insensitive
 %option reentrant
