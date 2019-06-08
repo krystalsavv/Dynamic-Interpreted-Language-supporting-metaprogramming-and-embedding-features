@@ -10,7 +10,6 @@
 	int commentCounter = 0; 	
 %}
 
-%option noyywrap 
 %option yylineno
 %option case-insensitive
 %option reentrant
@@ -75,7 +74,7 @@ punc 		[\[\]\{\}\(\)\;\,]|(\:{1,2})|(\.{1,2})
 <STRING_>.					{ stringVal += yytext; }
 
 
-"/*" 						{ BEGIN(COMMENT3); }
+"/*" 						{ commentCounter++; BEGIN(COMMENT3); }
 
 <COMMENT3>"/*" 				{ commentCounter++; }
 
