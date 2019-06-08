@@ -58,7 +58,7 @@
 %left LEFT_SQUARE_BRACKET RIGHT_SQUARE_BRACKET
 %left LEFT_PARENTHESIS	RIGHT_PARENTHESIS
 
-%expect 1
+// %expect 1
 
 %%
 program : stmt program 
@@ -232,11 +232,23 @@ const : INTEGER {std::cout << ("Integer\n");}
 		| FALSE {std::cout << ("FALSE\n");}
 		;
 
-idlist : IDENT 
+formal: IDENT 
 		{
-			std::cout << ("id list\n");							
+			std::cout << ("id list\n");
 		}
-	| idlist COMMA IDENT  
+	
+	| IDENT ASSIGN expr
+		{
+			std::cout << ("id =  expr\n");
+		}
+	;
+
+
+idlist : formal 
+		{
+			std::cout << ("formal\n");							
+		}
+	| idlist COMMA formal  
 		{
 			std::cout << ("idlist, id\n");	
 		}
