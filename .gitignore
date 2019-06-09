@@ -8,3 +8,4 @@ parser.cpp
 scanner.cpp
 parser.tab.h
 parser.output
+test.txt

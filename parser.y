@@ -324,5 +324,12 @@ int main(int argc,char** argv){
 	}
 	yyparse(scanner);
 	yylex_destroy(scanner);
+
+
+	// stay window open VS
+	//int x;
+	//std::cin >> x;
+
+
 	return 0;
 }
