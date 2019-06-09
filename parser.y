@@ -6,6 +6,7 @@
 	#include <fstream>
 	#include "parser.hpp"
 	#include "scanner.h"
+	#include "Object.h"
 
 	int yyerror (yyscan_t scanner, const char* yaccProvidedMessage);
 %}
@@ -325,6 +326,8 @@ int main(int argc,char** argv){
 	yyparse(scanner);
 	yylex_destroy(scanner);
 
+	Object* obj = new Object("kato",5);
+	obj->PrintMap();
 
 	// stay window open VS
 	//int x;
