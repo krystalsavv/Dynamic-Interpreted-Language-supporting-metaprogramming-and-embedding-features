@@ -1,10 +1,4 @@
-//
-// Created by dimitris on 8/6/2019.
-//
-
-#ifndef CS540_AST_H
-#define CS540_AST_H
-
+#pragma once
 #include <iostream>
 #include <string>
 #include "Object.h"
@@ -26,4 +20,3 @@ class ASTVisitor{
 
 };
 
-#endif

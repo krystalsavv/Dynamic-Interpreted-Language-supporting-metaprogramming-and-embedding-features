@@ -327,7 +327,8 @@ int main(int argc,char** argv){
 	yylex_destroy(scanner);
 
 	Object* obj = new Object("kato",5);
-	obj->PrintMap();
+	Object* obj1 = new Object("obj",obj);
+	obj1->PrintMap();
 
 	// stay window open VS
 	//int x;
