@@ -7,17 +7,15 @@
 
 #include <iostream>
 #include <string>
+#include "Object.h"
 
-class AST {
-
+class AST : Object {
     std::string type;
 
 public:
 
-    //return type
     std::string& getType();
 
-    //set type
     void setType(std::string&);
 
 
@@ -28,4 +26,4 @@ class ASTVisitor{
 
 };
 
-#endif //CS540_AST_H
+#endif
