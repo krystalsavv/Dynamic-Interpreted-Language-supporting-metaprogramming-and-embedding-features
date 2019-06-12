@@ -58,7 +58,7 @@
 %left LEFT_SQUARE_BRACKET RIGHT_SQUARE_BRACKET
 %left LEFT_PARENTHESIS	RIGHT_PARENTHESIS
 
-// %expect 1
+%expect 1
 
 %%
 program : stmt program 
