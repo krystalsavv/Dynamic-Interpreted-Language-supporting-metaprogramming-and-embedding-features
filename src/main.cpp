@@ -4,6 +4,7 @@
 #include "parser.hpp"
 #include "scanner.h"
 #include "utilities/Object.h"
+#include "utilities/AST.h"
 
 
 std::string InputToString(const char* filename) {
@@ -29,12 +30,12 @@ int main(int argc,char** argv){
 	} else {
 		yyset_in(stdin, scanner);
 	}
-	yyparse(scanner);
+	AST* root = nullptr; 
+	yyparse(root, scanner);
 	yylex_destroy(scanner);
 
-	Object* obj = new Object("kato",5);
+	/*Object* obj = new Object("kato",5);
 	Object* obj1 = new Object("obj",obj);
-	obj1->PrintMap();
-
+	obj1->PrintMap();*/
 	return 0;
 }

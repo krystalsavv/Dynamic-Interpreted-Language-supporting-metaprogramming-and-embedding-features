@@ -17,4 +17,5 @@ add_library(Parser STATIC ${PARSER_OUTPUT}/scanner.cpp
 
 target_link_libraries(  Parser
                         Object 
+						AST
 )

@@ -3,25 +3,32 @@
 	#include <string>
 	#include <errno.h>
 	#include <iostream>	
+	#include "utilities/AST.h"
+	//#include "utilities/Object.h"
+
 	#include "parser.hpp"
 	#include "scanner.h"
-	#include "utilities/Object.h"
 
-	int yyerror (yyscan_t scanner, const char* yaccProvidedMessage);
-
-	int main(int argc,char** argv); 
+	int yyerror (AST* root, yyscan_t scanner, const char* yaccProvidedMessage);
 %}
 
+%code requires {
+  #include "utilities/Object.h"
+  #include "utilities/AST.h"
+}
+
+
 %union{
-	std::string* stringVal;
 	int intVal;
 	double doubleVal;
+	Object* objectVal; 
+	std::string* stringVal;
 }
+
 %error-verbose
-
-
 %pure-parser
 %lex-param {void * scanner}
+%parse-param {AST * root}
 %parse-param {void * scanner}
 
 %start program
@@ -39,13 +46,13 @@
 
 
 
-%type <stringVal> stmt tmp_block
-%type <intVal> expr
-%type <stringVal> ifstmt whilestmt forstmt returnstmt block funcdef
-%type <stringVal> assignexpr term
-%type <stringVal> lvalue primary call objectdef const member
-%type <stringVal> elist idlist arg argList formal callsuffix normcall methodcall indexed indexedelem
-
+%type <objectVal> stmt tmp_block
+%type <objectVal> expr
+%type <objectVal> ifstmt whilestmt forstmt returnstmt block funcdef
+%type <objectVal> assignexpr term
+%type <objectVal> lvalue primary call objectdef const member
+%type <objectVal> elist idlist arg argList formal callsuffix normcall methodcall indexed indexedelem
+%type <stringVal> program
 
 %right ASSIGN
 %left OR
@@ -62,29 +69,41 @@
 %expect 1
 
 %%
-program : stmt program 
+program : stmt program {}
 		|	{std::cout << ("Program\n");}
 		;
 
-stmt : expr SEMICOLON {std::cout << ("Expression ;\n");}		
-	| ifstmt	{std::cout << ("IF statement\n");}
-	| whilestmt	{std::cout << ("WHILE statement\n");}
-	| forstmt	{std::cout << ("FOR statement\n");}
-	| returnstmt	
-			{	
-				std::cout << ("RETURN statement\n");
-			}
-	| BREAK SEMICOLON	
-			{
-				std::cout << ("BREAK\n");
-			}
-	| CONTINUE SEMICOLON	
-			{
-				std::cout << ("CONTINUE\n");
-			}
-	| block 	{std::cout << ("Block\n");}
-	| funcdef	{std::cout << ("Function definition\n");}
-	| SEMICOLON	{std::cout << ("Semicolon ;\n");}
+stmt : expr SEMICOLON	{
+							std::cout << ("Expression ;\n");
+
+						}		
+	| ifstmt			{
+							std::cout << ("IF statement\n");
+						}
+	| whilestmt			{
+							std::cout << ("WHILE statement\n");
+						}
+	| forstmt			{
+							std::cout << ("FOR statement\n");
+						}
+	| returnstmt		{	
+							std::cout << ("RETURN statement\n");
+						}
+	| BREAK SEMICOLON	{
+							std::cout << ("BREAK\n");
+						}
+	| CONTINUE SEMICOLON	{
+								std::cout << ("CONTINUE\n");
+							}
+	| block 				{
+								std::cout << ("Block\n");
+							}
+	| funcdef				{
+								std::cout << ("Function definition\n");
+							}
+	| SEMICOLON				{	
+								std::cout << ("Semicolon ;\n");
+							}
 	;
 
 expr :	 assignexpr		{}
@@ -295,7 +314,7 @@ returnstmt : RETURN SEMICOLON {std::cout << ("RETURN;\n");}
 
 %%
 
-int yyerror(yyscan_t scanner, const char *yaccProvidedMessage){
+int yyerror(AST* root, yyscan_t scanner, const char *yaccProvidedMessage){
 	std::cout  << yaccProvidedMessage << ": at line " << yyget_lineno(scanner) << " before token : " << yyget_text(scanner) << std::endl;
 	std::cout << "INPUT NOT VALID \n";
 	return 0;

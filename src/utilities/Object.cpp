@@ -21,6 +21,29 @@ Object::Object(std::string key, Object* value) {
 	symbols[key] = v;
 }
 
+void Object::Set(std::string key, int value) {
+	variant_t v = value;
+	symbols[key] = v;
+}
+
+void Object::Set(std::string key, double value) {
+	variant_t v = value;
+	symbols[key] = v;
+}
+
+void Object::Set(std::string key, std::string value) {
+	variant_t v = value;
+	symbols[key] = v;
+}
+
+void Object::Set(std::string key, Object* value) {
+	variant_t v = value;
+	symbols[key] = v;
+}
+
+
+
+
 //auto& Object::GetValue(std::string& key) {
 //	if (symbols.find(key) != symbols.end()) {
 //
