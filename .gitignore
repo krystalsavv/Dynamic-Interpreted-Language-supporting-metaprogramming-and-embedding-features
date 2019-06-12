@@ -3,13 +3,22 @@
 .vscode/ipch/11aea2ea3b5ecafd/HASHTABLE.ipch
 .idea
 
-parser.hpp
-parser.cpp
-scanner.cpp
-scanner.h
-parser.tab.h
-parser.output
-test.txt
+CS540/parser.hpp
+CS540/parser.cpp
+CS540/scanner.cpp
+CS540/scanner.h
+CS540/parser.tab.h
+CS540/parser.output
+CS540/test.txt
+
+cs540/parser.hpp
+cs540/parser.cpp
+cs540/scanner.cpp
+cs540/scanner.h
+cs540/parser.tab.h
+cs540/parser.output
+cs540/test.txt
+
 *.vcxproj
 *.filters
 
