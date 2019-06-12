@@ -15,7 +15,7 @@
 %option yylineno
 %option case-insensitive
 %option reentrant
-%option header-file="scanner.h"
+%option header-file="generated/scanner.h"
 %option bison-bridge
 
 keyword 	(function)|(while)|(for)|(if)|(else)|(continue)|(break)|(return)|(and)|(or)|(not)|(local)|(true)|(false)|(nil)
