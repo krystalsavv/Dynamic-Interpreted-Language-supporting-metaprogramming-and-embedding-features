@@ -95,9 +95,9 @@ punc 		[\[\]\{\}\(\)\;\,]|(\:{1,2})|(\.{1,2})
 
 {keyword}	{return keywords_to_enum(yytext);}
 {operator}	{return keywords_to_enum(yytext);}
-{integer} 	{yylval->intVal = atoi(yytext);
+{integer} 	{yylval->numVal = atoi(yytext);
 					return INTEGER;}
-{real} 		{yylval->doubleVal = atof(yytext);
+{real} 		{yylval->numVal = atof(yytext);
 return REALNUMBER;}
 {space}		{}
 {comment1}	{}
