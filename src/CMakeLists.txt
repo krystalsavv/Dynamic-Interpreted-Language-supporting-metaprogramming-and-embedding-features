@@ -6,4 +6,5 @@ add_executable(Interpreter main.cpp)
 target_link_libraries(  Interpreter             # To
                         Object                  # What
                         Parser
+						Value
                         )                

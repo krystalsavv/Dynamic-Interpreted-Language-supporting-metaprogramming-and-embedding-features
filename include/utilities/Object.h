@@ -1,12 +1,14 @@
 #pragma once
+
 #include <string>
 #include <unordered_map>
 #include <iostream>
-#include <variant>
+#include "utilities/Value.h"
 
-#define variant_t std::variant<bool, double, std::string, Object*> 
-#define map_t std::unordered_map<std::string, variant_t> 
+
+#define map_t std::unordered_map<std::string, Value*> 
 #define ASTnode Object
+#define Environment Object
 
 class Object {
 	std::string type;
@@ -25,15 +27,7 @@ class Object {
 		void Set(std::string key, std::string value);
 		void Set(std::string key, Object* value);
 
-		bool& GetBoolValue(std::string key);
-		double& GetNumberValue(std::string key);
-		std::string& GetStringValue(std::string key);
-		Object* GetObjectValue(std::string key);
-
-		bool isBool(std::string key);
-		bool isNumber(std::string key);
-		bool isString(std::string key);
-		bool isObject(std::string key);
+		Value* GetValue(std::string key);
 
 		bool ContainsKey(std::string key);
 
