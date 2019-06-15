@@ -15,6 +15,7 @@ class Value
 
 public:
 	Value() = default;
+	Value(Value& val);
 	Value( bool value);
 	Value( double value);
 	Value( std::string value);
@@ -36,6 +37,17 @@ public:
 	bool isObject();
 
 	void PrintValue();
+
+	Value* operator+(Value* right) {
+		//number + number
+		if (this->isNumber() && right->isNumber())
+			this->GetNumberValue() + right->GetNumberValue();
+		//string + string
+		else if (this->isString && right->isString)
+
+
+		return this;
+	}
 	
 };
 

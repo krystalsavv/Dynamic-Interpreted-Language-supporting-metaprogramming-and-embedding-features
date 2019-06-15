@@ -6,18 +6,20 @@ Evaluator::Evaluator()
 
 
 //generic evaluate 
-//Value* Evaluator::Evaluate(ASTnode* node) {
-//
-//}
-//
-//Value* Evaluator::EvaluateVar(ASTnode* node) {
-//
-//}
-//
-//Value* Evaluator::EvaluateAddExpr(ASTnode* node) {
-//
-//}
-//
-//Value* Evaluator::EvaluateIfStmt(ASTnode* node) {
-//
-//}
+Value* Evaluator::Evaluate(ASTnode* node) {
+	//dispatcher call specific evaluate
+}
+
+Value* Evaluator::EvaluateAddExpr(ASTnode* node) {
+	Value* left = node->GetValue("left");
+	Value* right = node->GetValue("right");
+	return *left + *right;
+}
+
+Value* Evaluator::EvaluateVar(ASTnode* node) {
+
+}
+
+Value* Evaluator::EvaluateIfStmt(ASTnode* node) {
+
+}

@@ -1,6 +1,7 @@
 #include "utilities/Value.h"
 #include "utilities/Object.h"
 
+
 Value::Value( bool value) {
 	variant = value;
 }
