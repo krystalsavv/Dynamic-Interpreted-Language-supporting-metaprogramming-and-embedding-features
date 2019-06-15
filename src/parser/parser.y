@@ -325,20 +325,16 @@ lvalue : IDENT
 	| member	{ 
 					std::cout << ("member\n");
 					$$ = $1; 
-					//$$ = new ASTnode("type", "member");					// gia na exw ola ta members katw apo ena node(type) (alliws den xreiazetai kai kanw thn panw grammh) 
-					//$$->Set("value", $1);
 				}
 	;
 
 member : lvalue DOT IDENT
 				{
 					std::cout << ("lvalue dot ident\n");
-					$$ = new ASTnode("type", "DOT");
+					$$ = new ASTnode("type", "member_lvalueVar");
 					$$->Set("lvalue", $1);
-					ASTnode* varNode = new ASTnode("type", "member_lvalueVar");					// den einai sigoyrh oti xreiazetai na ta diaxwrisw
-					varNode->Set("ID", *$3);
+					$$->Set("ID", *$3);
 					delete($3); 
-					$$->Set("memberVar", varNode);						//???
 				
 				}
 	| lvalue LEFT_SQUARE_BRACKET expr RIGHT_SQUARE_BRACKET 
@@ -351,12 +347,10 @@ member : lvalue DOT IDENT
 	| call DOT IDENT 
 				{
 					std::cout << ("call dot ident\n");
-					$$ = new ASTnode("type", "DOT");
+					$$ = new ASTnode("type", "member_callVar");
 					$$->Set("call", $1);
-					ASTnode* varNode = new ASTnode("type", "member_callVar");					// den einai sigoyrh oti xreiazetai na ta diaxwrisw
-					varNode->Set("ID", *$3);
+					$$->Set("ID", *$3);
 					delete($3); 
-					$$->Set("memberVar", varNode);
 				}
 	| call LEFT_SQUARE_BRACKET expr RIGHT_SQUARE_BRACKET
 				{
