@@ -1,25 +1,21 @@
 #include "utilities/Evaluator.h"
 
-Evaluator::Evaluator()
-{
+std::map<std::string, Value(Evaluator::*)(ASTnode*) > IntializeDispatcher() {
+	std::map<std::string, Value(Evaluator::*)(ASTnode*) > table;
+	table["ADD"] = &Evaluator::EvaluateAddExpr;
+	return table;
+}
+
+std::map<std::string, Value(Evaluator::*)(ASTnode*) > Evaluator::EvaluateDispatcher = IntializeDispatcher();
+
+
+Value Evaluator::Evaluate(ASTnode* node) {
+	return EvaluateDispatcher[node->GetValue("type").GetStringValue()];
 }
 
 
-////generic evaluate 
-//Value* Evaluator::Evaluate(ASTnode* node) {
-//	//dispatcher call specific evaluate
-//}
-//
-//Value Evaluator::EvaluateAddExpr(ASTnode* node) {
-//	Value* left = node->GetValue("left");
-//	Value* right = node->GetValue("right");
-//	
-//}
-//
-//Value* Evaluator::EvaluateVar(ASTnode* node) {
-//
-//}
-//
-//Value* Evaluator::EvaluateIfStmt(ASTnode* node) {
-//
-//}
+Value Evaluator::EvaluateAddExpr(ASTnode* node) {
+	Value left = node->GetValue("left");
+	Value right = node->GetValue("right");
+	return left;								// TODO the sum left + right
+}
