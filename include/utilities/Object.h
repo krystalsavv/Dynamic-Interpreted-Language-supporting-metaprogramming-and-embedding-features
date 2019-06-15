@@ -24,14 +24,15 @@ class Object {
 
 		bool ContainsKey(std::string key);
 
-		//void PrintMap();
+		void PrintMap();
+
+		//overloads
+		//bool operator==(Object* obj);
+		//bool operator!=(Object* obj);
 
 		template <class T>
 		void Set(std::string key, T value) {
-			//if (symbols[key])
 				symbols[key].Set(value);
-			//else
-			//	symbols[key] = Value(value);
 		}
 };
 

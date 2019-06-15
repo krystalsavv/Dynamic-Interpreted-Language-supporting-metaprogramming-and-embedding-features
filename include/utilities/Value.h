@@ -3,6 +3,7 @@
 #include <variant>
 #include <string>
 #include <iostream>
+#include <cassert>
 
 class Object;
 
@@ -12,19 +13,14 @@ class Value
 {
 
 	variant_t variant;
+	bool toBool();
 
 public:
 	Value() = default;
-	Value(Value& val);
 	Value( bool value);
 	Value( double value);
 	Value( std::string value);
 	Value( Object* value);
-
-	void Set(bool value);
-	void Set(double value);
-	void Set(std::string value);
-	void Set(Object* value);
 
 	bool& GetBoolValue();
 	double& GetNumberValue();
@@ -38,17 +34,41 @@ public:
 
 	void PrintValue();
 
-	//Value* operator+(Value* right) {
+	//template set
+	template <class T>
+	void  Set(T value) {
+		variant = value;
+	}
 
-	//	//number + number
-	//	if (this->isNumber() && right->isNumber())
-	//		this->GetNumberValue() + right->GetNumberValue();
-	//	//string + string
-	//	else if (this->isString && right->isString)
+	//overloads
+	Value operator+(Value& right);
+	Value operator-(Value& right);
+	Value operator*(Value& right);
+	Value operator/(Value& right);
+	Value operator%(Value& right);
+	//prefix
+	Value& operator++();
+	//postfix
+	Value operator++(int);
+	//prefix
+	Value& operator--();
+	//postfix
+	Value operator--(int);
+	Value operator-();
 
+	//equals
+	Value operator>(Value& right);
+	Value operator>=(Value& right);
+	Value operator<(Value& right);
+	Value operator<=(Value& right);
 
-	//	return ;
-	//}
-	
+	Value operator==(Value& right);
+	Value operator!=(Value& right);
+
+	//logical
+	Value operator&&(Value& right);
+	Value operator||(Value& right);
+	Value operator!();
+
 };
 

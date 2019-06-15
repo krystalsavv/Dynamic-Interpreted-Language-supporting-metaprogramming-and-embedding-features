@@ -34,10 +34,18 @@ bool Object::ContainsKey(std::string key) {
 		return false;
 }
 
+void Object::PrintMap() {
+	for (auto& [key, value] : symbols) {
+		std::cout << "key: " << key << "value: ";  
+		value.PrintValue();
+	}
+}
 
-//void Object::PrintMap() {
-//	for (auto& [key, value] : symbols) {
-//		std::cout << "key: " << key << "value: " << value;
-//	}
+//overloads
+//bool Object::operator==(Object* obj) {
+//	bool boolean = this->symbols == obj->symbols;
 //}
 
+//bool  Object::operator!=(Object* obj) {
+//	bool boolean = this->symbols != obj->symbols;
+//}
