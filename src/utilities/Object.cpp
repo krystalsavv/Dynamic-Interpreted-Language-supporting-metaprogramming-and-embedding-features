@@ -22,7 +22,7 @@ Object::Object(std::string key, Object* value) {
 }
 
 
-Value* Object::GetValue(std::string key) {
+Value& Object::GetValue(std::string key) {
 	return symbols[key];
 }
 
@@ -35,9 +35,9 @@ bool Object::ContainsKey(std::string key) {
 }
 
 
-void Object::PrintMap() {
-	for (auto& [key, value] : symbols) {
-		std::cout << "key: " << key << "value: " << value;
-	}
-}
+//void Object::PrintMap() {
+//	for (auto& [key, value] : symbols) {
+//		std::cout << "key: " << key << "value: " << value;
+//	}
+//}
 

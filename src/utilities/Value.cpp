@@ -76,6 +76,6 @@ void Value::PrintValue() {
 		std::cout << this->GetNumberValue();
 	else if (this->isString())
 		std::cout << this->GetStringValue();
-	else if (this->isObject())
-		this->GetObjectValue()->PrintMap();
+	//else if (this->isObject())
+	//	this->GetObjectValue()->PrintMap();
 }

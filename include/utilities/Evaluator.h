@@ -8,12 +8,12 @@ class Evaluator
 public:
 	Evaluator();
 	//~Evaluator();
-	Value* EvaluateVar(ASTnode* node);
-	Value* EvaluateAddExpr(ASTnode* node);
-	Value* EvaluateIfStmt(ASTnode* node);
+	//Value* EvaluateVar(ASTnode* node);
+	//Value* EvaluateAddExpr(ASTnode* node);
+	//Value* EvaluateIfStmt(ASTnode* node);
 
-	//generic evaluate 
-	Value* Evaluate(ASTnode* node);
+	////generic evaluate 
+	//Value* Evaluate(ASTnode* node);
 private:
 
 };

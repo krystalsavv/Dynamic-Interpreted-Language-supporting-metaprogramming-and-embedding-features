@@ -6,7 +6,7 @@
 #include "utilities/Value.h"
 
 
-#define map_t std::unordered_map<std::string, Value*> 
+#define map_t std::unordered_map<std::string, Value> 
 #define ASTnode Object
 #define Environment Object
 
@@ -20,18 +20,18 @@ class Object {
 		Object(std::string key, std::string value);
 		Object(std::string key, Object* value);
 		
-		Value* GetValue(std::string key);
+		Value& GetValue(std::string key);
 
 		bool ContainsKey(std::string key);
 
-		void PrintMap();
+		//void PrintMap();
 
 		template <class T>
 		void Set(std::string key, T value) {
-			if (symbols[key])
-				symbols[key]->Set(value);
-			else
-				symbols[key] = new Value(value);
+			//if (symbols[key])
+				symbols[key].Set(value);
+			//else
+			//	symbols[key] = Value(value);
 		}
 };
 

@@ -38,16 +38,17 @@ public:
 
 	void PrintValue();
 
-	Value* operator+(Value* right) {
-		//number + number
-		if (this->isNumber() && right->isNumber())
-			this->GetNumberValue() + right->GetNumberValue();
-		//string + string
-		else if (this->isString && right->isString)
+	//Value* operator+(Value* right) {
+
+	//	//number + number
+	//	if (this->isNumber() && right->isNumber())
+	//		this->GetNumberValue() + right->GetNumberValue();
+	//	//string + string
+	//	else if (this->isString && right->isString)
 
 
-		return this;
-	}
+	//	return ;
+	//}
 	
 };
 
