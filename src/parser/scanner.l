@@ -39,7 +39,7 @@ punc 		[\[\]\{\}\(\)\;\,]|(\:{1,2})|(\.{1,2})
 							}
 
 <STRING_>"\""				{
-								yylval->stringVal = &stringVal; 
+								yylval->stringVal = new std::string(stringVal); 
 								std::cout << stringVal << std::endl;
 								BEGIN(INITIAL);
 								return STRING;
@@ -104,7 +104,7 @@ return REALNUMBER;}
 {comment2}	{}
 {punc}		{return keywords_to_enum(yytext);}
 {id}		{	stringVal.assign(yytext); 
-				yylval->stringVal = &stringVal; 
+				yylval->stringVal = new std::string(stringVal); 
 				return IDENT; }
 
 . 			{std::cerr << "Line " << yylineno << " : Lexical analysis error:You can not have an identifier starting with number or symbol $ (WRONG DEFINITION). \n"; return WRONG_DEFINITION;}

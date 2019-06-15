@@ -30,8 +30,8 @@ int main(int argc,char** argv){
 	} else {
 		yyset_in(stdin, scanner);
 	}
-	AST* root = nullptr; 
-	yyparse(root, scanner);
+	AST* ast = nullptr; 
+	yyparse(ast, scanner);
 	yylex_destroy(scanner);
 
 	/*Object* obj = new Object("kato",5);

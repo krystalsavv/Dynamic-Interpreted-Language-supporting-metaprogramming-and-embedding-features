@@ -21,22 +21,6 @@ Object::Object(std::string key, Object* value) {
 	symbols[key] = val;
 }
 
-void Object::Set(std::string key, bool value) {
-	symbols[key]->Set(value);
-}
-
-void Object::Set(std::string key, double value) {
-	symbols[key]->Set(value);
-}
-
-void Object::Set(std::string key, std::string value) {
-	symbols[key]->Set(value);
-}
-
-void Object::Set(std::string key, Object* value) {
-	symbols[key]->Set(value);
-}
-
 
 Value* Object::GetValue(std::string key) {
 	return symbols[key];

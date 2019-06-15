@@ -40,6 +40,7 @@
 %token	MULTI_LINE_COMMENT
 %token	NESTED_COMMENT
 
+
 %token <stringVal> WHILE FOR IF ELSE FUNCTION RETURN BREAK CONTINUE AND OR NOT LOCAL TRUE FALSE NIL PLUS MINUS UMINUS ASSIGN MULTI MOD DIV EQUAL NOT_EQUAL INCREMENT DECREMENT 
 %token <stringVal> GREATER_OR_EQUAL LESS_OR_EQUAL GREATER LESS LEFT_SQUARE_BRACKET RIGHT_SQUARE_BRACKET LEFT_BRACKET RIGHT_BRACKET LEFT_PARENTHESIS RIGHT_PARENTHESIS COMMA SEMICOLON COLON DOT DOUBLE_DOT SCOPE WRONG_DEFINITION 
 
@@ -68,44 +69,43 @@
 %expect 1
 
 %%
-program : stmt program { std::cout << "stmt program    " << std::endl; }
-		|	{std::cout << ("Program\n");}
+program : program stmt
+				{ 
+					std::cout << "stmt program" << std::endl;
+					$$ = $1;
+					double numOfStmt = $$->GetValue("numOfStmt")->GetNumberValue();
+					numOfStmt++;
+					$$->Set(std::string("stmt") + std::to_string((int)numOfStmt), $2);
+					$$->Set("numOfStmt", numOfStmt);
+				}
+		|	{
+				std::cout << ("Program\n");
+				$$ = new ASTnode("type", "program");
+				$$->Set("numOfStmt", 0.0);
+				root = new AST($$);
+				std::cout << "program Fisnish\n";
+			}
 		;
 
 stmt : expr SEMICOLON	{
 							std::cout << ("Expression ;\n");
-							//$$ = new ASTnode();
-							//$$->Set("type", "stmt");
-							//$$->Set("expr", $1);
 							$$ = $1;
 
 						}		
 	| ifstmt			{
 							std::cout << ("IF statement\n");
-							//$$ = new ASTnode();
-							//$$->Set("type", "stmt");
-							//$$->Set("ifstmt", $1);
 							$$ = $1;
 						}
 	| whilestmt			{
 							std::cout << ("WHILE statement\n");
-							//$$ = new ASTnode();
-							//$$->Set("type", "stmt");
-							//$$->Set("whilestmt", $1);
 							$$ = $1;
 						}
 	| forstmt			{
-							std::cout << ("FOR statement\n");
-							//$$ = new ASTnode();
-							//$$->Set("type", "stmt");			
-							//$$->Set("forstmt", $1);
+							std::cout << ("FOR statement\n");						
 							$$ = $1;
 						}
 	| returnstmt		{	
-							std::cout << ("RETURN statement\n");
-							//$$ = new ASTnode();
-							//$$->Set("type", "stmt");
-							//$$->Set("returnstmt", $1);
+							std::cout << ("RETURN statement\n");						
 							$$ = $1;
 						}
 	| BREAK SEMICOLON	{
@@ -120,16 +120,10 @@ stmt : expr SEMICOLON	{
 							}
 	| block 				{
 								std::cout << ("Block\n");
-								//$$ = new ASTnode();
-								//$$->Set("type", "stmt");
-								//$$->Set("block", $1);
 								$$ = $1;
 							}
 	| funcdef				{
 								std::cout << ("Function definition\n");
-								//$$ = new ASTnode();
-								//$$->Set("type", "stmt");
-								//$$->Set("funcdef", $1);
 								$$ = $1;
 							}
 	| SEMICOLON				{	
@@ -142,19 +136,19 @@ stmt : expr SEMICOLON	{
 expr :	 assignexpr		{ $$ = $1; }
 	| expr PLUS expr	{
 							std::cout << ("expression + expression \n"); 
-							$$ = new ASTnode("type", "PLUS");
+							$$ = new ASTnode("type", "ADD");
 							$$->Set("left", $1);
 							$$->Set("right", $3);
 						}
 	| expr MINUS expr	{
 							std::cout << ("expression - expression \n"); 
-							$$ = new ASTnode("type", "MINUS");
+							$$ = new ASTnode("type", "SUB");
 							$$->Set("left", $1);
 							$$->Set("right", $3);
 						}
 	| expr MULTI expr	{
 							std::cout << ("expression * expression \n"); 
-							$$ = new ASTnode("type", "MULTI");
+							$$ = new ASTnode("type", "MUL");
 							$$->Set("left", $1);
 							$$->Set("right", $3);
 						}
@@ -246,26 +240,26 @@ term :	 LEFT_PARENTHESIS expr RIGHT_PARENTHESIS
 	| INCREMENT lvalue
 			{
 				std::cout << ("++ lvalue\n");
-				$$ = new ASTnode("type", "INCREMENT");
-				$$->Set("lvalue_after", $2);
+				$$ = new ASTnode("type", "PRE_INCREMENT");
+				$$->Set("lvalue", $2);
 			}
 	| lvalue INCREMENT 
 			{
 				std::cout << ("lvalue ++\n");
-				$$ = new ASTnode("type", "INCREMENT");
-				$$->Set("lvalue_before", $1);
+				$$ = new ASTnode("type", "POST_INCREMENT");
+				$$->Set("lvalue", $1);
 			}
 	| DECREMENT lvalue
 			{
 				std::cout << ("-- lvalue\n");
-				$$ = new ASTnode("type", "DECREMENT");
-				$$->Set("lvalue_after", $2);
+				$$ = new ASTnode("type", "PRE_DECREMENT");
+				$$->Set("lvalue", $2);
 			}
 	| lvalue DECREMENT
 			{
 				std::cout << ("lvalue --\n");
-				$$ = new ASTnode("type", "DECREMENT");
-				$$->Set("lvalue_before", $1);
+				$$ = new ASTnode("type", "POST_DECREMENT");
+				$$->Set("lvalue", $1);
 			}
 	| primary	{	
 					std::cout << ("Primary\n");
@@ -298,7 +292,7 @@ primary : lvalue
 	| LEFT_PARENTHESIS funcdef RIGHT_PARENTHESIS	
 				{ 
 					std::cout << ("(function definition)\n");
-					$$ = new ASTnode("type", "PARENTHESES");
+					$$ = new ASTnode("type", "PARENTHESES_funcdef");
 					$$->Set("funcdef", $2);
 				}
 	| const	{
@@ -311,25 +305,28 @@ lvalue : IDENT
 			{
 				std::cout << ("ID\n");
 				$$ = new ASTnode("type", "var");
-				$$->Set("ID", $1);
+				$$->Set("ID", *$1);
+				delete($1); 
 			}
 	| LOCAL IDENT	
 			{
 				std::cout << ("Local ID\n");
-				$$ = new ASTnode("type", "localVar");					// den einai sigoyrh oti xreiazetai na ta diaxwrisw
-				$$->Set("ID", $2);
+				$$ = new ASTnode("type", "localVar");					
+				$$->Set("ID", *$2);
+				delete($2); 
 			}
 	| SCOPE IDENT	
 			{
 				std::cout << ("::ID\n");
-				$$ = new ASTnode("type", "scopeVar");					//   ::?? --> global?
-				$$->Set("ID", $2);
+				$$ = new ASTnode("type", "scopeVar");		
+				$$->Set("ID", *$2);
+				delete($2); 
 			}
 	| member	{ 
 					std::cout << ("member\n");
-					//$$ = $1; 
-					$$ = new ASTnode("type", "member");					// gia na exw ola ta members katw apo ena node(type) (alliws den xreiazetai kai kanw thn panw grammh) 
-					$$->Set("value", $1);
+					$$ = $1; 
+					//$$ = new ASTnode("type", "member");					// gia na exw ola ta members katw apo ena node(type) (alliws den xreiazetai kai kanw thn panw grammh) 
+					//$$->Set("value", $1);
 				}
 	;
 
@@ -338,15 +335,16 @@ member : lvalue DOT IDENT
 					std::cout << ("lvalue dot ident\n");
 					$$ = new ASTnode("type", "DOT");
 					$$->Set("lvalue", $1);
-					ASTnode* varNode = new ASTnode("type", "memberVar");					// den einai sigoyrh oti xreiazetai na ta diaxwrisw
-					varNode->Set("ID", $3);
+					ASTnode* varNode = new ASTnode("type", "member_lvalueVar");					// den einai sigoyrh oti xreiazetai na ta diaxwrisw
+					varNode->Set("ID", *$3);
+					delete($3); 
 					$$->Set("memberVar", varNode);						//???
 				
 				}
 	| lvalue LEFT_SQUARE_BRACKET expr RIGHT_SQUARE_BRACKET 
 				{
 					std::cout << ("lvalue dot ident\n");
-					$$ = new ASTnode("type", "SQUARE_BRACKETS");
+					$$ = new ASTnode("type", "member_lvalueBrackets");
 					$$->Set("lvalue", $1);
 					$$->Set("expr", $3);
 				}
@@ -355,67 +353,189 @@ member : lvalue DOT IDENT
 					std::cout << ("call dot ident\n");
 					$$ = new ASTnode("type", "DOT");
 					$$->Set("call", $1);
-					ASTnode* varNode = new ASTnode("type", "memberVar");					// den einai sigoyrh oti xreiazetai na ta diaxwrisw
-					varNode->Set("ID", $3);
+					ASTnode* varNode = new ASTnode("type", "member_callVar");					// den einai sigoyrh oti xreiazetai na ta diaxwrisw
+					varNode->Set("ID", *$3);
+					delete($3); 
 					$$->Set("memberVar", varNode);
 				}
 	| call LEFT_SQUARE_BRACKET expr RIGHT_SQUARE_BRACKET
 				{
 					std::cout << ("[expr]\n");
-					$$ = new ASTnode("type", "SQUARE_BRACKETS");
+					$$ = new ASTnode("type", "member_callBrackets");
 					$$->Set("call", $1);
 					$$->Set("expr", $3);
 				}
 	;
 
-call : call LEFT_PARENTHESIS argList RIGHT_PARENTHESIS {std::cout << ("call(argList)\n");}
-	| lvalue callsuffix {std::cout << ("lvalue callsufix\n");}
-	| LEFT_PARENTHESIS funcdef RIGHT_PARENTHESIS LEFT_PARENTHESIS argList RIGHT_PARENTHESIS {std::cout << ("(funcdef)(argList)\n");}
-	;
-
-callsuffix : normcall {std::cout << ("normcall\n");}
-	| methodcall {std::cout << ("methodcall\n");}
-	;
-
-normcall: LEFT_PARENTHESIS argList RIGHT_PARENTHESIS {std::cout << ("(argList)\n");}
-		;
-
-methodcall : DOUBLE_DOT IDENT LEFT_PARENTHESIS argList RIGHT_PARENTHESIS {std::cout << ("..ident(argList)\n");}
-			;
-
-arg : expr { std::cout << "expr\n"; } 
-	| IDENT COLON expr { std::cout << "ID : expr\n"; } 
-	;
-
-argList : arg { std::cout << "arg\n"; }	
-	| argList COMMA arg { std::cout << "argList, arg\n"; }
-	| { std::cout << "empty argList\n"; }
-	;
-
-elist :  expr {std::cout << ("expression\n");}
-	| elist COMMA expr  {std::cout << ("elist, expression\n");}
-	|  {std::cout << ("empty (elist)\n");}
-	;
-
-objectdef : LEFT_SQUARE_BRACKET elist RIGHT_SQUARE_BRACKET 	{std::cout << ("[elist]\n");}
-		| LEFT_SQUARE_BRACKET indexed RIGHT_SQUARE_BRACKET	{std::cout << ("[indexed]\n");}
-		;
-
-indexed : indexedelem {std::cout << ("indexedelem\n");}
-	| indexed COMMA indexedelem	{std::cout << ("indexedelem, intexedelem\n");}
-	//|   {std::cout << ("empty (indexed)\n");}
-	;
-
-indexedelem : LEFT_BRACKET expr COLON expr RIGHT_BRACKET  {std::cout << ("{ expression : expression }\n");
+call : call LEFT_PARENTHESIS argList RIGHT_PARENTHESIS 
+				{
+					std::cout << ("call(argList)\n");
+					$$ = new ASTnode("type", "multiCall");
+					$$->Set("call", $1);
+					$$->Set("argList", $3);
 				}
+	| lvalue callsuffix
+				{
+					std::cout << ("lvalue callsufix\n");
+					$$ = new ASTnode("type", "lvalueCall");
+					$$->Set("lvalue", $1);
+				}
+	| LEFT_PARENTHESIS funcdef RIGHT_PARENTHESIS LEFT_PARENTHESIS argList RIGHT_PARENTHESIS 
+				{
+					std::cout << ("(funcdef)(argList)\n");
+					$$ = new ASTnode("type", "funcdefCall");
+					$$->Set("funcdef", $2);
+					$$->Set("argList", $5);
+				}
+	;
+
+callsuffix : normcall 
+				{
+					std::cout << ("normcall\n");
+					$$ = $1;
+				}
+	| methodcall 
+				{
+					std::cout << ("methodcall\n");
+					$$ = $1; 
+				}
+	;
+
+normcall: LEFT_PARENTHESIS argList RIGHT_PARENTHESIS 
+			{
+				std::cout << ("(argList)\n");
+				$$ = new ASTnode("type", "normcall");
+				$$->Set("argList", $2);
+			}
 			;
 
-tmp_block: tmp_block stmt 
-		| {}
+methodcall : DOUBLE_DOT IDENT LEFT_PARENTHESIS argList RIGHT_PARENTHESIS 
+			{
+				std::cout << ("..ident(argList)\n");
+				$$ = new ASTnode("type", "methodcall");
+				$$->Set("ID", $2); 
+				$$->Set("argList", $4); 
+			}
+			;
+
+arg : expr	{ 
+				std::cout << "expr\n";
+				$$ = $1;
+			} 
+	| IDENT COLON expr
+			{ 
+				std::cout << "ID : expr\n";
+				$$ = new ASTnode("type", "namedParam");
+				$$->Set("expr", $3);
+				$$->Set("ID", *$1);
+				delete($1);
+			} 
+			;
+
+argList : arg 
+			{ 
+				//std::cout << "arg  " << $1->GetValue("ID")->GetNumberValue() << std::endl ;
+				$$ = new ASTnode("type", "argList");
+				$$->Set("numOfArg", 1.0);
+				$$->Set("arg1", $1);
+			}	
+	| argList COMMA arg 
+			{
+				//std::cout << "argList, arg "<< $3->GetValue("ID")->GetNumberValue() << std::endl;
+				$$ = $1;
+				double numofArgs = $$->GetValue("numOfArg")->GetNumberValue();
+				numofArgs++;
+				$$->Set(std::string("arg") + std::to_string((int)numofArgs), $3);
+				$$->Set("numOfArg", numofArgs);
+			}
+	|		{
+				std::cout << "empty argList\n";
+				$$ = new ASTnode("type", "EmptyArgList");
+			}
+	;
+
+elist :  expr 
+			{
+				std::cout << ("expression\n");
+				$$ = new ASTnode("type", "elist");
+				$$->Set("numOfExpr", 1.0);
+				$$->Set("expr1", $1);
+			}
+	| elist COMMA expr  
+			{
+				std::cout << ("elist, expression\n");
+				$$ = $1;
+				double numOfExpr = $$->GetValue("numOfExpr")->GetNumberValue();
+				numOfExpr++;
+				$$->Set(std::string("expr") + std::to_string((int)numOfExpr), $3);
+				$$->Set("numOfExpr", numOfExpr);
+			}
+	|		{
+				std::cout << ("empty (elist)\n");
+				$$ = new ASTnode("type", "EmptyElist");
+			}
+	;
+
+objectdef : LEFT_SQUARE_BRACKET elist RIGHT_SQUARE_BRACKET 
+			{
+				std::cout << ("[elist]\n");
+				$$ = new ASTnode("type", "elist_objectdef");
+				$$->Set("elist", $2);
+			}
+		| LEFT_SQUARE_BRACKET indexed RIGHT_SQUARE_BRACKET	
+			{
+				std::cout << ("[indexed]\n");
+				$$ = new ASTnode("type", "indexed_objectdef");
+				$$->Set("indexed", $2);
+			}
+			;
+
+indexed : indexedelem
+			{
+				std::cout << ("indexedelem\n");
+				$$ = new ASTnode("type", "indexed");
+				$$->Set("numOfElems", 1.0);
+				$$->Set("elem1", $1); 
+			}
+	| indexed COMMA indexedelem	
+			{
+				std::cout << ("indexedelem, intexedelem\n");
+				$$ = $1;
+				double numOfElems = $$->GetValue("numOfElems")->GetNumberValue();
+				numOfElems++;
+				$$->Set(std::string("elem") + std::to_string((int)numOfElems), $3);
+				$$->Set("numOfElems", numOfElems);
+			}
+			;
+
+indexedelem : LEFT_BRACKET expr COLON expr RIGHT_BRACKET  
+				{
+					std::cout << ("{ expression : expression }\n");
+					$$ = new ASTnode("type", "indexedelem");
+					$$->Set("keyExpr", $2);
+					$$->Set("valueExpr", $4);
+				}
+				;
+
+tmp_block: tmp_block stmt
+				{
+					$$ = $1;
+					double numOfStmt = $$->GetValue("numOfStmt")->GetNumberValue();
+					numOfStmt++;
+					$$->Set(std::string("stmt") + std::to_string((int)numOfStmt), $2);
+					$$->Set("numOfStmt", numOfStmt);
+				}
+		|		{ 
+					$$ = new ASTnode("type", "block");
+					$$->Set("numOfStmt", 0.0);
+				}
 		;
 
-block : LEFT_BRACKET tmp_block RIGHT_BRACKET{ std::cout << ("{ stmt }\n");
-													  }
+block : LEFT_BRACKET tmp_block RIGHT_BRACKET
+				{
+					std::cout << ("{ stmt }\n");
+					$$ = $2; 
+				}
 		;
 
 funcdef : FUNCTION IDENT 
@@ -426,14 +546,21 @@ funcdef : FUNCTION IDENT
 			LEFT_PARENTHESIS idlist RIGHT_PARENTHESIS block
 				{
 					std::cout << ("function id(idlist) block\n");
+					$$ = new ASTnode("type", "funcdef");
+					$$->Set("ID", $2);
+					$$->Set("idlist", $5);			//prosoxh an vgalw panq action
+					$$->Set("block", $7);
 				}
 		| FUNCTION 
 				{
-				std::cout << ("function\n");				
+					std::cout << ("function\n");				
 				}
 			LEFT_PARENTHESIS idlist RIGHT_PARENTHESIS block
 				{
 					std::cout << ("function (idlist) block\n");
+					$$ = new ASTnode("type", "AnonymousFuncdef");
+					$$->Set("idlist", $4);			//prosoxh an vgalw panq action
+					$$->Set("block", $6);
 				}
 		; 
 
@@ -450,7 +577,8 @@ const : INTEGER {
 		| STRING {
 					std::cout << ("String\n");
 					$$ = new ASTnode("type", "stringConst");
-					$$->Set("value", $1);
+					$$->Set("value", *$1);
+					delete($1);
 				}
 		| NIL 	{
 					std::cout << ("NIL\n");
@@ -459,45 +587,68 @@ const : INTEGER {
 		| TRUE 	{
 					std::cout << ("TRUE\n");
 					$$ = new ASTnode("type", "boolConst");
-					$$->Set("value", $1);
+					$$->Set("value", true);
 				}
 		| FALSE {
 					std::cout << ("FALSE\n");
 					$$ = new ASTnode("type", "boolConst");
-					$$->Set("value", $1);
+					$$->Set("value", false);
 				}
 		;
 
 formal: IDENT 
 		{
 			std::cout << ("id list\n");
+			$$ = new ASTnode("type", "param");
+			$$->Set("ID", $1);
 		}
 	
 	| IDENT ASSIGN expr
 		{
 			std::cout << ("id =  expr\n");
+			$$ = new ASTnode("type", "optionalParam");
+			$$->Set("ID", $1);
+			$$->Set("expr", $3);
 		}
 	;
 
 
 idlist : formal 
 		{
-			std::cout << ("formal\n");							
-		}
-	| idlist COMMA formal  
-		{
-			std::cout << ("idlist, id\n");	
-		}
-	|  {std::cout << ("Empty (idlist)\n");}
-	;
+			std::cout << ("formal\n");
+			$$ = new ASTnode("type", "idlist");
+			$$->Set("numOfParams", 1.0);
+			$$->Set("param1", $1); 
+			}
+	| idlist COMMA formal	
+			{
+				std::cout << ("idlist, id\n");	
+				$$ = $1;
+				double numOfParams = $$->GetValue("numOfParams")->GetNumberValue();
+				numOfParams++;
+				$$->Set(std::string("param") + std::to_string((int)numOfParams), $3);
+				$$->Set("numOfParams", numOfParams);
+			}
+	|		{
+				std::cout << ("Empty (idlist)\n");
+				$$ = new ASTnode("type", "EmptyIdlist");
+			}
+			;
 
 ifstmt : IF LEFT_PARENTHESIS expr RIGHT_PARENTHESIS stmt 
 			{
 				std::cout << ("IF (expression) stmt\n");
+				$$ = new ASTnode("type", "ifstmt");
+				$$->Set("expr", $3);					
+				$$->Set("stmt", $5);
+
 			}
 		| ifstmt ELSE stmt 
 			{
 				std::cout << ("ifstmt ELSE stmt\n");
+				$$ = new ASTnode("type", "if_elsestmt");
+				$$->Set("ifstmt", $1);					
+				$$->Set("elsestmt", $3);
 			}
 			;
 
@@ -537,7 +688,7 @@ returnstmt : RETURN SEMICOLON
 					$$ = new ASTnode("type", "RETURN");
 					$$->Set("expr", $2);
 				}
-		;
+				;
 
 
 %%

@@ -11,7 +11,6 @@
 #define Environment Object
 
 class Object {
-	std::string type;
 	map_t symbols;
 
 	public:
@@ -20,19 +19,20 @@ class Object {
 		Object(std::string key, double value);
 		Object(std::string key, std::string value);
 		Object(std::string key, Object* value);
-		//auto& GetValue(std::string& key);
-
-		void Set(std::string key, bool value);
-		void Set(std::string key, double value);
-		void Set(std::string key, std::string value);
-		void Set(std::string key, Object* value);
-
+		
 		Value* GetValue(std::string key);
 
 		bool ContainsKey(std::string key);
 
 		void PrintMap();
 
+		template <class T>
+		void Set(std::string key, T value) {
+			if (symbols[key])
+				symbols[key]->Set(value);
+			else
+				symbols[key] = new Value(value);
+		}
 };
 
 
