@@ -9,7 +9,7 @@
 	#include "parser.hpp"
 	#include "scanner.h"
 
-	int yyerror (AST* root, yyscan_t scanner, const char* yaccProvidedMessage);
+	int yyerror (AST* ast, yyscan_t scanner, const char* yaccProvidedMessage);
 %}
 
 %code requires {
@@ -28,7 +28,7 @@
 %error-verbose
 %pure-parser
 %lex-param {void * scanner}
-%parse-param {AST * root}
+%parse-param {AST * ast}
 %parse-param {void * scanner}
 
 %start program
@@ -82,7 +82,7 @@ program : program stmt
 				std::cout << ("Program\n");
 				$$ = new ASTnode("type", "program");
 				$$->Set("numOfStmt", 0.0);
-				root = new AST($$);
+				ast->SetRoot($$);
 				std::cout << "program Fisnish\n";
 			}
 		;
@@ -687,7 +687,7 @@ returnstmt : RETURN SEMICOLON
 
 %%
 
-int yyerror(AST* root, yyscan_t scanner, const char *yaccProvidedMessage){
+int yyerror(AST* ast, yyscan_t scanner, const char *yaccProvidedMessage){
 	std::cout  << yaccProvidedMessage << ": at line " << yyget_lineno(scanner) << " before token : " << yyget_text(scanner) << std::endl;
 	std::cout << "INPUT NOT VALID \n";
 	return 0;

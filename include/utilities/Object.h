@@ -18,6 +18,7 @@ class Object {
 		Object(std::string key, bool value);
 		Object(std::string key, double value);
 		Object(std::string key, std::string value);
+		Object(std::string key, const char * value);
 		Object(std::string key, Object* value);
 		
 		Value& GetValue(std::string key);

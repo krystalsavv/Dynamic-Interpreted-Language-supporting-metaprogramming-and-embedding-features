@@ -30,12 +30,9 @@ int main(int argc,char** argv){
 	} else {
 		yyset_in(stdin, scanner);
 	}
-	AST* ast = nullptr; 
+	AST* ast = new AST(); 
 	yyparse(ast, scanner);
 	yylex_destroy(scanner);
 
-	/*Object* obj = new Object("kato",5);
-	Object* obj1 = new Object("obj",obj);
-	obj1->PrintMap();*/
 	return 0;
 }

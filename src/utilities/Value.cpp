@@ -14,6 +14,10 @@ Value::Value(std::string value) {
 	variant = value;
 }
 
+Value::Value(const char * value) {
+	variant = std::string(value);
+}
+
 Value::Value( Object* value) {
 	variant = value;
 }

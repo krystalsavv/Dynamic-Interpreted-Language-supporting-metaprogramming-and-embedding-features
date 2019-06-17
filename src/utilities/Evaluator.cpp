@@ -1,7 +1,7 @@
 #include "utilities/Evaluator.h"
 
-std::map<std::string, Value(Evaluator::*)(ASTnode*) > IntializeDispatcher() {
-	std::map<std::string, Value(Evaluator::*)(ASTnode*) > table;
+std::map<std::string, Value(Evaluator::*)(ASTnode*)> Evaluator::IntializeDispatcher() {
+	std::map<std::string, Value(Evaluator::*)(ASTnode*)> table;
 	table["ADD"] = &Evaluator::EvaluateAddExpr;
 	return table;
 }

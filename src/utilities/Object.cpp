@@ -2,23 +2,24 @@
 
 
 Object::Object(std::string key, bool value) {
-	Value* val = new Value(value);
-	symbols[key] = val;
+	symbols[key] = value;
 }
 
 Object::Object(std::string key, double value) {
-	Value* val = new Value(value);
-	symbols[key] = val;
+	symbols[key] = value;
 }
 
 Object::Object(std::string key, std::string value) {
-	Value* val = new Value(value);
-	symbols[key] = val;
+	symbols[key] = value;
 }
 
+Object::Object(std::string key, const char* value) {
+	symbols[key] = value;
+}
+
+
 Object::Object(std::string key, Object* value) {
-	Value* val = new Value(value);
-	symbols[key] = val;
+	symbols[key] = value;
 }
 
 
