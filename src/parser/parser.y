@@ -574,10 +574,6 @@ const : INTEGER {
 					$$->Set("value", *$1);
 					delete($1);
 				}
-		| NIL 	{
-					std::cout << ("NIL\n");
-					$$ = new ASTnode("type", "NIL");
-				}
 		| TRUE 	{
 					std::cout << ("TRUE\n");
 					$$ = new ASTnode("type", "boolConst");
@@ -587,6 +583,10 @@ const : INTEGER {
 					std::cout << ("FALSE\n");
 					$$ = new ASTnode("type", "boolConst");
 					$$->Set("value", false);
+				}
+		| NIL 	{
+					std::cout << ("NIL\n");
+					$$ = new ASTnode("type", "NIL");
 				}
 		;
 
