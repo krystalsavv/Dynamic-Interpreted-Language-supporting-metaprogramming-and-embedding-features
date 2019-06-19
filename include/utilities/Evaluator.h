@@ -46,13 +46,14 @@ private:
 	Value EvaluateOrExpr(ASTnode* node);
 
 	//stmt
-	/*Value EvaluateIfStmt(ASTnode* node);
+	Value EvaluateIfStmt(ASTnode* node);
+	Value EvaluateIfElseStmt(ASTnode* node);
 	Value EvaluateWhileStmt(ASTnode* node);
 	Value EvaluateForStmt(ASTnode* node);
-	Value EvaluateReturnStmt(ASTnode* node);*/
+	//Value EvaluateReturnStmt(ASTnode* node);
 	//Value EvaluateBreak(ASTnode* node);
 	//Value EvaluateContinue(ASTnode* node);
-	//Value EvaluateSemicolon(ASTnode* node);
+	Value EvaluateSemicolon(ASTnode* node);
 
 
 };

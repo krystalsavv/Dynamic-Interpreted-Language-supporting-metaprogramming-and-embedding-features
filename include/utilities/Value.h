@@ -13,7 +13,6 @@ class Value
 {
 
 	variant_t variant;
-	bool toBool();
 
 public:
 	Value() = default;
@@ -27,6 +26,8 @@ public:
 	double& GetNumberValue();
 	std::string& GetStringValue();
 	Object* GetObjectValue();
+	
+	bool toBool();
 
 	bool isBool();
 	bool isNumber();

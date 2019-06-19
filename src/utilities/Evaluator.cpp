@@ -220,11 +220,40 @@ Value Evaluator::EvaluateOrExpr(ASTnode* node) {
 
 
 // stmt
-//Value Evaluator::EvaluateIfStmt(ASTnode* node){
+Value Evaluator::EvaluateIfStmt(ASTnode* node){
+	if (Evaluate(node->GetValue("condition").GetObjectValue()).toBool()) {
+		auto tmp = Evaluate(node->GetValue("stmt").GetObjectValue());
+		return true;
+	}
+	return false;
+}
+
+Value Evaluator::EvaluateIfElseStmt(ASTnode* node) {
+	if (!Evaluate(node->GetValue("ifstmt").GetObjectValue()).toBool()) {
+		auto tmp = Evaluate(node->GetValue("elsestmt").GetObjectValue());
+	}
+	return false;					// TODO: nil
+}
+
+Value Evaluator::EvaluateWhileStmt(ASTnode* node) {
+	while (Evaluate(node->GetValue("condition").GetObjectValue()).toBool()) {
+		auto tmp = Evaluate(node->GetValue("stmt").GetObjectValue());
+	}
+	return false;					// TODO: nil
+}
+
+Value Evaluator::EvaluateForStmt(ASTnode* node) {
+	Value tmp;
+	for ( tmp = Evaluate(node->GetValue("init_elist").GetObjectValue()); 
+		  Evaluate(node->GetValue("condition").GetObjectValue()).toBool(); 
+		  tmp = Evaluate(node->GetValue("elist").GetObjectValue()) ) {
+		tmp = Evaluate(node->GetValue("stmt").GetObjectValue());
+	}
+	return false;					// TODO: nil
+}
+
+//Value Evaluator::EvaluateReturnStmt(ASTnode* node) {
 //
 //}
-//Value Evaluator::EvaluateWhileStmt(ASTnode* node);
-//Value Evaluator::EvaluateForStmt(ASTnode* node);
-//Value Evaluator::EvaluateReturnStmt(ASTnode* node);
 
-//Value Evaluator::EvaluateSemicolon(ASTnode* node) {};
+Value Evaluator::EvaluateSemicolon(ASTnode* node) { return false; };	// TODO: nil

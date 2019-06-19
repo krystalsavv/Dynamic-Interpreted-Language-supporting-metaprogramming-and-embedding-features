@@ -633,7 +633,7 @@ ifstmt : IF LEFT_PARENTHESIS expr RIGHT_PARENTHESIS stmt
 			{
 				std::cout << ("IF (expression) stmt\n");
 				$$ = new ASTnode("type", "ifstmt");
-				$$->Set("expr", $3);					
+				$$->Set("condition", $3);					
 				$$->Set("stmt", $5);
 
 			}
@@ -653,7 +653,7 @@ whilestmt : WHILE
 			 LEFT_PARENTHESIS expr RIGHT_PARENTHESIS stmt 
 			{
 				$$ = new ASTnode("type", "whilestmt");
-				$$->Set("expr", $4);						// SOS: change if the action removed!!!
+				$$->Set("condition", $4);						// SOS: change if the action removed!!!
 				$$->Set("stmt", $6);	
 			}
 			;
@@ -665,9 +665,10 @@ forstmt : FOR
 			LEFT_PARENTHESIS elist SEMICOLON expr SEMICOLON elist RIGHT_PARENTHESIS stmt
 			{
 				$$ = new ASTnode("type", "forstmt");
-				$$->Set("elist1", $4);						// SOS: change if the action removed!!!
-				$$->Set("expr", $6);
-				$$->Set("elist2", $8);	
+				$$->Set("init_elist", $4);						// SOS: change if the action removed!!!
+				$$->Set("condition", $6);
+				$$->Set("elist", $8);
+				$$->Set("stmt", $10);	
 			}
 			;
 
