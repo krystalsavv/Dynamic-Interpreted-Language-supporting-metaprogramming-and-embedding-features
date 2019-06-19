@@ -111,12 +111,12 @@ stmt : expr SEMICOLON	{
 	| BREAK SEMICOLON	{
 							std::cout << ("BREAK\n");
 							$$ = new ASTnode();
-							$$->Set("type", "BREAK");
+							$$->Set("type", "break");
 						}
 	| CONTINUE SEMICOLON	{
 								std::cout << ("CONTINUE\n");
 								$$ = new ASTnode();
-								$$->Set("type", "CONTINUE");
+								$$->Set("type", "continue");
 							}
 	| block 				{
 								std::cout << ("Block\n");
@@ -129,86 +129,86 @@ stmt : expr SEMICOLON	{
 	| SEMICOLON				{	
 								std::cout << ("Semicolon ;\n");
 								$$ = new ASTnode();
-								$$->Set("type", "SEMICOLON");
+								$$->Set("type", "semicolon");
 							}
 	;
 
 expr :	 assignexpr		{ $$ = $1; }
 	| expr PLUS expr	{
 							std::cout << ("expression + expression \n"); 
-							$$ = new ASTnode("type", "ADD");
+							$$ = new ASTnode("type", "add");
 							$$->Set("left", $1);
 							$$->Set("right", $3);
 						}
 	| expr MINUS expr	{
 							std::cout << ("expression - expression \n"); 
-							$$ = new ASTnode("type", "SUB");
+							$$ = new ASTnode("type", "sub");
 							$$->Set("left", $1);
 							$$->Set("right", $3);
 						}
 	| expr MULTI expr	{
 							std::cout << ("expression * expression \n"); 
-							$$ = new ASTnode("type", "MUL");
+							$$ = new ASTnode("type", "mul");
 							$$->Set("left", $1);
 							$$->Set("right", $3);
 						}
 	| expr DIV expr		{
 							std::cout << ("expression / expression \n"); 
-							$$ = new ASTnode("type", "DIV");
+							$$ = new ASTnode("type", "div");
 							$$->Set("left", $1);
 							$$->Set("right", $3);
 						}
 	| expr MOD expr		{
 							std::cout << ("expression %% expression \n"); 
-							$$ = new ASTnode("type", "MOD");
+							$$ = new ASTnode("type", "mod");
 							$$->Set("left", $1);
 							$$->Set("right", $3);
 						}
 	| expr GREATER expr	{
 							std::cout << ("expression > expression \n");
-							$$ = new ASTnode("type", "GREATER");
+							$$ = new ASTnode("type", "greater");
 							$$->Set("left", $1);
 							$$->Set("right", $3);
 						}
 	| expr GREATER_OR_EQUAL expr	{
 										std::cout << ("expression >= expression \n");
-										$$ = new ASTnode("type", "GREATER_OR_EQUAL");
+										$$ = new ASTnode("type", "greater_or_equal");
 										$$->Set("left", $1);
 										$$->Set("right", $3);
 									}
 	| expr LESS expr	{
 							std::cout << ("expression  < expression \n");
-							$$ = new ASTnode("type", "LESS");
+							$$ = new ASTnode("type", "less");
 							$$->Set("left", $1);
 							$$->Set("right", $3);
 						}
 	| expr LESS_OR_EQUAL expr		{
 										std::cout << ("expression <= expression \n" ); 
-										$$ = new ASTnode("type", "LESS_OR_EQUAL");
+										$$ = new ASTnode("type", "less_or_equal");
 										$$->Set("left", $1);
 										$$->Set("right", $3);
 									}
 	| expr EQUAL expr	{
 							std::cout << ("expression == expression \n"); 
-							$$ = new ASTnode("type", "EQUAL");
+							$$ = new ASTnode("type", "equal");
 							$$->Set("left", $1);
 							$$->Set("right", $3);
 						}
 	| expr NOT_EQUAL expr	{
 								std::cout << ("expression != expression \n");
-								$$ = new ASTnode("type", "NOT_EQUAL");
+								$$ = new ASTnode("type", "not_equal");
 								$$->Set("left", $1);
 								$$->Set("right", $3);
 							}
 	| expr AND expr		{
 							std::cout << ("expression && expression \n");
-							$$ = new ASTnode("type", "AND");
+							$$ = new ASTnode("type", "and");
 							$$->Set("left", $1);
 							$$->Set("right", $3);
 						}
 	| expr OR expr		{
 							std::cout << ("expression || expression \n");
-							$$ = new ASTnode("type", "OR");
+							$$ = new ASTnode("type", "or");
 							$$->Set("left", $1);
 							$$->Set("right", $3);
 						}
@@ -222,43 +222,43 @@ expr :	 assignexpr		{ $$ = $1; }
 term :	 LEFT_PARENTHESIS expr RIGHT_PARENTHESIS	
 			{
 				std::cout << ("( expression )\n");
-				$$ = new ASTnode("type", "PARENTHESES");
+				$$ = new ASTnode("type", "parentheses");
 				$$->Set("expr", $2);
 			}
 	| MINUS expr %prec UMINUS	
 			{
 				std::cout << ("- expression\n");
-				$$ = new ASTnode("type", "UMINUS");
+				$$ = new ASTnode("type", "uminus");
 				$$->Set("expr", $2);
 			}
 	| NOT expr
 			{
 				std::cout << ("!expression\n");
-				$$ = new ASTnode("type", "NOT");
+				$$ = new ASTnode("type", "not");
 				$$->Set("expr", $2);
 			}
 	| INCREMENT lvalue
 			{
 				std::cout << ("++ lvalue\n");
-				$$ = new ASTnode("type", "PRE_INCREMENT");
+				$$ = new ASTnode("type", "pre_increment");
 				$$->Set("lvalue", $2);
 			}
 	| lvalue INCREMENT 
 			{
 				std::cout << ("lvalue ++\n");
-				$$ = new ASTnode("type", "POST_INCREMENT");
+				$$ = new ASTnode("type", "post_increment");
 				$$->Set("lvalue", $1);
 			}
 	| DECREMENT lvalue
 			{
 				std::cout << ("-- lvalue\n");
-				$$ = new ASTnode("type", "PRE_DECREMENT");
+				$$ = new ASTnode("type", "pre_decrement");
 				$$->Set("lvalue", $2);
 			}
 	| lvalue DECREMENT
 			{
 				std::cout << ("lvalue --\n");
-				$$ = new ASTnode("type", "POST_DECREMENT");
+				$$ = new ASTnode("type", "post_decrement");
 				$$->Set("lvalue", $1);
 			}
 	| primary	{	
@@ -292,7 +292,7 @@ primary : lvalue
 	| LEFT_PARENTHESIS funcdef RIGHT_PARENTHESIS	
 				{ 
 					std::cout << ("(function definition)\n");
-					$$ = new ASTnode("type", "PARENTHESES_funcdef");
+					$$ = new ASTnode("type", "parentheses_funcdef");
 					$$->Set("funcdef", $2);
 				}
 	| const	{
@@ -552,7 +552,7 @@ funcdef : FUNCTION IDENT
 			LEFT_PARENTHESIS idlist RIGHT_PARENTHESIS block
 				{
 					std::cout << ("function (idlist) block\n");
-					$$ = new ASTnode("type", "AnonymousFuncdef");
+					$$ = new ASTnode("type", "anonymousFuncdef");
 					$$->Set("idlist", $4);			//prosoxh an vgalw panq action
 					$$->Set("block", $6);
 				}
@@ -586,7 +586,7 @@ const : INTEGER {
 				}
 		| NIL 	{
 					std::cout << ("NIL\n");
-					$$ = new ASTnode("type", "NIL");
+					$$ = new ASTnode("type", "nil");
 				}
 		;
 
@@ -625,7 +625,7 @@ idlist : formal
 			}
 	|		{
 				std::cout << ("Empty (idlist)\n");
-				$$ = new ASTnode("type", "EmptyIdlist");
+				$$ = new ASTnode("type", "emptyIdlist");
 			}
 			;
 
@@ -675,12 +675,12 @@ forstmt : FOR
 returnstmt : RETURN SEMICOLON 
 				{
 					std::cout << ("RETURN;\n");
-					$$ = new ASTnode("type", "RETURN");
+					$$ = new ASTnode("type", "return");
 				}
 		| RETURN expr SEMICOLON 
 				{
 					std::cout << ("RETURN expression;\n");
-					$$ = new ASTnode("type", "RETURN");
+					$$ = new ASTnode("type", "return");
 					$$->Set("expr", $2);
 				}
 				;
