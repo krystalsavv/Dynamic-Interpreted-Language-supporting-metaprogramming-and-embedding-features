@@ -7,8 +7,11 @@
 
 
 #define map_t std::unordered_map<std::string, Value> 
-#define ASTnode Object
-#define Environment Object
+
+#define ASTnode					Object
+#define BlockEnvironment		Object
+#define FunctionEnvironment	Object
+#define ClosureEnvironment	Object
 
 class Object {
 	map_t symbols;
