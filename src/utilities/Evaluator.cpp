@@ -3,9 +3,9 @@
 std::map<std::string, Value(Evaluator::*)(ASTnode*)> Evaluator::IntializeDispatcher() {
 	std::map<std::string, Value(Evaluator::*)(ASTnode*)> table;
 	// term
-	table["PARENTHESES"] = &Evaluator::EvaluateParenthesis; 
-	table["UMINUS"] = &Evaluator::EvaluateUminus;
-	table["NOT"] = &Evaluator::EvaluateNot;
+	table["parentheses"] = &Evaluator::EvaluateParenthesis; 
+	table["uminus"] = &Evaluator::EvaluateUminus;
+	table["not"] = &Evaluator::EvaluateNot;
 	//table["PRE_INCREMENT"] = &Evaluator::EvaluatePreIncrement;
 	//table["POST_INCREMENT"] = &Evaluator::EvaluatePostIncrement;
 	//table["PRE_DECREMENT"] = &Evaluator::EvaluatePreDecrement;
@@ -14,24 +14,28 @@ std::map<std::string, Value(Evaluator::*)(ASTnode*)> Evaluator::IntializeDispatc
 	table["numConst"] = &Evaluator::EvaluateNumberConst;
 	table["stringConst"] = &Evaluator::EvaluateStringConst;
 	table["boolConst"] = &Evaluator::EvaluateBoolConst;
-	//table["NIL"] = &Evaluator::EvaluateNIL;
+	table["nil"] = &Evaluator::EvaluateNIL;
 	// expr
-	table["ADD"] = &Evaluator::EvaluateAddExpr;
-	table["SUB"] = &Evaluator::EvaluateSubExpr;
-	table["MUL"] = &Evaluator::EvaluateMulExpr;
-	table["DIV"] = &Evaluator::EvaluateDivExpr;
-	table["MOD"] = &Evaluator::EvaluateModExpr;
-	table["GREATER"] = &Evaluator::EvaluateGreaterExpr;
-	table["GREATER_OR_EQUAL"] = &Evaluator::EvaluateGreaterOrEqualExpr;
-	table["LESS"] = &Evaluator::EvaluateLessExpr;
-	table["LESS_OR_EQUAL"] = &Evaluator::EvaluateLessOrEqualExpr;
-	table["EQUAL"] = &Evaluator::EvaluateEqualExpr;
-	table["NOT_EQUAL"] = &Evaluator::EvaluateNotEqualExpr;
-	table["AND"] = &Evaluator::EvaluateAndExpr;
-	table["OR"] = &Evaluator::EvaluateOrExpr;
+	table["add"] = &Evaluator::EvaluateAddExpr;
+	table["sub"] = &Evaluator::EvaluateSubExpr;
+	table["mul"] = &Evaluator::EvaluateMulExpr;
+	table["div"] = &Evaluator::EvaluateDivExpr;
+	table["mod"] = &Evaluator::EvaluateModExpr;
+	table["greater"] = &Evaluator::EvaluateGreaterExpr;
+	table["greater_or_equal"] = &Evaluator::EvaluateGreaterOrEqualExpr;
+	table["less"] = &Evaluator::EvaluateLessExpr;
+	table["less_or_equal"] = &Evaluator::EvaluateLessOrEqualExpr;
+	table["equal"] = &Evaluator::EvaluateEqualExpr;
+	table["not_equal"] = &Evaluator::EvaluateNotEqualExpr;
+	table["and"] = &Evaluator::EvaluateAndExpr;
+	table["or"] = &Evaluator::EvaluateOrExpr;
 
 	//stmt
-
+	table["ifstmt"] = &Evaluator::EvaluateIfStmt;
+	table["if_elsestmt"] = &Evaluator::EvaluateIfElseStmt;
+	table["whilestmt"] = &Evaluator::EvaluateWhileStmt;
+	table["forstmt"] = &Evaluator::EvaluateForStmt;
+	table["semicolon"] = &Evaluator::EvaluateSemicolon;
 	return table;
 }
 
@@ -133,9 +137,9 @@ Value Evaluator::EvaluateBoolConst(ASTnode* node) {
 	return node->GetValue("value").GetBoolValue();
 }
 
-//Value Evaluator::EvaluateNIL(ASTnode* node) {			// TODO
-//	return nullptr;
-//}
+Value Evaluator::EvaluateNIL(ASTnode* node) {
+	return nullptr;
+}
 
 
 
@@ -194,13 +198,13 @@ Value Evaluator::EvaluateLessOrEqualExpr(ASTnode* node) {
 	return left <= right;
 }
 
-Value Evaluator::EvaluateEqualExpr(ASTnode* node) {
+Value Evaluator::EvaluateEqualExpr(ASTnode* node) {						// TODO: na elenxoume to object 
 	Value left = Evaluate(node->GetValue("left").GetObjectValue());
 	Value right = Evaluate(node->GetValue("right").GetObjectValue());
 	return left == right;
 }
 
-Value Evaluator::EvaluateNotEqualExpr(ASTnode* node) {
+Value Evaluator::EvaluateNotEqualExpr(ASTnode* node) {					// TODO: na elenxoume to object 
 	Value left = Evaluate(node->GetValue("left").GetObjectValue());
 	Value right = Evaluate(node->GetValue("right").GetObjectValue());
 	return left != right;
@@ -232,14 +236,14 @@ Value Evaluator::EvaluateIfElseStmt(ASTnode* node) {
 	if (!Evaluate(node->GetValue("ifstmt").GetObjectValue()).toBool()) {
 		auto tmp = Evaluate(node->GetValue("elsestmt").GetObjectValue());
 	}
-	return false;					// TODO: nil
+	return nullptr;
 }
 
 Value Evaluator::EvaluateWhileStmt(ASTnode* node) {
 	while (Evaluate(node->GetValue("condition").GetObjectValue()).toBool()) {
 		auto tmp = Evaluate(node->GetValue("stmt").GetObjectValue());
 	}
-	return false;					// TODO: nil
+	return nullptr;
 }
 
 Value Evaluator::EvaluateForStmt(ASTnode* node) {
@@ -249,11 +253,11 @@ Value Evaluator::EvaluateForStmt(ASTnode* node) {
 		  tmp = Evaluate(node->GetValue("elist").GetObjectValue()) ) {
 		tmp = Evaluate(node->GetValue("stmt").GetObjectValue());
 	}
-	return false;					// TODO: nil
+	return nullptr;
 }
 
 //Value Evaluator::EvaluateReturnStmt(ASTnode* node) {
 //
 //}
 
-Value Evaluator::EvaluateSemicolon(ASTnode* node) { return false; };	// TODO: nil
+Value Evaluator::EvaluateSemicolon(ASTnode* node) { return nullptr; };

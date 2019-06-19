@@ -2,7 +2,7 @@
 #include "utilities/Object.h"
 
 
-Value::Value( bool value) {
+Value::Value(bool value) {
 	variant = value;
 }
 
@@ -14,9 +14,9 @@ Value::Value(std::string value) {
 	variant = value;
 }
 
-Value::Value(const char * value) {
-	variant = std::string(value);
-}
+//Value::Value(const char * value) {
+//	variant = std::string(value);
+//}
 
 Value::Value( Object* value) {
 	variant = value;
