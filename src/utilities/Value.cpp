@@ -71,13 +71,15 @@ bool Value::toBool() {
 			return true;
 	}
 	else if (this->isObject()) {
-		return true;
+		if (this->GetObjectValue() == nullptr)
+			return false;
+		else
+			return true;
 	}
 	else if (this->isBool()) {
 		return this->GetBoolValue();
 	}
-	// TODO: nil,libfunc
-
+	// TODO: libfunc
 }
 
 void Value::PrintValue() {

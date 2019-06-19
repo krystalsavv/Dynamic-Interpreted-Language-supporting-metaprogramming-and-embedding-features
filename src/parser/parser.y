@@ -680,7 +680,7 @@ returnstmt : RETURN SEMICOLON
 		| RETURN expr SEMICOLON 
 				{
 					std::cout << ("RETURN expression;\n");
-					$$ = new ASTnode("type", "return");
+					$$ = new ASTnode("type", "return_value");
 					$$->Set("expr", $2);
 				}
 				;

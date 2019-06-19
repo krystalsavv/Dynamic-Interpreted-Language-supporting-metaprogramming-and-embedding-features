@@ -36,6 +36,9 @@ std::map<std::string, Value(Evaluator::*)(ASTnode*)> Evaluator::IntializeDispatc
 	table["whilestmt"] = &Evaluator::EvaluateWhileStmt;
 	table["forstmt"] = &Evaluator::EvaluateForStmt;
 	table["semicolon"] = &Evaluator::EvaluateSemicolon;
+	/*table["return"] = &Evaluator::EvaluateReturnStmt;
+	table["return_value"] = &Evaluator::EvaluateReturnValueStmt;*/
+	
 	return table;
 }
 
