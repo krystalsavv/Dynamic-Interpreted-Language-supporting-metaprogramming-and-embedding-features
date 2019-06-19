@@ -28,7 +28,7 @@ private:
 	Value EvaluateNumberConst(ASTnode* node);
 	Value EvaluateStringConst(ASTnode* node);
 	Value EvaluateBoolConst(ASTnode* node);
-	//Value EvaluateNIL(ASTnode* node);
+	Value EvaluateNIL(ASTnode* node);
 
 	// expr
 	Value EvaluateAddExpr(ASTnode* node);

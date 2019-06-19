@@ -14,7 +14,7 @@ Object::Object(std::string key, std::string value) {
 }
 
 Object::Object(std::string key, const char* value) {
-	symbols[key] = value;
+	symbols[key] = std::string(value);
 }
 
 

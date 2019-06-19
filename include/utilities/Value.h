@@ -19,7 +19,7 @@ public:
 	Value( bool value);
 	Value( double value);
 	Value(std::string value);
-	Value( const char * value);
+	//Value( const char * value);
 	Value( Object* value);
 
 	bool& GetBoolValue();
