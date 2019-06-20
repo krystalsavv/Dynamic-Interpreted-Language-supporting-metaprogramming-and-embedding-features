@@ -454,33 +454,33 @@ elist :  expr
 				std::cout << ("expression\n");
 				$$ = new ASTnode("type", "elist");
 				$$->Set("numOfExpr", 1.0);
-				$$->Set("expr1", $1);
+				$$->Set("0", $1);
 			}
 	| elist COMMA expr  
 			{
 				std::cout << ("elist, expression\n");
 				$$ = $1;
 				double numOfExpr = $$->GetValue("numOfExpr").GetNumberValue();
+				$$->Set(std::to_string((int)numOfExpr), $3);
 				numOfExpr++;
-				$$->Set(std::string("expr") + std::to_string((int)numOfExpr), $3);
 				$$->Set("numOfExpr", numOfExpr);
 			}
 	|		{
 				std::cout << ("empty (elist)\n");
-				$$ = new ASTnode("type", "EmptyElist");
+				$$ = new ASTnode("type", "emptyElist");
 			}
 	;
 
 objectdef : LEFT_SQUARE_BRACKET elist RIGHT_SQUARE_BRACKET 
 			{
 				std::cout << ("[elist]\n");
-				$$ = new ASTnode("type", "elist_objectdef");
+				$$ = new ASTnode("type", "elistObjectdef");
 				$$->Set("elist", $2);
 			}
 		| LEFT_SQUARE_BRACKET indexed RIGHT_SQUARE_BRACKET	
 			{
 				std::cout << ("[indexed]\n");
-				$$ = new ASTnode("type", "indexed_objectdef");
+				$$ = new ASTnode("type", "indexedObjectdef");
 				$$->Set("indexed", $2);
 			}
 			;

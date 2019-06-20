@@ -59,6 +59,13 @@ private:
 	//Value EvaluateContinue(ASTnode* node);
 	Value EvaluateSemicolon(ASTnode* node);
 
+	//elist
+	Value EvaluateElist(ASTnode* node);
+	Value EvaluateEmptyElist(ASTnode* node);
 	
+	//object
+	Value EvaluateElistObjectdef(ASTnode* node);
+	//Value EvaluateIndexedObjectdef(ASTnode* node);
+
 };
 
