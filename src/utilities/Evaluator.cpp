@@ -38,7 +38,15 @@ std::map<std::string, Value(Evaluator::*)(ASTnode*)> Evaluator::IntializeDispatc
 	table["semicolon"] = &Evaluator::EvaluateSemicolon;
 	/*table["return"] = &Evaluator::EvaluateReturnStmt;
 	table["return_value"] = &Evaluator::EvaluateReturnValueStmt;*/
+
+	//elist
+	table["elist"] = &Evaluator::EvaluateElist;
+	table["emptyElist"] = &Evaluator::EvaluateEmptyElist;
 	
+	//object
+	table["elistObjectdef"] = &EvaluateElistObjectdef;
+	//table["indexedObjectdef"] = &EvaluateIndexedObjectdef;
+
 	return table;
 }
 
@@ -264,3 +272,28 @@ Value Evaluator::EvaluateForStmt(ASTnode* node) {
 //}
 
 Value Evaluator::EvaluateSemicolon(ASTnode* node) { return nullptr; };
+
+
+//elist
+Value Evaluator::EvaluateElist(ASTnode* node) {
+	Object* elistMap = new Object(); 
+	double numOfExpr = node->GetValue("numOfExpr").GetNumberValue();
+	for (int i = 0; i < numOfExpr; i++) {
+		 elistMap->Set(std::to_string(i), Evaluate(node->GetValue(std::to_string(i)).GetObjectValue()));
+	}
+	return elistMap;
+}
+
+Value Evaluator::EvaluateEmptyElist(ASTnode* node) {
+	Object* emptyElistMap = new Object();
+	return emptyElistMap;
+}
+
+//object
+Value Evaluator::EvaluateElistObjectdef(ASTnode* node) {
+	return Evaluate(node->GetValue("elist").GetObjectValue());
+}
+
+//Value Evaluator::EvaluateIndexedObjectdef(ASTnode* node) {
+//	
+//}
