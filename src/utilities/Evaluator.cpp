@@ -1,4 +1,5 @@
 #include "utilities/Evaluator.h"
+#define nil (Object *)nullptr
 
 std::map<std::string, Value(Evaluator::*)(ASTnode*)> Evaluator::IntializeDispatcher() {
 	std::map<std::string, Value(Evaluator::*)(ASTnode*)> table;
@@ -141,7 +142,7 @@ Value Evaluator::EvaluateBoolConst(ASTnode* node) {
 }
 
 Value Evaluator::EvaluateNIL(ASTnode* node) {
-	return nullptr;
+	return nil;
 }
 
 
@@ -239,14 +240,14 @@ Value Evaluator::EvaluateIfElseStmt(ASTnode* node) {
 	if (!Evaluate(node->GetValue("ifstmt").GetObjectValue()).toBool()) {
 		auto tmp = Evaluate(node->GetValue("elsestmt").GetObjectValue());
 	}
-	return nullptr;
+	return nil;
 }
 
 Value Evaluator::EvaluateWhileStmt(ASTnode* node) {
 	while (Evaluate(node->GetValue("condition").GetObjectValue()).toBool()) {
 		auto tmp = Evaluate(node->GetValue("stmt").GetObjectValue());
 	}
-	return nullptr;
+	return nil;
 }
 
 Value Evaluator::EvaluateForStmt(ASTnode* node) {
@@ -256,11 +257,11 @@ Value Evaluator::EvaluateForStmt(ASTnode* node) {
 		  tmp = Evaluate(node->GetValue("elist").GetObjectValue()) ) {
 		tmp = Evaluate(node->GetValue("stmt").GetObjectValue());
 	}
-	return nullptr;
+	return nil;
 }
 
 //Value Evaluator::EvaluateReturnStmt(ASTnode* node) {
 //
 //}
 
-Value Evaluator::EvaluateSemicolon(ASTnode* node) { return nullptr; };
+Value Evaluator::EvaluateSemicolon(ASTnode* node) { return nil; };

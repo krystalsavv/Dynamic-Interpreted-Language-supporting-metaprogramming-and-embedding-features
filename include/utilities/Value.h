@@ -19,7 +19,7 @@ public:
 	Value( bool value);
 	Value( double value);
 	Value(std::string value);
-	//Value( const char * value);
+	Value( const char * value);
 	Value( Object* value);
 
 	bool& GetBoolValue();
@@ -39,8 +39,20 @@ public:
 	//template set
 	template <class T>
 	void  Set(T value) {
-		variant = value;
+		variant =value;
 	}
+
+	template <>
+	void  Set<const char *>(const char * value) {
+		variant = std::string(value);
+	}
+
+	//template <>
+	//void  Set<Value>(Value value) {
+	//	variant = std::string(value);
+	//}
+
+
 
 	//overloads
 	Value operator+(Value& right);

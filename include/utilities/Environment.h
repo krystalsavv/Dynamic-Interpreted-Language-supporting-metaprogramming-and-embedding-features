@@ -1,6 +1,10 @@
 #pragma once
 #include "utilities/Object.h"
 
+#define BlockEnvironment	Object
+#define FunctionEnvironment	Object
+#define ClosureEnvironment	Object
+
 class Environment
 {
 public:
@@ -14,6 +18,5 @@ public:
 
 private:
 	Object* currentEnv;
-
 };
 

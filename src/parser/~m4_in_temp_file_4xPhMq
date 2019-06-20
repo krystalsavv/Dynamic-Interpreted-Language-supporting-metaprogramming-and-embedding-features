@@ -1,0 +1,5033 @@
+m4_init()
+m4_define([b4_mergers], 
+[[]])
+
+m4_define([b4_symbol_numbers],
+[[0], [1], [2], [3], [4], [5], [6], [7], [8], [9], [10], [11], [12], [13], [14], [15], [16], [17], [18], [19], [20], [21], [22], [23], [24], [25], [26], [27], [28], [29], [30], [31], [32], [33], [34], [35], [36], [37], [38], [39], [40], [41], [42], [43], [44], [45], [46], [47], [48], [49], [50], [51], [52], [53], [54], [55], [56], [57], [58], [59], [60], [61], [62], [63], [64], [65], [66], [67], [68], [69], [70], [71], [72], [73], [74], [75], [76], [77], [78], [79], [80], [81], [82], [83], [84]])
+
+m4_define([b4_type_names],
+[[0, 1, 2, 7, 8, 52, 74, 75, 81, 83],
+[4, 5],
+[53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 76, 77, 78, 79, 80, 82, 84],
+[3, 6, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51]])
+
+m4_define([b4_actions], 
+[b4_case(2, [b4_syncline(73, [["parser.y"]])
+[    { 
+					std::cout << "stmt program" << std::endl;
+					]b4_lhs_value([[objectVal]])[ = ]b4_rhs_value(2, 1, [[objectVal]])[;
+					double numOfStmt = ]b4_lhs_value([[objectVal]])[->GetValue("numOfStmt").GetNumberValue();
+					numOfStmt++;
+					]b4_lhs_value([[objectVal]])[->Set(std::string("stmt") + std::to_string((int)numOfStmt), ]b4_rhs_value(2, 2, [[objectVal]])[);
+					]b4_lhs_value([[objectVal]])[->Set("numOfStmt", numOfStmt);
+				}]])
+
+b4_case(3, [b4_syncline(81, [["parser.y"]])
+[    {
+				std::cout << ("Program\n");
+				]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "program");
+				]b4_lhs_value([[objectVal]])[->Set("numOfStmt", 0.0);
+				]b4_lhs_value([[objectVal]])[->Set("LALALAL", "lallalalal");
+				ast->SetRoot(]b4_lhs_value([[objectVal]])[);
+				std::cout << "program Fisnish\n";
+			}]])
+
+b4_case(4, [b4_syncline(91, [["parser.y"]])
+[    {
+							std::cout << ("Expression ;\n");
+							]b4_lhs_value([[objectVal]])[ = ]b4_rhs_value(2, 1, [[objectVal]])[;
+
+						}]])
+
+b4_case(5, [b4_syncline(96, [["parser.y"]])
+[    {
+							std::cout << ("IF statement\n");
+							]b4_lhs_value([[objectVal]])[ = ]b4_rhs_value(1, 1, [[objectVal]])[;
+						}]])
+
+b4_case(6, [b4_syncline(100, [["parser.y"]])
+[    {
+							std::cout << ("WHILE statement\n");
+							]b4_lhs_value([[objectVal]])[ = ]b4_rhs_value(1, 1, [[objectVal]])[;
+						}]])
+
+b4_case(7, [b4_syncline(104, [["parser.y"]])
+[    {
+							std::cout << ("FOR statement\n");						
+							]b4_lhs_value([[objectVal]])[ = ]b4_rhs_value(1, 1, [[objectVal]])[;
+						}]])
+
+b4_case(8, [b4_syncline(108, [["parser.y"]])
+[    {	
+							std::cout << ("RETURN statement\n");						
+							]b4_lhs_value([[objectVal]])[ = ]b4_rhs_value(1, 1, [[objectVal]])[;
+						}]])
+
+b4_case(9, [b4_syncline(112, [["parser.y"]])
+[    {
+							std::cout << ("BREAK\n");
+							]b4_lhs_value([[objectVal]])[ = new ASTnode();
+							]b4_lhs_value([[objectVal]])[->Set("type", "break");
+						}]])
+
+b4_case(10, [b4_syncline(117, [["parser.y"]])
+[    {
+								std::cout << ("CONTINUE\n");
+								]b4_lhs_value([[objectVal]])[ = new ASTnode();
+								]b4_lhs_value([[objectVal]])[->Set("type", "continue");
+							}]])
+
+b4_case(11, [b4_syncline(122, [["parser.y"]])
+[    {
+								std::cout << ("Block\n");
+								]b4_lhs_value([[objectVal]])[ = ]b4_rhs_value(1, 1, [[objectVal]])[;
+							}]])
+
+b4_case(12, [b4_syncline(126, [["parser.y"]])
+[    {
+								std::cout << ("Function definition\n");
+								]b4_lhs_value([[objectVal]])[ = ]b4_rhs_value(1, 1, [[objectVal]])[;
+							}]])
+
+b4_case(13, [b4_syncline(130, [["parser.y"]])
+[    {	
+								std::cout << ("Semicolon ;\n");
+								]b4_lhs_value([[objectVal]])[ = new ASTnode();
+								]b4_lhs_value([[objectVal]])[->Set("type", "semicolon");
+							}]])
+
+b4_case(14, [b4_syncline(137, [["parser.y"]])
+[    { ]b4_lhs_value([[objectVal]])[ = ]b4_rhs_value(1, 1, [[objectVal]])[; }]])
+
+b4_case(15, [b4_syncline(138, [["parser.y"]])
+[    {
+							std::cout << ("expression + expression \n"); 
+							]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "add");
+							]b4_lhs_value([[objectVal]])[->Set("left", ]b4_rhs_value(3, 1, [[objectVal]])[);
+							]b4_lhs_value([[objectVal]])[->Set("right", ]b4_rhs_value(3, 3, [[objectVal]])[);
+						}]])
+
+b4_case(16, [b4_syncline(144, [["parser.y"]])
+[    {
+							std::cout << ("expression - expression \n"); 
+							]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "sub");
+							]b4_lhs_value([[objectVal]])[->Set("left", ]b4_rhs_value(3, 1, [[objectVal]])[);
+							]b4_lhs_value([[objectVal]])[->Set("right", ]b4_rhs_value(3, 3, [[objectVal]])[);
+						}]])
+
+b4_case(17, [b4_syncline(150, [["parser.y"]])
+[    {
+							std::cout << ("expression * expression \n"); 
+							]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "mul");
+							]b4_lhs_value([[objectVal]])[->Set("left", ]b4_rhs_value(3, 1, [[objectVal]])[);
+							]b4_lhs_value([[objectVal]])[->Set("right", ]b4_rhs_value(3, 3, [[objectVal]])[);
+						}]])
+
+b4_case(18, [b4_syncline(156, [["parser.y"]])
+[    {
+							std::cout << ("expression / expression \n"); 
+							]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "div");
+							]b4_lhs_value([[objectVal]])[->Set("left", ]b4_rhs_value(3, 1, [[objectVal]])[);
+							]b4_lhs_value([[objectVal]])[->Set("right", ]b4_rhs_value(3, 3, [[objectVal]])[);
+						}]])
+
+b4_case(19, [b4_syncline(162, [["parser.y"]])
+[    {
+							std::cout << ("expression %% expression \n"); 
+							]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "mod");
+							]b4_lhs_value([[objectVal]])[->Set("left", ]b4_rhs_value(3, 1, [[objectVal]])[);
+							]b4_lhs_value([[objectVal]])[->Set("right", ]b4_rhs_value(3, 3, [[objectVal]])[);
+						}]])
+
+b4_case(20, [b4_syncline(168, [["parser.y"]])
+[    {
+							std::cout << ("expression > expression \n");
+							]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "greater");
+							]b4_lhs_value([[objectVal]])[->Set("left", ]b4_rhs_value(3, 1, [[objectVal]])[);
+							]b4_lhs_value([[objectVal]])[->Set("right", ]b4_rhs_value(3, 3, [[objectVal]])[);
+						}]])
+
+b4_case(21, [b4_syncline(174, [["parser.y"]])
+[    {
+										std::cout << ("expression >= expression \n");
+										]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "greater_or_equal");
+										]b4_lhs_value([[objectVal]])[->Set("left", ]b4_rhs_value(3, 1, [[objectVal]])[);
+										]b4_lhs_value([[objectVal]])[->Set("right", ]b4_rhs_value(3, 3, [[objectVal]])[);
+									}]])
+
+b4_case(22, [b4_syncline(180, [["parser.y"]])
+[    {
+							std::cout << ("expression  < expression \n");
+							]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "less");
+							]b4_lhs_value([[objectVal]])[->Set("left", ]b4_rhs_value(3, 1, [[objectVal]])[);
+							]b4_lhs_value([[objectVal]])[->Set("right", ]b4_rhs_value(3, 3, [[objectVal]])[);
+						}]])
+
+b4_case(23, [b4_syncline(186, [["parser.y"]])
+[    {
+										std::cout << ("expression <= expression \n" ); 
+										]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "less_or_equal");
+										]b4_lhs_value([[objectVal]])[->Set("left", ]b4_rhs_value(3, 1, [[objectVal]])[);
+										]b4_lhs_value([[objectVal]])[->Set("right", ]b4_rhs_value(3, 3, [[objectVal]])[);
+									}]])
+
+b4_case(24, [b4_syncline(192, [["parser.y"]])
+[    {
+							std::cout << ("expression == expression \n"); 
+							]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "equal");
+							]b4_lhs_value([[objectVal]])[->Set("left", ]b4_rhs_value(3, 1, [[objectVal]])[);
+							]b4_lhs_value([[objectVal]])[->Set("right", ]b4_rhs_value(3, 3, [[objectVal]])[);
+						}]])
+
+b4_case(25, [b4_syncline(198, [["parser.y"]])
+[    {
+								std::cout << ("expression != expression \n");
+								]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "not_equal");
+								]b4_lhs_value([[objectVal]])[->Set("left", ]b4_rhs_value(3, 1, [[objectVal]])[);
+								]b4_lhs_value([[objectVal]])[->Set("right", ]b4_rhs_value(3, 3, [[objectVal]])[);
+							}]])
+
+b4_case(26, [b4_syncline(204, [["parser.y"]])
+[    {
+							std::cout << ("expression && expression \n");
+							]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "and");
+							]b4_lhs_value([[objectVal]])[->Set("left", ]b4_rhs_value(3, 1, [[objectVal]])[);
+							]b4_lhs_value([[objectVal]])[->Set("right", ]b4_rhs_value(3, 3, [[objectVal]])[);
+						}]])
+
+b4_case(27, [b4_syncline(210, [["parser.y"]])
+[    {
+							std::cout << ("expression || expression \n");
+							]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "or");
+							]b4_lhs_value([[objectVal]])[->Set("left", ]b4_rhs_value(3, 1, [[objectVal]])[);
+							]b4_lhs_value([[objectVal]])[->Set("right", ]b4_rhs_value(3, 3, [[objectVal]])[);
+						}]])
+
+b4_case(28, [b4_syncline(216, [["parser.y"]])
+[    {	
+							std::cout << ("Terminal\n");
+							]b4_lhs_value([[objectVal]])[ = ]b4_rhs_value(1, 1, [[objectVal]])[;
+						}]])
+
+b4_case(29, [b4_syncline(220, [["parser.y"]])
+[    {}]])
+
+b4_case(30, [b4_syncline(224, [["parser.y"]])
+[    {
+				std::cout << ("( expression )\n");
+				]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "parentheses");
+				]b4_lhs_value([[objectVal]])[->Set("expr", ]b4_rhs_value(3, 2, [[objectVal]])[);
+			}]])
+
+b4_case(31, [b4_syncline(230, [["parser.y"]])
+[    {
+				std::cout << ("- expression\n");
+				]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "uminus");
+				]b4_lhs_value([[objectVal]])[->Set("expr", ]b4_rhs_value(2, 2, [[objectVal]])[);
+			}]])
+
+b4_case(32, [b4_syncline(236, [["parser.y"]])
+[    {
+				std::cout << ("!expression\n");
+				]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "not");
+				]b4_lhs_value([[objectVal]])[->Set("expr", ]b4_rhs_value(2, 2, [[objectVal]])[);
+			}]])
+
+b4_case(33, [b4_syncline(242, [["parser.y"]])
+[    {
+				std::cout << ("++ lvalue\n");
+				]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "pre_increment");
+				]b4_lhs_value([[objectVal]])[->Set("lvalue", ]b4_rhs_value(2, 2, [[objectVal]])[);
+			}]])
+
+b4_case(34, [b4_syncline(248, [["parser.y"]])
+[    {
+				std::cout << ("lvalue ++\n");
+				]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "post_increment");
+				]b4_lhs_value([[objectVal]])[->Set("lvalue", ]b4_rhs_value(2, 1, [[objectVal]])[);
+			}]])
+
+b4_case(35, [b4_syncline(254, [["parser.y"]])
+[    {
+				std::cout << ("-- lvalue\n");
+				]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "pre_decrement");
+				]b4_lhs_value([[objectVal]])[->Set("lvalue", ]b4_rhs_value(2, 2, [[objectVal]])[);
+			}]])
+
+b4_case(36, [b4_syncline(260, [["parser.y"]])
+[    {
+				std::cout << ("lvalue --\n");
+				]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "post_decrement");
+				]b4_lhs_value([[objectVal]])[->Set("lvalue", ]b4_rhs_value(2, 1, [[objectVal]])[);
+			}]])
+
+b4_case(37, [b4_syncline(265, [["parser.y"]])
+[    {	
+					std::cout << ("Primary\n");
+					]b4_lhs_value([[objectVal]])[ = ]b4_rhs_value(1, 1, [[objectVal]])[;
+				}]])
+
+b4_case(38, [b4_syncline(272, [["parser.y"]])
+[    {
+					std::cout << ("lvalue = expression \n");
+					]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "assignexpr");
+					]b4_lhs_value([[objectVal]])[->Set("lvalue", ]b4_rhs_value(3, 1, [[objectVal]])[);
+					]b4_lhs_value([[objectVal]])[->Set("expr", ]b4_rhs_value(3, 3, [[objectVal]])[);
+				}]])
+
+b4_case(39, [b4_syncline(281, [["parser.y"]])
+[    {
+					std::cout << ("lvalue\n");
+					]b4_lhs_value([[objectVal]])[ = ]b4_rhs_value(1, 1, [[objectVal]])[;
+				}]])
+
+b4_case(40, [b4_syncline(285, [["parser.y"]])
+[    {
+					std::cout << ("Call\n");
+					]b4_lhs_value([[objectVal]])[ = ]b4_rhs_value(1, 1, [[objectVal]])[;
+				}]])
+
+b4_case(41, [b4_syncline(289, [["parser.y"]])
+[    {	
+					std::cout << ("object definition\n");
+					]b4_lhs_value([[objectVal]])[ = ]b4_rhs_value(1, 1, [[objectVal]])[;
+				}]])
+
+b4_case(42, [b4_syncline(294, [["parser.y"]])
+[    { 
+					std::cout << ("(function definition)\n");
+					]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "parentheses_funcdef");
+					]b4_lhs_value([[objectVal]])[->Set("funcdef", ]b4_rhs_value(3, 2, [[objectVal]])[);
+				}]])
+
+b4_case(43, [b4_syncline(299, [["parser.y"]])
+[    {
+				std::cout << ("constant\n");
+				]b4_lhs_value([[objectVal]])[ = ]b4_rhs_value(1, 1, [[objectVal]])[;
+			}]])
+
+b4_case(44, [b4_syncline(306, [["parser.y"]])
+[    {
+				std::cout << ("ID\n");
+				]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "var");
+				]b4_lhs_value([[objectVal]])[->Set("ID", *]b4_rhs_value(1, 1, [[stringVal]])[);
+				delete(]b4_rhs_value(1, 1, [[stringVal]])[); 
+			}]])
+
+b4_case(45, [b4_syncline(313, [["parser.y"]])
+[    {
+				std::cout << ("Local ID\n");
+				]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "localVar");					
+				]b4_lhs_value([[objectVal]])[->Set("ID", *]b4_rhs_value(2, 2, [[stringVal]])[);
+				delete(]b4_rhs_value(2, 2, [[stringVal]])[); 
+			}]])
+
+b4_case(46, [b4_syncline(320, [["parser.y"]])
+[    {
+				std::cout << ("::ID\n");
+				]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "scopeVar");		
+				]b4_lhs_value([[objectVal]])[->Set("ID", *]b4_rhs_value(2, 2, [[stringVal]])[);
+				delete(]b4_rhs_value(2, 2, [[stringVal]])[); 
+			}]])
+
+b4_case(47, [b4_syncline(326, [["parser.y"]])
+[    { 
+					std::cout << ("member\n");
+					]b4_lhs_value([[objectVal]])[ = ]b4_rhs_value(1, 1, [[objectVal]])[; 
+				}]])
+
+b4_case(48, [b4_syncline(333, [["parser.y"]])
+[    {
+					std::cout << ("lvalue dot ident\n");
+					]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "member_lvalueVar");
+					]b4_lhs_value([[objectVal]])[->Set("lvalue", ]b4_rhs_value(3, 1, [[objectVal]])[);
+					]b4_lhs_value([[objectVal]])[->Set("ID", *]b4_rhs_value(3, 3, [[stringVal]])[);
+					delete(]b4_rhs_value(3, 3, [[stringVal]])[); 
+				
+				}]])
+
+b4_case(49, [b4_syncline(342, [["parser.y"]])
+[    {
+					std::cout << ("lvalue dot ident\n");
+					]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "member_lvalueBrackets");
+					]b4_lhs_value([[objectVal]])[->Set("lvalue", ]b4_rhs_value(4, 1, [[objectVal]])[);
+					]b4_lhs_value([[objectVal]])[->Set("expr", ]b4_rhs_value(4, 3, [[objectVal]])[);
+				}]])
+
+b4_case(50, [b4_syncline(349, [["parser.y"]])
+[    {
+					std::cout << ("call dot ident\n");
+					]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "member_callVar");
+					]b4_lhs_value([[objectVal]])[->Set("call", ]b4_rhs_value(3, 1, [[objectVal]])[);
+					]b4_lhs_value([[objectVal]])[->Set("ID", *]b4_rhs_value(3, 3, [[stringVal]])[);
+					delete(]b4_rhs_value(3, 3, [[stringVal]])[); 
+				}]])
+
+b4_case(51, [b4_syncline(357, [["parser.y"]])
+[    {
+					std::cout << ("@{expr@}\n");
+					]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "member_callBrackets");
+					]b4_lhs_value([[objectVal]])[->Set("call", ]b4_rhs_value(4, 1, [[objectVal]])[);
+					]b4_lhs_value([[objectVal]])[->Set("expr", ]b4_rhs_value(4, 3, [[objectVal]])[);
+				}]])
+
+b4_case(52, [b4_syncline(366, [["parser.y"]])
+[    {
+					std::cout << ("call(argList)\n");
+					]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "multiCall");
+					]b4_lhs_value([[objectVal]])[->Set("call", ]b4_rhs_value(4, 1, [[objectVal]])[);
+					]b4_lhs_value([[objectVal]])[->Set("argList", ]b4_rhs_value(4, 3, [[objectVal]])[);
+				}]])
+
+b4_case(53, [b4_syncline(373, [["parser.y"]])
+[    {
+					std::cout << ("lvalue callsufix\n");
+					]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "lvalueCall");
+					]b4_lhs_value([[objectVal]])[->Set("lvalue", ]b4_rhs_value(2, 1, [[objectVal]])[);
+				}]])
+
+b4_case(54, [b4_syncline(379, [["parser.y"]])
+[    {
+					std::cout << ("(funcdef)(argList)\n");
+					]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "funcdefCall");
+					]b4_lhs_value([[objectVal]])[->Set("funcdef", ]b4_rhs_value(6, 2, [[objectVal]])[);
+					]b4_lhs_value([[objectVal]])[->Set("argList", ]b4_rhs_value(6, 5, [[objectVal]])[);
+				}]])
+
+b4_case(55, [b4_syncline(388, [["parser.y"]])
+[    {
+					std::cout << ("normcall\n");
+					]b4_lhs_value([[objectVal]])[ = ]b4_rhs_value(1, 1, [[objectVal]])[;
+				}]])
+
+b4_case(56, [b4_syncline(393, [["parser.y"]])
+[    {
+					std::cout << ("methodcall\n");
+					]b4_lhs_value([[objectVal]])[ = ]b4_rhs_value(1, 1, [[objectVal]])[; 
+				}]])
+
+b4_case(57, [b4_syncline(400, [["parser.y"]])
+[    {
+				std::cout << ("(argList)\n");
+				]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "normcall");
+				]b4_lhs_value([[objectVal]])[->Set("argList", ]b4_rhs_value(3, 2, [[objectVal]])[);
+			}]])
+
+b4_case(58, [b4_syncline(408, [["parser.y"]])
+[    {
+				std::cout << ("..ident(argList)\n");
+				]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "methodcall");
+				]b4_lhs_value([[objectVal]])[->Set("ID", ]b4_rhs_value(5, 2, [[stringVal]])[); 
+				]b4_lhs_value([[objectVal]])[->Set("argList", ]b4_rhs_value(5, 4, [[objectVal]])[); 
+			}]])
+
+b4_case(59, [b4_syncline(416, [["parser.y"]])
+[    { 
+				std::cout << "expr\n";
+				]b4_lhs_value([[objectVal]])[ = ]b4_rhs_value(1, 1, [[objectVal]])[;
+			}]])
+
+b4_case(60, [b4_syncline(421, [["parser.y"]])
+[    { 
+				std::cout << "ID : expr\n";
+				]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "namedParam");
+				]b4_lhs_value([[objectVal]])[->Set("expr", ]b4_rhs_value(3, 3, [[objectVal]])[);
+				]b4_lhs_value([[objectVal]])[->Set("ID", *]b4_rhs_value(3, 1, [[stringVal]])[);
+				delete(]b4_rhs_value(3, 1, [[stringVal]])[);
+			}]])
+
+b4_case(61, [b4_syncline(431, [["parser.y"]])
+[    { 
+				//std::cout << "arg  " << $][1->GetValue("ID").GetNumberValue() << std::endl ;
+				]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "argList");
+				]b4_lhs_value([[objectVal]])[->Set("numOfArg", 1.0);
+				]b4_lhs_value([[objectVal]])[->Set("arg1", ]b4_rhs_value(1, 1, [[objectVal]])[);
+			}]])
+
+b4_case(62, [b4_syncline(438, [["parser.y"]])
+[    {
+				//std::cout << "argList, arg "<< $][3->GetValue("ID")->GetNumberValue() << std::endl;
+				]b4_lhs_value([[objectVal]])[ = ]b4_rhs_value(3, 1, [[objectVal]])[;
+				double numofArgs = ]b4_lhs_value([[objectVal]])[->GetValue("numOfArg").GetNumberValue();
+				numofArgs++;
+				]b4_lhs_value([[objectVal]])[->Set(std::string("arg") + std::to_string((int)numofArgs), ]b4_rhs_value(3, 3, [[objectVal]])[);
+				]b4_lhs_value([[objectVal]])[->Set("numOfArg", numofArgs);
+			}]])
+
+b4_case(63, [b4_syncline(446, [["parser.y"]])
+[    {
+				std::cout << "empty argList\n";
+				]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "EmptyArgList");
+			}]])
+
+b4_case(64, [b4_syncline(453, [["parser.y"]])
+[    {
+				std::cout << ("expression\n");
+				]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "elist");
+				]b4_lhs_value([[objectVal]])[->Set("numOfExpr", 1.0);
+				]b4_lhs_value([[objectVal]])[->Set("expr1", ]b4_rhs_value(1, 1, [[objectVal]])[);
+			}]])
+
+b4_case(65, [b4_syncline(460, [["parser.y"]])
+[    {
+				std::cout << ("elist, expression\n");
+				]b4_lhs_value([[objectVal]])[ = ]b4_rhs_value(3, 1, [[objectVal]])[;
+				double numOfExpr = ]b4_lhs_value([[objectVal]])[->GetValue("numOfExpr").GetNumberValue();
+				numOfExpr++;
+				]b4_lhs_value([[objectVal]])[->Set(std::string("expr") + std::to_string((int)numOfExpr), ]b4_rhs_value(3, 3, [[objectVal]])[);
+				]b4_lhs_value([[objectVal]])[->Set("numOfExpr", numOfExpr);
+			}]])
+
+b4_case(66, [b4_syncline(468, [["parser.y"]])
+[    {
+				std::cout << ("empty (elist)\n");
+				]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "EmptyElist");
+			}]])
+
+b4_case(67, [b4_syncline(475, [["parser.y"]])
+[    {
+				std::cout << ("@{elist@}\n");
+				]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "elist_objectdef");
+				]b4_lhs_value([[objectVal]])[->Set("elist", ]b4_rhs_value(3, 2, [[objectVal]])[);
+			}]])
+
+b4_case(68, [b4_syncline(481, [["parser.y"]])
+[    {
+				std::cout << ("@{indexed@}\n");
+				]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "indexed_objectdef");
+				]b4_lhs_value([[objectVal]])[->Set("indexed", ]b4_rhs_value(3, 2, [[objectVal]])[);
+			}]])
+
+b4_case(69, [b4_syncline(489, [["parser.y"]])
+[    {
+				std::cout << ("indexedelem\n");
+				]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "indexed");
+				]b4_lhs_value([[objectVal]])[->Set("numOfElems", 1.0);
+				]b4_lhs_value([[objectVal]])[->Set("elem1", ]b4_rhs_value(1, 1, [[objectVal]])[); 
+			}]])
+
+b4_case(70, [b4_syncline(496, [["parser.y"]])
+[    {
+				std::cout << ("indexedelem, intexedelem\n");
+				]b4_lhs_value([[objectVal]])[ = ]b4_rhs_value(3, 1, [[objectVal]])[;
+				double numOfElems = ]b4_lhs_value([[objectVal]])[->GetValue("numOfElems").GetNumberValue();
+				numOfElems++;
+				]b4_lhs_value([[objectVal]])[->Set(std::string("elem") + std::to_string((int)numOfElems), ]b4_rhs_value(3, 3, [[objectVal]])[);
+				]b4_lhs_value([[objectVal]])[->Set("numOfElems", numOfElems);
+			}]])
+
+b4_case(71, [b4_syncline(507, [["parser.y"]])
+[    {
+					std::cout << ("{ expression : expression }\n");
+					]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "indexedelem");
+					]b4_lhs_value([[objectVal]])[->Set("keyExpr", ]b4_rhs_value(5, 2, [[objectVal]])[);
+					]b4_lhs_value([[objectVal]])[->Set("valueExpr", ]b4_rhs_value(5, 4, [[objectVal]])[);
+				}]])
+
+b4_case(72, [b4_syncline(516, [["parser.y"]])
+[    {
+					]b4_lhs_value([[objectVal]])[ = ]b4_rhs_value(2, 1, [[objectVal]])[;
+					double numOfStmt = ]b4_lhs_value([[objectVal]])[->GetValue("numOfStmt").GetNumberValue();
+					numOfStmt++;
+					]b4_lhs_value([[objectVal]])[->Set(std::string("stmt") + std::to_string((int)numOfStmt), ]b4_rhs_value(2, 2, [[objectVal]])[);
+					]b4_lhs_value([[objectVal]])[->Set("numOfStmt", numOfStmt);
+				}]])
+
+b4_case(73, [b4_syncline(523, [["parser.y"]])
+[    { 
+					]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "block");
+					]b4_lhs_value([[objectVal]])[->Set("numOfStmt", 0.0);
+				}]])
+
+b4_case(74, [b4_syncline(530, [["parser.y"]])
+[    {
+					std::cout << ("{ stmt }\n");
+					]b4_lhs_value([[objectVal]])[ = ]b4_rhs_value(3, 2, [[objectVal]])[; 
+				}]])
+
+b4_case(75, [b4_syncline(537, [["parser.y"]])
+[    {
+					std::cout << ("function ident\n");			
+				}]])
+
+b4_case(76, [b4_syncline(542, [["parser.y"]])
+[    {
+					std::cout << ("function id(idlist) block\n");
+					]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "funcdef");
+					]b4_lhs_value([[objectVal]])[->Set("ID", ]b4_rhs_value(7, 2, [[stringVal]])[);
+					]b4_lhs_value([[objectVal]])[->Set("idlist", ]b4_rhs_value(7, 5, [[objectVal]])[);			//prosoxh an vgalw panq action
+					]b4_lhs_value([[objectVal]])[->Set("block", ]b4_rhs_value(7, 7, [[objectVal]])[);
+				}]])
+
+b4_case(77, [b4_syncline(550, [["parser.y"]])
+[    {
+					std::cout << ("function\n");				
+				}]])
+
+b4_case(78, [b4_syncline(554, [["parser.y"]])
+[    {
+					std::cout << ("function (idlist) block\n");
+					]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "anonymousFuncdef");
+					]b4_lhs_value([[objectVal]])[->Set("idlist", ]b4_rhs_value(6, 4, [[objectVal]])[);			//prosoxh an vgalw panq action
+					]b4_lhs_value([[objectVal]])[->Set("block", ]b4_rhs_value(6, 6, [[objectVal]])[);
+				}]])
+
+b4_case(79, [b4_syncline(562, [["parser.y"]])
+[    {
+					std::cout << ("Integer\n");
+					]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "numConst");
+					]b4_lhs_value([[objectVal]])[->Set("value", ]b4_rhs_value(1, 1, [[numVal]])[);
+				}]])
+
+b4_case(80, [b4_syncline(567, [["parser.y"]])
+[    {
+						std::cout << ("Real number\n");
+						]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "numConst");
+						]b4_lhs_value([[objectVal]])[->Set("value", ]b4_rhs_value(1, 1, [[numVal]])[);
+					}]])
+
+b4_case(81, [b4_syncline(572, [["parser.y"]])
+[    {
+					std::cout << ("String\n");
+					]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "stringConst");
+					]b4_lhs_value([[objectVal]])[->Set("value", *]b4_rhs_value(1, 1, [[stringVal]])[);
+					delete(]b4_rhs_value(1, 1, [[stringVal]])[);
+				}]])
+
+b4_case(82, [b4_syncline(578, [["parser.y"]])
+[    {
+					std::cout << ("TRUE\n");
+					]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "boolConst");
+					]b4_lhs_value([[objectVal]])[->Set("value", true);
+				}]])
+
+b4_case(83, [b4_syncline(583, [["parser.y"]])
+[    {
+					std::cout << ("FALSE\n");
+					]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "boolConst");
+					]b4_lhs_value([[objectVal]])[->Set("value", false);
+				}]])
+
+b4_case(84, [b4_syncline(588, [["parser.y"]])
+[    {
+					std::cout << ("NIL\n");
+					]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "nil");
+				}]])
+
+b4_case(85, [b4_syncline(595, [["parser.y"]])
+[    {
+			std::cout << ("id list\n");
+			]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "param");
+			]b4_lhs_value([[objectVal]])[->Set("ID", ]b4_rhs_value(1, 1, [[stringVal]])[);
+		}]])
+
+b4_case(86, [b4_syncline(602, [["parser.y"]])
+[    {
+			std::cout << ("id =  expr\n");
+			]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "optionalParam");
+			]b4_lhs_value([[objectVal]])[->Set("ID", ]b4_rhs_value(3, 1, [[stringVal]])[);
+			]b4_lhs_value([[objectVal]])[->Set("expr", ]b4_rhs_value(3, 3, [[objectVal]])[);
+		}]])
+
+b4_case(87, [b4_syncline(612, [["parser.y"]])
+[    {
+			std::cout << ("formal\n");
+			]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "idlist");
+			]b4_lhs_value([[objectVal]])[->Set("numOfParams", 1.0);
+			]b4_lhs_value([[objectVal]])[->Set("param1", ]b4_rhs_value(1, 1, [[objectVal]])[); 
+			}]])
+
+b4_case(88, [b4_syncline(619, [["parser.y"]])
+[    {
+				std::cout << ("idlist, id\n");	
+				]b4_lhs_value([[objectVal]])[ = ]b4_rhs_value(3, 1, [[objectVal]])[;
+				double numOfParams = ]b4_lhs_value([[objectVal]])[->GetValue("numOfParams").GetNumberValue();
+				numOfParams++;
+				]b4_lhs_value([[objectVal]])[->Set(std::string("param") + std::to_string((int)numOfParams), ]b4_rhs_value(3, 3, [[objectVal]])[);
+				]b4_lhs_value([[objectVal]])[->Set("numOfParams", numOfParams);
+			}]])
+
+b4_case(89, [b4_syncline(627, [["parser.y"]])
+[    {
+				std::cout << ("Empty (idlist)\n");
+				]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "emptyIdlist");
+			}]])
+
+b4_case(90, [b4_syncline(634, [["parser.y"]])
+[    {
+				std::cout << ("IF (expression) stmt\n");
+				]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "ifstmt");
+				]b4_lhs_value([[objectVal]])[->Set("condition", ]b4_rhs_value(5, 3, [[objectVal]])[);					
+				]b4_lhs_value([[objectVal]])[->Set("stmt", ]b4_rhs_value(5, 5, [[objectVal]])[);
+
+			}]])
+
+b4_case(91, [b4_syncline(642, [["parser.y"]])
+[    {
+				std::cout << ("ifstmt ELSE stmt\n");
+				]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "if_elsestmt");
+				]b4_lhs_value([[objectVal]])[->Set("ifstmt", ]b4_rhs_value(3, 1, [[objectVal]])[);					
+				]b4_lhs_value([[objectVal]])[->Set("elsestmt", ]b4_rhs_value(3, 3, [[objectVal]])[);
+			}]])
+
+b4_case(92, [b4_syncline(651, [["parser.y"]])
+[    {
+				std::cout << ("While (expression) stmt\n");
+			}]])
+
+b4_case(93, [b4_syncline(655, [["parser.y"]])
+[    {
+				]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "whilestmt");
+				]b4_lhs_value([[objectVal]])[->Set("condition", ]b4_rhs_value(6, 4, [[objectVal]])[);						// SOS: change if the action removed!!!
+				]b4_lhs_value([[objectVal]])[->Set("stmt", ]b4_rhs_value(6, 6, [[objectVal]])[);	
+			}]])
+
+b4_case(94, [b4_syncline(663, [["parser.y"]])
+[    {
+				std::cout << ("for (elist;elist;elist) stmt\n");
+			}]])
+
+b4_case(95, [b4_syncline(667, [["parser.y"]])
+[    {
+				]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "forstmt");
+				]b4_lhs_value([[objectVal]])[->Set("init_elist", ]b4_rhs_value(10, 4, [[objectVal]])[);						// SOS: change if the action removed!!!
+				]b4_lhs_value([[objectVal]])[->Set("condition", ]b4_rhs_value(10, 6, [[objectVal]])[);
+				]b4_lhs_value([[objectVal]])[->Set("elist", ]b4_rhs_value(10, 8, [[objectVal]])[);
+				]b4_lhs_value([[objectVal]])[->Set("stmt", ]b4_rhs_value(10, 10, [[objectVal]])[);	
+			}]])
+
+b4_case(96, [b4_syncline(677, [["parser.y"]])
+[    {
+					std::cout << ("RETURN;\n");
+					]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "return");
+				}]])
+
+b4_case(97, [b4_syncline(682, [["parser.y"]])
+[    {
+					std::cout << ("RETURN expression;\n");
+					]b4_lhs_value([[objectVal]])[ = new ASTnode("type", "return_value");
+					]b4_lhs_value([[objectVal]])[->Set("expr", ]b4_rhs_value(3, 2, [[objectVal]])[);
+				}]])
+
+])
+
+m4_define([b4_symbol(9, id)],
+[[WHILE]])
+
+
+m4_define([b4_symbol(46, has_id)],
+[[1]])
+
+
+m4_define([b4_translate_min],
+[[0]])
+
+
+m4_define([b4_symbol(76, tag)],
+[[const]])
+
+
+m4_define([b4_symbol(40, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(20, id)],
+[[LOCAL]])
+
+
+m4_define([b4_symbol(0, user_number)],
+[[0]])
+
+
+m4_define([b4_symbol(12, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(73, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(26, number)],
+[[26]])
+
+
+m4_define([b4_symbol(22, tag)],
+[[FALSE]])
+
+
+m4_define([b4_symbol(73, type)],
+[[objectVal]])
+
+
+m4_define([b4_symbol(70, id)],
+[[indexedelem]])
+
+
+m4_define([b4_symbol(58, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(27, tag)],
+[[ASSIGN]])
+
+
+m4_define([b4_symbol(53, number)],
+[[53]])
+
+
+m4_define([b4_symbol(18, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(4, type)],
+[[numVal]])
+
+
+m4_define([b4_symbol(28, id)],
+[[MULTI]])
+
+
+m4_define([b4_symbol(27, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(49, is_token)],
+[[1]])
+
+
+m4_define([b4_stos],
+[[     0,    53,     0,     1,     3,     4,     5,     6,     9,    10,
+      11,    13,    14,    15,    16,    19,    20,    21,    22,    23,
+      25,    33,    34,    39,    41,    43,    46,    50,    54,    55,
+      56,    57,    58,    59,    60,    61,    68,    72,    73,    76,
+      79,    80,    82,    84,    81,    83,    43,     3,    75,    46,
+      55,    46,    46,    55,     3,    55,    43,    59,    61,    59,
+      41,    55,    67,    69,    70,    71,    55,    73,     3,    17,
+      18,    24,    25,    28,    29,    30,    31,    32,    35,    36,
+      37,    38,    46,    27,    33,    34,    39,    43,    48,    49,
+      62,    63,    64,    39,    43,    48,    12,    43,    43,    55,
+      74,    43,    46,    73,    55,    40,    45,    40,    45,    42,
+      54,    44,    44,    55,    55,    55,    55,    55,    55,    55,
+      55,    55,    55,    55,    55,    55,    55,    55,     3,    55,
+      65,    66,     3,     3,    55,    66,     3,    54,    55,    67,
+      44,    43,     3,    77,    78,    44,    47,    55,    70,    43,
+      40,    47,    44,    45,    43,    40,    44,    44,    46,    54,
+      78,    27,    44,    45,    55,    66,    55,    65,    66,    54,
+      55,    44,    55,    72,    77,    42,    44,    44,    46,    72,
+      67,    44,    54]])
+
+
+m4_define([b4_symbol(80, number)],
+[[80]])
+
+
+m4_define([b4_symbol(77, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(80, tag)],
+[[whilestmt]])
+
+
+m4_define([b4_symbol(78, id)],
+[[idlist]])
+
+
+m4_define([b4_symbol(35, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(65, has_type)],
+[[1]])
+
+
+m4_define([b4_defines_flag],
+[[1]])
+
+
+m4_define([b4_symbol(2, has_id)],
+[[0]])
+
+
+m4_define([b4_symbol(19, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(7, user_number)],
+[[262]])
+
+
+m4_define([b4_symbol(43, id)],
+[[LEFT_PARENTHESIS]])
+
+
+m4_define([b4_symbol(64, is_token)],
+[[0]])
+
+
+m4_define([b4_symbol(57, number)],
+[[57]])
+
+
+m4_define([b4_symbol(18, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(31, tag)],
+[[EQUAL]])
+
+
+m4_define([b4_symbol(80, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(52, type)],
+[[]])
+
+
+m4_define([b4_symbol(34, has_type)],
+[[1]])
+
+
+m4_define([b4_pact_max],
+[[829]])
+
+
+m4_define([b4_symbol(32, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(36, tag)],
+[[LESS_OR_EQUAL]])
+
+
+m4_define([b4_symbol(62, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(84, number)],
+[[84]])
+
+
+m4_define([b4_symbol(14, user_number)],
+[[269]])
+
+
+m4_define([b4_symbol(33, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(6, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(24, user_number)],
+[[279]])
+
+
+m4_define([b4_symbol(12, number)],
+[[12]])
+
+
+m4_define([b4_symbol(34, user_number)],
+[[289]])
+
+
+m4_define([b4_symbol(31, has_destructor)],
+[[0]])
+
+
+m4_define([b4_r2_min],
+[[0]])
+
+
+m4_define([b4_symbol(7, has_type)],
+[[0]])
+
+
+m4_define([b4_symbol(77, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(44, user_number)],
+[[299]])
+
+
+m4_define([b4_symbol(16, id)],
+[[CONTINUE]])
+
+
+m4_define([b4_symbol(14, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(5, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(36, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(69, type)],
+[[objectVal]])
+
+
+m4_define([b4_merger_min],
+[[0]])
+
+
+m4_define([b4_symbol(54, user_number)],
+[[-1]])
+
+
+m4_define([b4_symbol(0, type)],
+[[]])
+
+
+m4_define([b4_symbol(66, id)],
+[[argList]])
+
+
+m4_define([b4_symbol(6, is_token)],
+[[1]])
+
+
+m4_define([b4_table_ninf],
+[[-67]])
+
+
+m4_define([b4_symbol(64, user_number)],
+[[-1]])
+
+
+m4_define([b4_symbol(59, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(46, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(40, tag)],
+[[RIGHT_SQUARE_BRACKET]])
+
+
+m4_define([b4_symbol(16, number)],
+[[16]])
+
+
+m4_define([b4_symbol(74, user_number)],
+[[-1]])
+
+
+m4_define([b4_symbol(63, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(31, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(31, id)],
+[[EQUAL]])
+
+
+m4_define([b4_symbol(58, is_token)],
+[[0]])
+
+
+m4_define([b4_symbol(84, user_number)],
+[[-1]])
+
+
+m4_define([b4_symbol(12, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(45, tag)],
+[[COMMA]])
+
+
+m4_define([b4_symbol(81, id)],
+[[]])
+
+
+m4_define([b4_symbol(22, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(74, has_type)],
+[[0]])
+
+
+m4_define([b4_symbol(43, number)],
+[[43]])
+
+
+m4_define([b4_symbol(15, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(28, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(32, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(73, is_token)],
+[[0]])
+
+
+m4_define([b4_symbol(0, id)],
+[[]])
+
+
+m4_define([b4_symbol(42, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbols_number],
+[[85]])
+
+
+m4_define([b4_symbol(27, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(39, id)],
+[[LEFT_SQUARE_BRACKET]])
+
+
+m4_define([b4_symbol(70, number)],
+[[70]])
+
+
+m4_define([b4_symbol(52, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(67, has_id)],
+[[1]])
+
+
+m4_define([b4_percent_define_user_variables],
+[[[[[[parse.error]], [[parser.y:28.1]], [[parser.y:28.15]]]],[[[[api.pure]], [[parser.y:29.1]], [[parser.y:29.13]]]]]])
+
+
+m4_define([b4_symbol(43, has_type)],
+[[1]])
+
+
+m4_define([b4_last],
+[[867]])
+
+
+m4_define([b4_symbol(48, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(81, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(62, has_printer)],
+[[0]])
+
+
+m4_define([b4_file_name_all_but_ext],
+[[C:/Users/user/Desktop/cs540/src/parser/generated/parser]])
+
+
+m4_define([b4_conflicting_rules],
+[[     0]])
+
+
+m4_define([b4_symbol(72, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(42, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(47, number)],
+[[47]])
+
+
+m4_define([b4_symbol(54, id)],
+[[stmt]])
+
+
+m4_define([b4_symbol(82, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(10, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(50, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(19, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(8, id)],
+[[NESTED_COMMENT]])
+
+
+m4_define([b4_symbol(12, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(65, type)],
+[[objectVal]])
+
+
+m4_define([b4_merger],
+[[     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0]])
+
+
+m4_define([b4_symbol(54, tag)],
+[[stmt]])
+
+
+m4_define([b4_symbol(22, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(29, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(74, number)],
+[[74]])
+
+
+m4_define([b4_symbol(11, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(39, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(59, tag)],
+[[lvalue]])
+
+
+m4_define([b4_toknum_max],
+[[306]])
+
+
+m4_define([b4_conflict_list_heads_min],
+[[0]])
+
+
+m4_define([b4_symbol(49, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(82, type)],
+[[objectVal]])
+
+
+m4_define([b4_symbol(65, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(59, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(68, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(69, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(27, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(26, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(67, is_token)],
+[[0]])
+
+
+m4_define([b4_symbol(27, id)],
+[[ASSIGN]])
+
+
+m4_define([b4_symbol(79, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(34, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(78, number)],
+[[78]])
+
+
+m4_define([b4_symbol(83, has_type)],
+[[0]])
+
+
+m4_define([b4_dprec],
+[[     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0]])
+
+
+m4_define([b4_symbol(3, number)],
+[[3]])
+
+
+m4_define([b4_symbol(77, id)],
+[[formal]])
+
+
+m4_define([b4_symbol(37, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(0, has_type)],
+[[0]])
+
+
+m4_define([b4_symbol(53, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(44, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(82, is_token)],
+[[0]])
+
+
+m4_define([b4_symbol(2, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(63, tag)],
+[[normcall]])
+
+
+m4_define([b4_symbol(36, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(42, id)],
+[[RIGHT_BRACKET]])
+
+
+m4_define([b4_symbol(3, tag)],
+[[IDENT]])
+
+
+m4_define([b4_symbol(52, has_type)],
+[[0]])
+
+
+m4_define([b4_symbol(68, tag)],
+[[objectdef]])
+
+
+m4_define([b4_symbol(49, has_destructor)],
+[[0]])
+
+
+m4_define([b4_percent_define_syncline(lr.type)],
+[[]])
+
+
+m4_define([b4_symbol(33, number)],
+[[33]])
+
+
+m4_define([b4_symbol(80, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(4, user_number)],
+[[259]])
+
+
+m4_define([b4_symbol(8, tag)],
+[[NESTED_COMMENT]])
+
+
+m4_define([b4_symbol(61, type)],
+[[objectVal]])
+
+
+m4_define([b4_symbol(14, tag)],
+[[RETURN]])
+
+
+m4_define([b4_symbol(51, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(7, number)],
+[[7]])
+
+
+m4_define([b4_symbol(18, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(60, number)],
+[[60]])
+
+
+m4_define([b4_symbol(19, tag)],
+[[NOT]])
+
+
+m4_define([b4_symbol(57, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(21, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(9, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(11, user_number)],
+[[266]])
+
+
+m4_define([b4_symbol(20, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(21, user_number)],
+[[276]])
+
+
+m4_define([b4_symbol(37, number)],
+[[37]])
+
+
+m4_define([b4_symbol(84, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(15, id)],
+[[BREAK]])
+
+
+m4_define([b4_tname],
+[["$][end", "error", "$][undefined", "IDENT", "INTEGER", "REALNUMBER",
+  "STRING", "MULTI_LINE_COMMENT", "NESTED_COMMENT", "WHILE", "FOR", "IF",
+  "ELSE", "FUNCTION", "RETURN", "BREAK", "CONTINUE", "AND", "OR", "NOT",
+  "LOCAL", "TRUE", "FALSE", "NIL", "PLUS", "MINUS", "UMINUS", "ASSIGN",
+  "MULTI", "MOD", "DIV", "EQUAL", "NOT_EQUAL", "INCREMENT", "DECREMENT",
+  "GREATER_OR_EQUAL", "LESS_OR_EQUAL", "GREATER", "LESS",
+  "LEFT_SQUARE_BRACKET", "RIGHT_SQUARE_BRACKET", "LEFT_BRACKET",
+  "RIGHT_BRACKET", "LEFT_PARENTHESIS", "RIGHT_PARENTHESIS", "COMMA",
+  "SEMICOLON", "COLON", "DOT", "DOUBLE_DOT", "SCOPE", "WRONG_DEFINITION",
+  "$][accept", "program", "stmt", "expr", "term", "assignexpr", "primary",
+  "lvalue", "member", "call", "callsuffix", "normcall", "methodcall",
+  "arg", "argList", "elist", "objectdef", "indexed", "indexedelem",
+  "tmp_block", "block", "funcdef", "$][@@1", "$][@@2", "const", "formal",
+  "idlist", "ifstmt", "whilestmt", "$][@@3", "forstmt", "$][@@4", "returnstmt", ]b4_null[]])
+
+
+m4_define([b4_symbol(84, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(31, user_number)],
+[[286]])
+
+
+m4_define([b4_symbol(23, type)],
+[[stringVal]])
+
+
+m4_define([b4_percent_define_kind(lr.keep-unreachable-state)],
+[[keyword]])
+
+
+m4_define([b4_symbol(72, tag)],
+[[block]])
+
+
+m4_define([b4_symbol(12, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(78, type)],
+[[objectVal]])
+
+
+m4_define([b4_symbol(77, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(65, id)],
+[[arg]])
+
+
+m4_define([b4_symbol(41, user_number)],
+[[296]])
+
+
+m4_define([b4_symbol(2, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(64, number)],
+[[64]])
+
+
+m4_define([b4_symbol(51, user_number)],
+[[306]])
+
+
+m4_define([b4_symbol(77, tag)],
+[[formal]])
+
+
+m4_define([b4_symbol(53, has_destructor)],
+[[0]])
+
+
+m4_define([b4_token_table_flag],
+[[0]])
+
+
+m4_define([b4_symbol(76, is_token)],
+[[0]])
+
+
+m4_define([b4_symbol(30, id)],
+[[DIV]])
+
+
+m4_define([b4_symbol(61, user_number)],
+[[-1]])
+
+
+m4_define([b4_symbol(40, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(23, tag)],
+[[NIL]])
+
+
+m4_define([b4_symbol(71, user_number)],
+[[-1]])
+
+
+m4_define([b4_symbol(46, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(80, id)],
+[[whilestmt]])
+
+
+m4_define([b4_symbol(9, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(28, tag)],
+[[MULTI]])
+
+
+m4_define([b4_symbol(81, user_number)],
+[[-1]])
+
+
+m4_define([b4_symbol(18, user_number)],
+[[273]])
+
+
+m4_define([b4_symbol(22, has_destructor)],
+[[0]])
+
+
+m4_define([b4_file_name],
+[["parser.y"]])
+
+
+m4_define([b4_dprec_min],
+[[0]])
+
+
+m4_define([b4_symbol(16, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(45, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(28, user_number)],
+[[283]])
+
+
+m4_define([b4_symbol(68, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(68, number)],
+[[68]])
+
+
+m4_define([b4_immediate],
+[[     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0]])
+
+
+m4_define([b4_symbol(61, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(38, user_number)],
+[[293]])
+
+
+m4_define([b4_symbol(38, id)],
+[[LESS]])
+
+
+m4_define([b4_symbol(15, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(48, user_number)],
+[[303]])
+
+
+m4_define([b4_symbol(43, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(60, is_token)],
+[[0]])
+
+
+m4_define([b4_symbol(81, tag)],
+[[$][@@3]])
+
+
+m4_define([b4_union_members],
+[[]b4_syncline(21, [["parser.y"]])[
+
+	//int intVal;
+	double numVal;
+	Object* objectVal; 
+	std::string* stringVal;
+]])
+
+
+m4_define([b4_symbol(9, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(37, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(57, type)],
+[[objectVal]])
+
+
+m4_define([b4_symbol(14, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(58, user_number)],
+[[-1]])
+
+
+m4_define([b4_symbol(30, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(68, user_number)],
+[[-1]])
+
+
+m4_define([b4_percent_define(lr.keep-unreachable-state)],
+[[false]])
+
+
+m4_define([b4_symbol(23, number)],
+[[23]])
+
+
+m4_define([b4_symbol(70, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(53, id)],
+[[program]])
+
+
+m4_define([b4_symbol(5, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(7, id)],
+[[MULTI_LINE_COMMENT]])
+
+
+m4_define([b4_percent_define_bison_variables(lr.type)],
+[[]])
+
+
+m4_define([b4_symbol(78, user_number)],
+[[-1]])
+
+
+m4_define([b4_symbol(32, tag)],
+[[NOT_EQUAL]])
+
+
+m4_define([b4_symbol(74, type)],
+[[]])
+
+
+m4_define([b4_symbol(16, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(50, number)],
+[[50]])
+
+
+m4_define([b4_symbol(37, tag)],
+[[GREATER]])
+
+
+m4_define([b4_symbol(47, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(26, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(19, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(36, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(3, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(72, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(46, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(5, type)],
+[[numVal]])
+
+
+m4_define([b4_symbol(27, number)],
+[[27]])
+
+
+m4_define([b4_symbol(74, has_id)],
+[[0]])
+
+
+m4_define([b4_symbol(56, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(39, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(2, is_token)],
+[[0]])
+
+
+m4_define([b4_spec_graph_file],
+[[]])
+
+
+m4_define([b4_symbol(36, type)],
+[[stringVal]])
+
+
+m4_define([b4_toknum],
+[[     0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
+     265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
+     275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
+     285,   286,   287,   288,   289,   290,   291,   292,   293,   294,
+     295,   296,   297,   298,   299,   300,   301,   302,   303,   304,
+     305,   306]])
+
+
+m4_define([b4_symbol(26, id)],
+[[UMINUS]])
+
+
+m4_define([b4_symbol(55, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(66, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(41, has_destructor)],
+[[0]])
+
+
+m4_define([b4_defact_min],
+[[0]])
+
+
+m4_define([b4_symbol(54, number)],
+[[54]])
+
+
+m4_define([b4_symbol(76, id)],
+[[const]])
+
+
+m4_define([b4_symbol(76, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(54, is_token)],
+[[0]])
+
+
+m4_define([b4_symbol(41, tag)],
+[[LEFT_BRACKET]])
+
+
+m4_define([b4_symbol(53, type)],
+[[objectVal]])
+
+
+m4_define([b4_symbol(70, has_type)],
+[[1]])
+
+
+m4_define([b4_conflicting_rules_min],
+[[0]])
+
+
+m4_define([b4_symbol(81, number)],
+[[81]])
+
+
+m4_define([b4_symbol(10, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(41, id)],
+[[LEFT_BRACKET]])
+
+
+m4_define([b4_symbol(24, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(78, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(46, tag)],
+[[SEMICOLON]])
+
+
+m4_define([b4_symbol(56, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(3, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(23, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(1, user_number)],
+[[256]])
+
+
+m4_define([b4_symbol(58, number)],
+[[58]])
+
+
+m4_define([b4_symbol(70, type)],
+[[objectVal]])
+
+
+m4_define([b4_percent_define_bison_variables(lr.keep-unreachable-state)],
+[[]])
+
+
+m4_define([b4_percent_define(parse.error)],
+[[verbose]])
+
+
+m4_define([b4_symbol(25, has_destructor)],
+[[0]])
+
+
+m4_define([b4_defgoto_max],
+[[144]])
+
+
+m4_define([b4_symbol(33, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(49, id)],
+[[DOUBLE_DOT]])
+
+
+m4_define([b4_symbol(15, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(79, is_token)],
+[[0]])
+
+
+m4_define([b4_symbol(1, type)],
+[[]])
+
+
+m4_define([b4_symbol(7, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(14, id)],
+[[RETURN]])
+
+
+m4_define([b4_symbol(13, number)],
+[[13]])
+
+
+m4_define([b4_symbol(60, has_id)],
+[[1]])
+
+
+m4_define([b4_stos_min],
+[[0]])
+
+
+m4_define([b4_symbol(50, tag)],
+[[SCOPE]])
+
+
+m4_define([b4_symbol(49, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(32, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(64, id)],
+[[methodcall]])
+
+
+m4_define([b4_symbol(55, tag)],
+[[expr]])
+
+
+m4_define([b4_symbol(40, number)],
+[[40]])
+
+
+m4_define([b4_symbol(48, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(8, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(37, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(60, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(8, user_number)],
+[[263]])
+
+
+m4_define([b4_version],
+[[3.0.4]])
+
+
+m4_define([b4_symbol(64, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(18, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(17, number)],
+[[17]])
+
+
+m4_define([b4_symbol(64, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(63, is_token)],
+[[0]])
+
+
+m4_define([b4_symbol(17, is_token)],
+[[1]])
+
+
+m4_define([b4_table_max],
+[[182]])
+
+
+m4_define([b4_symbol(49, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(75, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(33, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(15, user_number)],
+[[270]])
+
+
+m4_define([b4_symbol(37, id)],
+[[GREATER]])
+
+
+m4_define([b4_symbol(44, number)],
+[[44]])
+
+
+m4_define([b4_symbol(25, user_number)],
+[[280]])
+
+
+m4_define([b4_tokens_number],
+[[52]])
+
+
+m4_define([b4_symbol(32, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(35, user_number)],
+[[290]])
+
+
+m4_define([b4_symbol(11, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(44, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(45, user_number)],
+[[300]])
+
+
+m4_define([b4_symbol(71, number)],
+[[71]])
+
+
+m4_define([b4_symbol(66, type)],
+[[objectVal]])
+
+
+m4_define([b4_symbol(6, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(68, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(64, tag)],
+[[methodcall]])
+
+
+m4_define([b4_percent_define_how(api.pure)],
+[[2]])
+
+
+m4_define([b4_symbol(55, user_number)],
+[[-1]])
+
+
+m4_define([b4_symbol(52, id)],
+[[]])
+
+
+m4_define([b4_symbol(6, id)],
+[[STRING]])
+
+
+m4_define([b4_symbol(4, tag)],
+[[INTEGER]])
+
+
+m4_define([b4_symbol(6, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(69, tag)],
+[[indexed]])
+
+
+m4_define([b4_symbol(10, tag)],
+[[FOR]])
+
+
+m4_define([b4_tag_seen_flag],
+[[1]])
+
+
+m4_define([b4_symbol(65, user_number)],
+[[-1]])
+
+
+m4_define([b4_symbol(13, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(9, tag)],
+[[WHILE]])
+
+
+m4_define([b4_percent_define_how(parse.error)],
+[[2]])
+
+
+m4_define([b4_symbol(48, number)],
+[[48]])
+
+
+m4_define([b4_symbol(75, user_number)],
+[[-1]])
+
+
+m4_define([b4_symbol(83, type)],
+[[]])
+
+
+m4_define([b4_symbol(15, tag)],
+[[BREAK]])
+
+
+m4_define([b4_symbol(59, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(5, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(58, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(13, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(23, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(23, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(75, number)],
+[[75]])
+
+
+m4_define([b4_symbol(28, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(57, is_token)],
+[[0]])
+
+
+m4_define([b4_symbol(33, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(28, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(0, number)],
+[[0]])
+
+
+m4_define([b4_symbol(50, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(73, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(43, has_printer)],
+[[0]])
+
+
+m4_define([b4_final_state_number],
+[[2]])
+
+
+m4_define([b4_rline_max],
+[[681]])
+
+
+m4_define([b4_symbol(27, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(25, id)],
+[[MINUS]])
+
+
+m4_define([b4_symbol(53, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(45, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(72, is_token)],
+[[0]])
+
+
+m4_define([b4_symbol(73, tag)],
+[[funcdef]])
+
+
+m4_define([b4_symbol(75, id)],
+[[]])
+
+
+m4_define([b4_symbol(26, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(63, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(30, number)],
+[[30]])
+
+
+m4_define([b4_symbol(27, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(78, tag)],
+[[idlist]])
+
+
+m4_define([b4_symbol(42, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(79, number)],
+[[79]])
+
+
+m4_define([b4_symbol(73, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(40, id)],
+[[RIGHT_SQUARE_BRACKET]])
+
+
+m4_define([b4_states_number],
+[[183]])
+
+
+m4_define([b4_pact_min],
+[[-137]])
+
+
+m4_define([b4_symbol(83, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(62, type)],
+[[objectVal]])
+
+
+m4_define([b4_symbol(4, number)],
+[[4]])
+
+
+m4_define([b4_immediate_max],
+[[0]])
+
+
+m4_define([b4_parser_file_name],
+[[C:/Users/user/Desktop/cs540/src/parser/generated/parser.cpp]])
+
+
+m4_define([b4_symbol(24, tag)],
+[[PLUS]])
+
+
+m4_define([b4_symbol(54, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(41, is_token)],
+[[1]])
+
+
+m4_define([b4_percent_code(requires)],
+[[]b4_syncline(15, [["parser.y"]])[
+
+  #include "utilities/Object.h"
+  #include "utilities/AST.h"
+]])
+
+
+m4_define([b4_symbol(63, has_destructor)],
+[[0]])
+
+
+m4_define([b4_undef_token_number],
+[[2]])
+
+
+m4_define([b4_rline],
+[[     0,    72,    72,    81,    91,    96,   100,   104,   108,   112,
+     117,   122,   126,   130,   137,   138,   144,   150,   156,   162,
+     168,   174,   180,   186,   192,   198,   204,   210,   216,   220,
+     223,   229,   235,   241,   247,   253,   259,   265,   271,   280,
+     285,   289,   293,   299,   305,   312,   319,   326,   332,   341,
+     348,   356,   365,   372,   378,   387,   392,   399,   407,   416,
+     420,   430,   437,   446,   452,   459,   468,   474,   480,   488,
+     495,   506,   515,   523,   529,   537,   536,   550,   549,   562,
+     567,   572,   578,   583,   588,   594,   601,   611,   618,   627,
+     633,   641,   651,   650,   663,   662,   676,   681]])
+
+
+m4_define([b4_symbol(29, tag)],
+[[MOD]])
+
+
+m4_define([b4_percent_define_loc(lr.default-reduction)],
+[[[[<default value>:-1.-1]], [[<default value>:-1.-1]]]])
+
+
+m4_define([b4_r1],
+[[     0,    52,    53,    53,    54,    54,    54,    54,    54,    54,
+      54,    54,    54,    54,    55,    55,    55,    55,    55,    55,
+      55,    55,    55,    55,    55,    55,    55,    55,    55,    55,
+      56,    56,    56,    56,    56,    56,    56,    56,    57,    58,
+      58,    58,    58,    58,    59,    59,    59,    59,    60,    60,
+      60,    60,    61,    61,    61,    62,    62,    63,    64,    65,
+      65,    66,    66,    66,    67,    67,    67,    68,    68,    69,
+      69,    70,    71,    71,    72,    74,    73,    75,    73,    76,
+      76,    76,    76,    76,    76,    77,    77,    78,    78,    78,
+      79,    79,    81,    80,    83,    82,    84,    84]])
+
+
+m4_define([b4_symbol(11, has_type)],
+[[1]])
+
+
+m4_define([b4_r2],
+[[     0,     2,     2,     0,     2,     1,     1,     1,     1,     2,
+       2,     1,     1,     1,     1,     3,     3,     3,     3,     3,
+       3,     3,     3,     3,     3,     3,     3,     3,     1,     1,
+       3,     2,     2,     2,     2,     2,     2,     1,     3,     1,
+       1,     1,     3,     1,     1,     2,     2,     1,     3,     4,
+       3,     4,     4,     2,     6,     1,     1,     3,     5,     1,
+       3,     1,     3,     0,     1,     3,     0,     3,     3,     1,
+       3,     5,     2,     0,     3,     0,     7,     0,     6,     1,
+       1,     1,     1,     1,     1,     1,     3,     1,     3,     0,
+       5,     3,     0,     6,     0,    10,     2,     3]])
+
+
+m4_define([b4_symbol(34, number)],
+[[34]])
+
+
+m4_define([b4_symbol(81, has_id)],
+[[0]])
+
+
+m4_define([b4_symbol(32, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(10, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(48, id)],
+[[DOT]])
+
+
+m4_define([b4_symbol(78, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(24, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(8, number)],
+[[8]])
+
+
+m4_define([b4_symbol(61, number)],
+[[61]])
+
+
+m4_define([b4_symbol(82, tag)],
+[[forstmt]])
+
+
+m4_define([b4_symbol(0, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(79, type)],
+[[objectVal]])
+
+
+m4_define([b4_symbol(58, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(13, id)],
+[[FUNCTION]])
+
+
+m4_define([b4_symbol(67, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(47, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(63, id)],
+[[normcall]])
+
+
+m4_define([b4_percent_define_syncline(lr.keep-unreachable-state)],
+[[]])
+
+
+m4_define([b4_symbol(66, is_token)],
+[[0]])
+
+
+m4_define([b4_symbol(41, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(38, number)],
+[[38]])
+
+
+m4_define([b4_symbol(33, tag)],
+[[INCREMENT]])
+
+
+m4_define([b4_symbol(82, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(36, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(38, tag)],
+[[LESS]])
+
+
+m4_define([b4_symbol(13, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(16, has_destructor)],
+[[0]])
+
+
+m4_define([b4_user_token_number_max],
+[[306]])
+
+
+m4_define([b4_symbol(81, is_token)],
+[[0]])
+
+
+m4_define([b4_symbol(65, number)],
+[[65]])
+
+
+m4_define([b4_check],
+[[    12,    65,     3,    15,    98,    25,    43,    40,    20,    27,
+       3,    23,    45,    25,    39,    33,    34,    94,    43,    20,
+      46,    39,    46,    48,    49,    43,   162,    44,    45,    39,
+      48,    49,    96,    43,    46,   171,    56,     3,    48,    24,
+      25,     3,    43,    28,    29,    30,    31,    32,    60,    50,
+      35,    36,    37,    38,    28,    29,    30,    69,    70,    71,
+      72,    73,    74,    75,    76,    77,    78,    79,    80,    81,
+      43,    83,   149,    40,    86,    87,   140,   154,    45,    44,
+      45,    93,    94,    12,   178,    97,    98,     1,    43,     3,
+       4,     5,     6,   157,   106,     9,    10,    11,    43,    13,
+      14,    15,    16,    45,    46,    19,    20,    21,    22,    23,
+      13,    25,    44,    45,    44,    45,    44,   181,     3,    33,
+      34,    44,    45,    44,    45,    39,     3,    41,    42,    43,
+      21,    22,    46,     3,   146,    43,    50,   149,     3,   151,
+      44,   153,   154,    44,    45,    41,   158,    21,    22,   161,
+      43,    43,    47,    41,     0,     1,    27,     3,     4,     5,
+       6,   153,   108,     9,    10,    11,   178,    13,    14,    15,
+      16,   141,   163,    19,    20,    21,    22,    23,    -1,    25,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    33,    34,    -1,
+      -1,    -1,    -1,    39,    -1,    41,    -1,    43,    -1,    -1,
+      46,    -1,    -1,     1,    50,     3,     4,     5,     6,    -1,
+      -1,     9,    10,    11,    -1,    13,    14,    15,    16,    -1,
+      -1,    19,    20,    21,    22,    23,    -1,    25,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    33,    34,    -1,    -1,    -1,
+      -1,    39,    -1,    41,    -1,    43,    -1,    -1,    46,    -1,
+      -1,     1,    50,     3,     4,     5,     6,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    19,
+      20,    21,    22,    23,    -1,    25,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    33,    34,    -1,    -1,    -1,    -1,    39,
+      40,    41,    -1,    43,     1,    45,     3,     4,     5,     6,
+      50,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    19,    20,    21,    22,    23,    -1,    25,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    33,    34,    -1,    -1,
+      -1,    -1,    39,    -1,    -1,    -1,    43,    44,    45,    -1,
+      -1,    -1,     1,    50,     3,     4,     5,     6,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      19,    20,    21,    22,    23,    -1,    25,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    33,    34,    -1,    -1,    -1,    -1,
+      39,    -1,    -1,    -1,    43,    -1,    45,    46,    -1,    -1,
+       1,    50,     3,     4,     5,     6,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    19,    20,
+      21,    22,    23,    -1,    25,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    33,    34,    -1,    -1,    -1,    -1,    39,    -1,
+      -1,    -1,    43,    44,    45,    -1,    -1,    -1,     1,    50,
+       3,     4,     5,     6,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    19,    20,    21,    22,
+      23,    -1,    25,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      33,    34,    -1,    -1,    -1,    -1,    39,    -1,    -1,    -1,
+      43,    -1,    -1,    46,    -1,    -1,     1,    50,     3,     4,
+       5,     6,    -1,    -1,    -1,    -1,    -1,    -1,    13,    -1,
+      -1,    -1,    -1,    -1,    19,    20,    21,    22,    23,    -1,
+      25,    -1,     1,    -1,     3,     4,     5,     6,    33,    34,
+      -1,    -1,    -1,    -1,    39,    -1,    -1,    -1,    43,    -1,
+      19,    20,    21,    22,    23,    50,    25,    -1,     1,    -1,
+       3,     4,     5,     6,    33,    34,    -1,    -1,    -1,    -1,
+      39,    -1,    -1,    -1,    43,    -1,    19,    20,    21,    22,
+      23,    50,    25,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      33,    34,    -1,    -1,    -1,    -1,    39,    17,    18,    -1,
+      43,    -1,    -1,    -1,    24,    25,    -1,    50,    28,    29,
+      30,    31,    32,    -1,    -1,    35,    36,    37,    38,    -1,
+      -1,    17,    18,    -1,    -1,    -1,    -1,    47,    24,    25,
+      -1,    -1,    28,    29,    30,    31,    32,    -1,    -1,    35,
+      36,    37,    38,    -1,    17,    18,    -1,    -1,    -1,    -1,
+      46,    24,    25,    -1,    -1,    28,    29,    30,    31,    32,
+      -1,    -1,    35,    36,    37,    38,    -1,    17,    18,    -1,
+      -1,    -1,    -1,    46,    24,    25,    -1,    -1,    28,    29,
+      30,    31,    32,    -1,    -1,    35,    36,    37,    38,    -1,
+      17,    18,    -1,    -1,    -1,    -1,    46,    24,    25,    -1,
+      -1,    28,    29,    30,    31,    32,    -1,    -1,    35,    36,
+      37,    38,    17,    18,    -1,    -1,    -1,    44,    -1,    24,
+      25,    -1,    -1,    28,    29,    30,    31,    32,    -1,    -1,
+      35,    36,    37,    38,    17,    18,    -1,    -1,    -1,    44,
+      -1,    24,    25,    -1,    -1,    28,    29,    30,    31,    32,
+      -1,    -1,    35,    36,    37,    38,    17,    18,    -1,    -1,
+      -1,    44,    -1,    24,    25,    -1,    -1,    28,    29,    30,
+      31,    32,    17,    18,    35,    36,    37,    38,    -1,    24,
+      25,    42,    -1,    28,    29,    30,    31,    32,    -1,    -1,
+      35,    36,    37,    38,    -1,    40,    17,    18,    -1,    -1,
+      -1,    -1,    -1,    24,    25,    -1,    -1,    28,    29,    30,
+      31,    32,    -1,    -1,    35,    36,    37,    38,    -1,    40,
+      17,    18,    -1,    -1,    -1,    -1,    -1,    24,    25,    -1,
+      -1,    28,    29,    30,    31,    32,    17,    -1,    35,    36,
+      37,    38,    -1,    24,    25,    -1,    -1,    28,    29,    30,
+      31,    32,    -1,    -1,    35,    36,    37,    38,    24,    25,
+      -1,    -1,    28,    29,    30,    31,    32,    -1,    -1,    35,
+      36,    37,    38,    24,    25,    -1,    -1,    28,    29,    30,
+      -1,    -1,    -1,    -1,    35,    36,    37,    38]])
+
+
+m4_define([b4_symbol(5, user_number)],
+[[260]])
+
+
+m4_define([b4_translate],
+[[     0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
+       5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
+      15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
+      25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
+      35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
+      45,    46,    47,    48,    49,    50,    51]])
+
+
+m4_define([b4_symbol(35, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(51, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(40, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(82, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(58, type)],
+[[objectVal]])
+
+
+m4_define([b4_symbol(36, id)],
+[[LESS_OR_EQUAL]])
+
+
+m4_define([b4_symbol(50, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(9, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(12, user_number)],
+[[267]])
+
+
+m4_define([b4_symbol(20, number)],
+[[20]])
+
+
+m4_define([b4_symbol(17, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(20, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(69, number)],
+[[69]])
+
+
+m4_define([b4_symbol(22, user_number)],
+[[277]])
+
+
+m4_define([b4_symbol(8, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(51, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(20, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(32, user_number)],
+[[287]])
+
+
+m4_define([b4_symbol(42, tag)],
+[[RIGHT_BRACKET]])
+
+
+m4_define([b4_check_max],
+[[181]])
+
+
+m4_define([b4_symbol(75, type)],
+[[]])
+
+
+m4_define([b4_symbol(51, id)],
+[[WRONG_DEFINITION]])
+
+
+m4_define([b4_symbol(44, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(5, id)],
+[[REALNUMBER]])
+
+
+m4_define([b4_symbol(42, user_number)],
+[[297]])
+
+
+m4_define([b4_symbol(3, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(47, tag)],
+[[COLON]])
+
+
+m4_define([b4_toknum_min],
+[[0]])
+
+
+m4_define([b4_symbol(52, user_number)],
+[[-1]])
+
+
+m4_define([b4_symbol(20, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(76, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(24, number)],
+[[24]])
+
+
+m4_define([b4_symbol(71, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(62, user_number)],
+[[-1]])
+
+
+m4_define([b4_symbol(66, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(6, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(72, user_number)],
+[[-1]])
+
+
+m4_define([b4_symbol(75, is_token)],
+[[0]])
+
+
+m4_define([b4_symbol(10, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(82, user_number)],
+[[-1]])
+
+
+m4_define([b4_symbol(29, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(59, id)],
+[[lvalue]])
+
+
+m4_define([b4_symbol(51, number)],
+[[51]])
+
+
+m4_define([b4_symbol(37, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(19, user_number)],
+[[274]])
+
+
+m4_define([b4_symbol(48, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(45, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(35, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(20, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(29, user_number)],
+[[284]])
+
+
+m4_define([b4_percent_define_kind(parse.error)],
+[[keyword]])
+
+
+m4_define([b4_symbol(30, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(24, id)],
+[[PLUS]])
+
+
+m4_define([b4_symbol(39, user_number)],
+[[294]])
+
+
+m4_define([b4_symbol(44, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(28, number)],
+[[28]])
+
+
+m4_define([b4_symbol(75, has_id)],
+[[0]])
+
+
+m4_define([b4_symbol(40, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(3, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(51, tag)],
+[[WRONG_DEFINITION]])
+
+
+m4_define([b4_symbol(54, type)],
+[[objectVal]])
+
+
+m4_define([b4_dir_prefix],
+[[C:/Users/user/Desktop/cs540/src/parser/generated/]])
+
+
+m4_define([b4_symbol(74, id)],
+[[]])
+
+
+m4_define([b4_symbol(49, user_number)],
+[[304]])
+
+
+m4_define([b4_symbol(60, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(50, has_printer)],
+[[0]])
+
+
+m4_define([b4_pgoto_max],
+[[126]])
+
+
+m4_define([b4_symbol(0, has_id)],
+[[0]])
+
+
+m4_define([b4_symbol(59, user_number)],
+[[-1]])
+
+
+m4_define([b4_yacc_flag],
+[[0]])
+
+
+m4_define([b4_symbol(56, tag)],
+[[term]])
+
+
+m4_define([b4_pre_prologue],
+[[]b4_syncline(1, [["parser.y"]])[
+
+	#include <stdio.h>
+	#include <string>
+	#include <errno.h>
+	#include <iostream>	
+	#include "utilities/AST.h"
+
+
+	#include "parser.hpp"
+	#include "scanner.h"
+
+	int yyerror (AST* ast, yyscan_t scanner, const char* yaccProvidedMessage);
+]])
+
+
+m4_define([b4_symbol(14, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(60, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(55, number)],
+[[55]])
+
+
+m4_define([b4_symbol(69, user_number)],
+[[-1]])
+
+
+m4_define([b4_lex_param],
+[[[[[void * scanner]], [[scanner]]]]])
+
+
+m4_define([b4_symbol(13, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(70, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(71, type)],
+[[objectVal]])
+
+
+m4_define([b4_symbol(79, user_number)],
+[[-1]])
+
+
+m4_define([b4_symbol(30, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(80, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(70, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(19, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(17, has_printer)],
+[[0]])
+
+
+m4_define([b4_percent_define_kind(api.pure)],
+[[keyword]])
+
+
+m4_define([b4_symbol(82, number)],
+[[82]])
+
+
+m4_define([b4_symbol(79, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(27, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(16, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(4, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(10, number)],
+[[10]])
+
+
+m4_define([b4_symbol(37, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(47, id)],
+[[COLON]])
+
+
+m4_define([b4_symbol(69, is_token)],
+[[0]])
+
+
+m4_define([b4_symbol(2, type)],
+[[]])
+
+
+m4_define([b4_r1_max],
+[[84]])
+
+
+m4_define([b4_symbol(59, number)],
+[[59]])
+
+
+m4_define([b4_symbol(47, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(60, tag)],
+[[member]])
+
+
+m4_define([b4_symbol(39, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(33, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(57, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(12, id)],
+[[ELSE]])
+
+
+m4_define([b4_symbol(2, has_type)],
+[[0]])
+
+
+m4_define([b4_symbol(0, tag)],
+[[$][end]])
+
+
+m4_define([b4_symbol(34, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(65, tag)],
+[[arg]])
+
+
+m4_define([b4_symbol(84, is_token)],
+[[0]])
+
+
+m4_define([b4_symbol(67, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(38, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(62, id)],
+[[callsuffix]])
+
+
+m4_define([b4_symbol(1, is_token)],
+[[0]])
+
+
+m4_define([b4_symbol(77, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(5, tag)],
+[[REALNUMBER]])
+
+
+m4_define([b4_symbol(54, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(8, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(11, tag)],
+[[IF]])
+
+
+m4_define([b4_symbol(54, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(50, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(61, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(14, number)],
+[[14]])
+
+
+m4_define([b4_defact],
+[[     3,     0,     1,    29,    44,    79,    80,    81,    92,    94,
+       0,    77,     0,     0,     0,     0,     0,    82,    83,    84,
+       0,     0,     0,     0,    73,     0,    13,     0,     2,     0,
+      28,    14,    37,    39,    47,    40,    41,    11,    12,    43,
+       5,     6,     7,     8,     0,     0,     0,    75,     0,    96,
+       0,     9,    10,    32,    45,    31,     0,    33,     0,    35,
+       0,    64,     0,     0,    69,     0,     0,     0,    46,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     4,     0,    34,    36,     0,     0,     0,     0,
+      53,    55,    56,     0,     0,     0,     0,     0,     0,     0,
+       0,    89,    97,     0,     0,    67,     0,    68,     0,    74,
+      72,    30,    42,    26,    27,    15,    16,    17,    19,    18,
+      24,    25,    21,    23,    20,    22,    38,     0,    44,    59,
+      61,     0,    48,     0,     0,     0,    50,    91,     0,     0,
+       0,    89,    85,    87,     0,     0,     0,    65,    70,     0,
+      49,     0,    57,     0,     0,    51,    52,     0,     0,    90,
+       0,     0,     0,     0,     0,     0,    60,    62,     0,    93,
+       0,     0,    86,    78,    88,    71,    54,    58,     0,    76,
+       0,     0,    95]])
+
+
+m4_define([b4_symbol(16, tag)],
+[[CONTINUE]])
+
+
+m4_define([b4_symbol(53, is_token)],
+[[0]])
+
+
+m4_define([b4_symbol(23, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(41, number)],
+[[41]])
+
+
+m4_define([b4_percent_define(lr.default-reduction)],
+[[most]])
+
+
+m4_define([b4_symbol(69, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(38, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(23, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(2, user_number)],
+[[257]])
+
+
+m4_define([b4_percent_define_loc(parse.error)],
+[[[[parser.y:28.1]], [[parser.y:28.15]]]])
+
+
+m4_define([b4_symbol(22, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(35, id)],
+[[GREATER_OR_EQUAL]])
+
+
+m4_define([b4_symbol(65, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(12, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(18, number)],
+[[18]])
+
+
+m4_define([b4_symbol(38, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(67, type)],
+[[objectVal]])
+
+
+m4_define([b4_symbol(74, tag)],
+[[$][@@1]])
+
+
+m4_define([b4_symbol(79, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(6, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(79, tag)],
+[[ifstmt]])
+
+
+m4_define([b4_symbol(45, number)],
+[[45]])
+
+
+m4_define([b4_symbol(20, tag)],
+[[LOCAL]])
+
+
+m4_define([b4_percent_define_kind(lr.type)],
+[[keyword]])
+
+
+m4_define([b4_symbol(50, id)],
+[[SCOPE]])
+
+
+m4_define([b4_symbol(78, is_token)],
+[[0]])
+
+
+m4_define([b4_symbol(4, id)],
+[[INTEGER]])
+
+
+m4_define([b4_symbol(84, type)],
+[[objectVal]])
+
+
+m4_define([b4_symbol(25, tag)],
+[[MINUS]])
+
+
+m4_define([b4_symbol(20, has_id)],
+[[1]])
+
+
+m4_define([b4_percent_define(lr.type)],
+[[lalr]])
+
+
+m4_define([b4_symbol(72, number)],
+[[72]])
+
+
+m4_define([b4_symbol(48, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(69, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(0, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(29, type)],
+[[stringVal]])
+
+
+m4_define([b4_percent_define_bison_variables(lr.default-reduction)],
+[[]])
+
+
+m4_define([b4_symbol(9, user_number)],
+[[264]])
+
+
+m4_define([b4_symbol(73, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(47, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(49, number)],
+[[49]])
+
+
+m4_define([b4_symbol(58, id)],
+[[primary]])
+
+
+m4_define([b4_symbol(63, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(17, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(46, type)],
+[[stringVal]])
+
+
+m4_define([b4_spec_name_prefix],
+[[]])
+
+
+m4_define([b4_percent_define_kind(lr.default-reduction)],
+[[keyword]])
+
+
+m4_define([b4_symbol(24, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(83, tag)],
+[[$][@@4]])
+
+
+m4_define([b4_symbol(42, has_destructor)],
+[[0]])
+
+
+m4_define([b4_pact],
+[[  -137,   154,  -137,  -137,  -137,  -137,  -137,  -137,  -137,  -137,
+     -37,     7,   437,   -26,   -24,   511,    34,  -137,  -137,  -137,
+     511,    -1,    -1,   250,  -137,   485,  -137,    38,  -137,   584,
+    -137,  -137,  -137,   -18,  -137,   -10,  -137,  -137,  -137,  -137,
+      71,  -137,  -137,  -137,    27,    45,   511,  -137,    55,  -137,
+     607,  -137,  -137,  -137,  -137,  -137,    97,   -25,   -10,   -25,
+     511,   783,   -33,    33,  -137,    86,   653,    72,  -137,   511,
+     511,   511,   511,   511,   511,   511,   511,   511,   511,   511,
+     511,   511,  -137,   511,  -137,  -137,   511,   293,   115,   123,
+    -137,  -137,  -137,   511,   293,   130,   202,   511,   341,   675,
+      92,   135,  -137,    96,   560,  -137,   511,  -137,   104,  -137,
+    -137,  -137,   107,    15,   799,    26,    26,  -137,  -137,  -137,
+     814,   814,   829,   829,   829,   829,   783,   735,   105,   783,
+    -137,   -17,  -137,   108,   759,    35,  -137,  -137,   697,    58,
+     202,   135,   129,  -137,    68,   107,   511,   783,  -137,   293,
+    -137,   511,  -137,   537,   293,  -137,  -137,   202,   511,  -137,
+      70,   511,   112,   135,   719,    77,   783,  -137,    79,  -137,
+     630,   112,   783,  -137,  -137,  -137,  -137,  -137,   389,  -137,
+      99,   202,  -137]])
+
+
+m4_define([b4_symbol(16, user_number)],
+[[271]])
+
+
+m4_define([b4_symbol(62, is_token)],
+[[0]])
+
+
+m4_define([b4_symbol(23, id)],
+[[NIL]])
+
+
+m4_define([b4_symbol(76, number)],
+[[76]])
+
+
+m4_define([b4_symbol(16, is_token)],
+[[1]])
+
+
+m4_define([b4_translate_max],
+[[51]])
+
+
+m4_define([b4_symbol(26, user_number)],
+[[281]])
+
+
+m4_define([b4_symbol(1, number)],
+[[1]])
+
+
+m4_define([b4_symbol(32, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(73, id)],
+[[funcdef]])
+
+
+m4_define([b4_symbol(36, user_number)],
+[[291]])
+
+
+m4_define([b4_symbol(51, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(11, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(63, type)],
+[[objectVal]])
+
+
+m4_define([b4_symbol(34, tag)],
+[[DECREMENT]])
+
+
+m4_define([b4_symbol(46, user_number)],
+[[301]])
+
+
+m4_define([b4_symbol(31, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(57, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(7, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(39, tag)],
+[[LEFT_SQUARE_BRACKET]])
+
+
+m4_define([b4_symbol(56, user_number)],
+[[-1]])
+
+
+m4_define([b4_symbol(31, number)],
+[[31]])
+
+
+m4_define([b4_symbol(28, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(66, user_number)],
+[[-1]])
+
+
+m4_define([b4_symbol(80, type)],
+[[objectVal]])
+
+
+m4_define([b4_defgoto_min],
+[[-1]])
+
+
+m4_define([b4_symbol(76, user_number)],
+[[-1]])
+
+
+m4_define([b4_symbol(26, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(5, has_type)],
+[[1]])
+
+
+m4_define([b4_synclines_flag],
+[[1]])
+
+
+m4_define([b4_symbol(5, number)],
+[[5]])
+
+
+m4_define([b4_pkgdatadir],
+[[C:\win_flex_bison\data]])
+
+
+m4_define([b4_symbol(14, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(55, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(25, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(46, id)],
+[[SEMICOLON]])
+
+
+m4_define([b4_symbol(4, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(24, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(57, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(34, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(35, number)],
+[[35]])
+
+
+m4_define([b4_symbol(82, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(44, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(11, id)],
+[[IF]])
+
+
+m4_define([b4_symbol(56, is_token)],
+[[0]])
+
+
+m4_define([b4_symbol(42, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(43, tag)],
+[[LEFT_PARENTHESIS]])
+
+
+m4_define([b4_symbol(54, has_printer)],
+[[0]])
+
+
+m4_define([b4_use_push_for_pull_flag],
+[[0]])
+
+
+m4_define([b4_symbol(10, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(9, number)],
+[[9]])
+
+
+m4_define([b4_symbol(72, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(61, id)],
+[[call]])
+
+
+m4_define([b4_symbol(9, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(62, number)],
+[[62]])
+
+
+m4_define([b4_symbol(59, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(64, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(61, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(26, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(48, tag)],
+[[DOT]])
+
+
+m4_define([b4_table],
+[[    50,   110,     4,    53,   139,    67,    46,   105,    55,    83,
+      47,    61,   106,    66,    86,    84,    85,   135,    87,    16,
+      51,    86,    52,    88,    89,    87,   173,   152,   153,    93,
+      88,    89,   137,    94,    99,   179,   103,    54,    95,    71,
+      72,    68,    56,    73,    74,    75,    76,    77,   104,    27,
+      78,    79,    80,    81,    73,    74,    75,   113,   114,   115,
+     116,   117,   118,   119,   120,   121,   122,   123,   124,   125,
+      97,   126,   165,   107,   127,   129,   159,   168,   108,   156,
+     153,   134,   129,    96,   180,   138,    61,     3,    98,     4,
+       5,     6,     7,   169,   147,     8,     9,    10,   101,    11,
+      12,    13,    14,   106,   158,    15,    16,    17,    18,    19,
+      11,    20,   162,   163,   171,   163,   112,   182,   132,    21,
+      22,   176,   153,   177,   153,    23,   133,    24,   109,    25,
+      57,    59,    26,   136,   164,   141,    27,   129,   142,   166,
+     145,   129,   129,   181,   106,    60,   170,    58,    58,   172,
+     149,   154,   151,    24,     2,     3,   161,     4,     5,     6,
+       7,   167,   148,     8,     9,    10,    61,    11,    12,    13,
+      14,   160,   174,    15,    16,    17,    18,    19,     0,    20,
+       0,     0,     0,     0,     0,     0,     0,    21,    22,     0,
+       0,     0,     0,    23,     0,    24,     0,    25,     0,     0,
+      26,     0,     0,     3,    27,     4,     5,     6,     7,     0,
+       0,     8,     9,    10,     0,    11,    12,    13,    14,     0,
+       0,    15,    16,    17,    18,    19,     0,    20,     0,     0,
+       0,     0,     0,     0,     0,    21,    22,     0,     0,     0,
+       0,    23,     0,    24,     0,    25,     0,     0,    26,     0,
+       0,     3,    27,     4,     5,     6,     7,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,    15,
+      16,    17,    18,    19,     0,    20,     0,     0,     0,     0,
+       0,     0,     0,    21,    22,     0,     0,     0,     0,    23,
+     -66,    60,     0,    25,     3,   -66,   128,     5,     6,     7,
+      27,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,    15,    16,    17,    18,    19,     0,    20,     0,
+       0,     0,     0,     0,     0,     0,    21,    22,     0,     0,
+       0,     0,    23,     0,     0,     0,    25,   -63,   -63,     0,
+       0,     0,     3,    27,     4,     5,     6,     7,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+      15,    16,    17,    18,    19,     0,    20,     0,     0,     0,
+       0,     0,     0,     0,    21,    22,     0,     0,     0,     0,
+      23,     0,     0,     0,    25,     0,   -66,   -66,     0,     0,
+       3,    27,     4,     5,     6,     7,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,    15,    16,
+      17,    18,    19,     0,    20,     0,     0,     0,     0,     0,
+       0,     0,    21,    22,     0,     0,     0,     0,    23,     0,
+       0,     0,    25,   -66,   -66,     0,     0,     0,     3,    27,
+       4,     5,     6,     7,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,    15,    16,    17,    18,
+      19,     0,    20,     0,     0,     0,     0,     0,     0,     0,
+      21,    22,     0,     0,     0,     0,    23,     0,     0,     0,
+      25,     0,     0,    49,     0,     0,     3,    27,     4,     5,
+       6,     7,     0,     0,     0,     0,     0,     0,    11,     0,
+       0,     0,     0,     0,    15,    16,    17,    18,    19,     0,
+      20,     0,     3,     0,     4,     5,     6,     7,    21,    22,
+       0,     0,     0,     0,    23,     0,     0,     0,    25,     0,
+      15,    16,    17,    18,    19,    27,    20,     0,     3,     0,
+     128,     5,     6,     7,    21,    22,     0,     0,     0,     0,
+      23,     0,     0,     0,    25,     0,    15,    16,    17,    18,
+      19,    27,    20,     0,     0,     0,     0,     0,     0,     0,
+      21,    22,     0,     0,     0,     0,    23,    69,    70,     0,
+      25,     0,     0,     0,    71,    72,     0,    27,    73,    74,
+      75,    76,    77,     0,     0,    78,    79,    80,    81,     0,
+       0,    69,    70,     0,     0,     0,     0,   146,    71,    72,
+       0,     0,    73,    74,    75,    76,    77,     0,     0,    78,
+      79,    80,    81,     0,    69,    70,     0,     0,     0,     0,
+      82,    71,    72,     0,     0,    73,    74,    75,    76,    77,
+       0,     0,    78,    79,    80,    81,     0,    69,    70,     0,
+       0,     0,     0,   102,    71,    72,     0,     0,    73,    74,
+      75,    76,    77,     0,     0,    78,    79,    80,    81,     0,
+      69,    70,     0,     0,     0,     0,   178,    71,    72,     0,
+       0,    73,    74,    75,    76,    77,     0,     0,    78,    79,
+      80,    81,    69,    70,     0,     0,     0,   111,     0,    71,
+      72,     0,     0,    73,    74,    75,    76,    77,     0,     0,
+      78,    79,    80,    81,    69,    70,     0,     0,     0,   140,
+       0,    71,    72,     0,     0,    73,    74,    75,    76,    77,
+       0,     0,    78,    79,    80,    81,    69,    70,     0,     0,
+       0,   157,     0,    71,    72,     0,     0,    73,    74,    75,
+      76,    77,    69,    70,    78,    79,    80,    81,     0,    71,
+      72,   175,     0,    73,    74,    75,    76,    77,     0,     0,
+      78,    79,    80,    81,     0,   150,    69,    70,     0,     0,
+       0,     0,     0,    71,    72,     0,     0,    73,    74,    75,
+      76,    77,     0,     0,    78,    79,    80,    81,     0,   155,
+      69,    70,     0,     0,     0,     0,     0,    71,    72,     0,
+       0,    73,    74,    75,    76,    77,    69,     0,    78,    79,
+      80,    81,     0,    71,    72,     0,     0,    73,    74,    75,
+      76,    77,     0,     0,    78,    79,    80,    81,    71,    72,
+       0,     0,    73,    74,    75,   -67,   -67,     0,     0,    78,
+      79,    80,    81,    71,    72,     0,     0,    73,    74,    75,
+       0,     0,     0,     0,   -67,   -67,   -67,   -67]])
+
+
+m4_define([b4_symbol(74, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(71, is_token)],
+[[0]])
+
+
+m4_define([b4_symbol(25, is_token)],
+[[1]])
+
+
+m4_define([b4_nterms_number],
+[[33]])
+
+
+m4_define([b4_symbol(84, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(39, number)],
+[[39]])
+
+
+m4_define([b4_symbol(19, id)],
+[[NOT]])
+
+
+m4_define([b4_symbol(30, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(41, has_type)],
+[[1]])
+
+
+m4_define([b4_table_min],
+[[-67]])
+
+
+m4_define([b4_r2_max],
+[[10]])
+
+
+m4_define([b4_symbol(76, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(69, id)],
+[[indexed]])
+
+
+m4_define([b4_symbol(59, type)],
+[[objectVal]])
+
+
+m4_define([b4_symbol(14, has_id)],
+[[1]])
+
+
+m4_define([b4_parse_param],
+[[[[[AST * ast]], [[ast]]],
+[[[void * scanner]], [[scanner]]]]])
+
+
+m4_define([b4_symbol(40, is_token)],
+[[1]])
+
+
+m4_define([b4_merger_max],
+[[0]])
+
+
+m4_define([b4_symbol(66, number)],
+[[66]])
+
+
+m4_define([b4_symbol(34, id)],
+[[DECREMENT]])
+
+
+m4_define([b4_symbol(10, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(21, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(45, has_destructor)],
+[[0]])
+
+
+m4_define([b4_percent_define_loc(lr.keep-unreachable-state)],
+[[[[<default value>:-1.-1]], [[<default value>:-1.-1]]]])
+
+
+m4_define([b4_symbol(41, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(52, tag)],
+[[$][accept]])
+
+
+m4_define([b4_symbol(76, type)],
+[[objectVal]])
+
+
+m4_define([b4_symbol(84, id)],
+[[returnstmt]])
+
+
+m4_define([b4_symbol(57, tag)],
+[[assignexpr]])
+
+
+m4_define([b4_percent_define_syncline(parse.error)],
+[[]b4_syncline(28, [["parser.y"]])[]])
+
+
+m4_define([b4_symbol(21, number)],
+[[21]])
+
+
+m4_define([b4_symbol(18, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(14, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(3, id)],
+[[IDENT]])
+
+
+m4_define([b4_symbol(66, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(7, type)],
+[[]])
+
+
+m4_define([b4_symbol(45, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(65, is_token)],
+[[0]])
+
+
+m4_define([b4_symbol(19, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(38, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(80, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(81, has_type)],
+[[0]])
+
+
+m4_define([b4_symbol(6, user_number)],
+[[261]])
+
+
+m4_define([b4_symbol(29, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(35, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(57, id)],
+[[assignexpr]])
+
+
+m4_define([b4_symbol(25, number)],
+[[25]])
+
+
+m4_define([b4_symbol(72, has_id)],
+[[1]])
+
+
+m4_define([b4_rline_min],
+[[0]])
+
+
+m4_define([b4_symbol(80, is_token)],
+[[0]])
+
+
+m4_define([b4_symbol(34, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(61, tag)],
+[[call]])
+
+
+m4_define([b4_symbol(55, type)],
+[[objectVal]])
+
+
+m4_define([b4_symbol(22, id)],
+[[FALSE]])
+
+
+m4_define([b4_epilogue],
+[[]b4_syncline(690, [["parser.y"]])[
+
+
+int yyerror(AST* ast, yyscan_t scanner, const char *yaccProvidedMessage){
+	std::cout  << yaccProvidedMessage << ": at line " << yyget_lineno(scanner) << " before token : " << yyget_text(scanner) << std::endl;
+	std::cout << "INPUT NOT VALID \n";
+	return 0;
+}
+]])
+
+
+m4_define([b4_symbol(50, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(1, tag)],
+[[error]])
+
+
+m4_define([b4_symbol(52, number)],
+[[52]])
+
+
+m4_define([b4_symbol(66, tag)],
+[[argList]])
+
+
+m4_define([b4_symbol(13, user_number)],
+[[268]])
+
+
+m4_define([b4_symbol(49, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(72, id)],
+[[block]])
+
+
+m4_define([b4_symbol(6, tag)],
+[[STRING]])
+
+
+m4_define([b4_symbol(23, user_number)],
+[[278]])
+
+
+m4_define([b4_symbol(12, tag)],
+[[ELSE]])
+
+
+m4_define([b4_immediate_min],
+[[0]])
+
+
+m4_define([b4_symbol(8, has_type)],
+[[0]])
+
+
+m4_define([b4_conflict_list_heads_max],
+[[0]])
+
+
+m4_define([b4_symbol(72, type)],
+[[objectVal]])
+
+
+m4_define([b4_symbol(33, user_number)],
+[[288]])
+
+
+m4_define([b4_pgoto],
+[[  -137,  -137,   -64,   -12,  -137,  -137,  -137,   109,  -137,   126,
+    -137,  -137,  -137,     8,   -77,   -94,  -137,  -137,    54,  -137,
+    -136,   -20,  -137,  -137,  -137,     9,    30,  -137,  -137,  -137,
+    -137,  -137,  -137]])
+
+
+m4_define([b4_percent_define(api.pure)],
+[[]])
+
+
+m4_define([b4_symbol(29, number)],
+[[29]])
+
+
+m4_define([b4_symbol(76, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(64, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(17, tag)],
+[[AND]])
+
+
+m4_define([b4_symbol(43, user_number)],
+[[298]])
+
+
+m4_define([b4_symbol(7, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(1, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(4, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(17, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(53, user_number)],
+[[-1]])
+
+
+m4_define([b4_symbol(56, number)],
+[[56]])
+
+
+m4_define([b4_symbol(33, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(63, user_number)],
+[[-1]])
+
+
+m4_define([b4_symbol(3, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(59, is_token)],
+[[0]])
+
+
+m4_define([b4_symbol(73, user_number)],
+[[-1]])
+
+
+m4_define([b4_symbol(79, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(31, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(75, has_type)],
+[[0]])
+
+
+m4_define([b4_symbol(70, tag)],
+[[indexedelem]])
+
+
+m4_define([b4_symbol(34, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(45, id)],
+[[COMMA]])
+
+
+m4_define([b4_symbol(1, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(83, number)],
+[[83]])
+
+
+m4_define([b4_symbol(83, user_number)],
+[[-1]])
+
+
+m4_define([b4_symbol(29, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(11, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(75, tag)],
+[[$][@@2]])
+
+
+m4_define([b4_symbol(21, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(74, is_token)],
+[[0]])
+
+
+m4_define([b4_symbol(5, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(10, id)],
+[[FOR]])
+
+
+m4_define([b4_symbol(48, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(11, number)],
+[[11]])
+
+
+m4_define([b4_symbol(28, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(31, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(21, tag)],
+[[TRUE]])
+
+
+m4_define([b4_symbol(44, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(51, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(41, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(60, id)],
+[[member]])
+
+
+m4_define([b4_symbol(26, tag)],
+[[UMINUS]])
+
+
+m4_define([b4_conflict_list_heads],
+[[     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0]])
+
+
+m4_define([b4_symbol(51, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(35, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(17, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(43, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(61, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(18, id)],
+[[OR]])
+
+
+m4_define([b4_nondeterministic_flag],
+[[0]])
+
+
+m4_define([b4_symbol(71, has_printer)],
+[[0]])
+
+
+m4_define([b4_percent_code_user_qualifiers],
+[[[[[[requires]], [[parser.y:15.7]], [[parser.y:15.15]]]]]])
+
+
+m4_define([b4_symbol(13, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(9, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(15, number)],
+[[15]])
+
+
+m4_define([b4_symbol(62, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(81, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(18, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(68, id)],
+[[objectdef]])
+
+
+m4_define([b4_symbol(12, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(83, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(13, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(28, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(68, type)],
+[[objectVal]])
+
+
+m4_define([b4_symbol(84, tag)],
+[[returnstmt]])
+
+
+m4_define([b4_symbol(42, number)],
+[[42]])
+
+
+m4_define([b4_symbol(39, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(33, id)],
+[[INCREMENT]])
+
+
+m4_define([b4_symbol(38, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(69, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(52, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(30, tag)],
+[[DIV]])
+
+
+m4_define([b4_check_min],
+[[-1]])
+
+
+m4_define([b4_symbol(48, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(30, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(83, id)],
+[[]])
+
+
+m4_define([b4_spec_verbose_file],
+[[C:/Users/user/Desktop/cs540/src/parser/generated/parser.output]])
+
+
+m4_define([b4_symbol(58, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(68, is_token)],
+[[0]])
+
+
+m4_define([b4_symbol(19, number)],
+[[19]])
+
+
+m4_define([b4_symbol(66, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(35, tag)],
+[[GREATER_OR_EQUAL]])
+
+
+m4_define([b4_symbol(68, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(84, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(38, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(2, id)],
+[[]])
+
+
+m4_define([b4_symbol(21, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(1, has_type)],
+[[0]])
+
+
+m4_define([b4_symbol(78, has_printer)],
+[[0]])
+
+
+m4_define([b4_dprec_max],
+[[0]])
+
+
+m4_define([b4_symbol(46, number)],
+[[46]])
+
+
+m4_define([b4_symbol(83, is_token)],
+[[0]])
+
+
+m4_define([b4_symbol(67, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(37, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(0, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(21, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(53, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(47, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(73, number)],
+[[73]])
+
+
+m4_define([b4_symbol(36, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(56, id)],
+[[term]])
+
+
+m4_define([b4_symbol(52, is_token)],
+[[0]])
+
+
+m4_define([b4_symbol(3, user_number)],
+[[258]])
+
+
+m4_define([b4_symbol(4, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(22, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(21, id)],
+[[TRUE]])
+
+
+m4_define([b4_pgoto_min],
+[[-137]])
+
+
+m4_define([b4_symbol(64, type)],
+[[objectVal]])
+
+
+m4_define([b4_symbol(44, tag)],
+[[RIGHT_PARENTHESIS]])
+
+
+m4_define([b4_percent_define_loc(api.pure)],
+[[[[parser.y:29.1]], [[parser.y:29.13]]]])
+
+
+m4_define([b4_symbol(71, id)],
+[[tmp_block]])
+
+
+m4_define([b4_symbol(21, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(25, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(49, tag)],
+[[DOUBLE_DOT]])
+
+
+m4_define([b4_percent_define_syncline(api.pure)],
+[[]b4_syncline(29, [["parser.y"]])[]])
+
+
+m4_define([b4_symbol(10, user_number)],
+[[265]])
+
+
+m4_define([b4_symbol(77, number)],
+[[77]])
+
+
+m4_define([b4_symbol(20, user_number)],
+[[275]])
+
+
+m4_define([b4_symbol(81, type)],
+[[]])
+
+
+m4_define([b4_symbol(2, number)],
+[[2]])
+
+
+m4_define([b4_symbol(71, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(78, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(52, has_id)],
+[[0]])
+
+
+m4_define([b4_symbol(30, user_number)],
+[[285]])
+
+
+m4_define([b4_symbol(29, id)],
+[[MOD]])
+
+
+m4_define([b4_symbol(26, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(77, is_token)],
+[[0]])
+
+
+m4_define([b4_symbol(40, user_number)],
+[[295]])
+
+
+m4_define([b4_symbol(1, has_printer)],
+[[0]])
+
+
+m4_define([b4_spec_file_prefix],
+[[]])
+
+
+m4_define([b4_symbol(79, id)],
+[[ifstmt]])
+
+
+m4_define([b4_r1_min],
+[[0]])
+
+
+m4_define([b4_symbol(40, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(32, number)],
+[[32]])
+
+
+m4_define([b4_symbol(50, user_number)],
+[[305]])
+
+
+m4_define([b4_defact_max],
+[[97]])
+
+
+m4_define([b4_symbol(29, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(47, has_type)],
+[[1]])
+
+
+m4_define([b4_spec_defines_file],
+[[C:/Users/user/Desktop/cs540/src/parser/generated/parser.hpp]])
+
+
+m4_define([b4_symbol(60, user_number)],
+[[-1]])
+
+
+m4_define([b4_symbol(44, id)],
+[[RIGHT_PARENTHESIS]])
+
+
+m4_define([b4_symbol(6, number)],
+[[6]])
+
+
+m4_define([b4_symbol(70, user_number)],
+[[-1]])
+
+
+m4_define([b4_symbol(43, type)],
+[[stringVal]])
+
+
+m4_define([b4_symbol(53, tag)],
+[[program]])
+
+
+m4_define([b4_symbol(46, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(56, has_id)],
+[[1]])
+
+
+m4_define([b4_conflicting_rules_max],
+[[0]])
+
+
+m4_define([b4_symbol(80, user_number)],
+[[-1]])
+
+
+m4_define([b4_symbol(17, user_number)],
+[[272]])
+
+
+m4_define([b4_symbol(62, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(58, tag)],
+[[primary]])
+
+
+m4_define([b4_symbol(55, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(16, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(27, user_number)],
+[[282]])
+
+
+m4_define([b4_symbol(36, number)],
+[[36]])
+
+
+m4_define([b4_symbol(83, has_id)],
+[[0]])
+
+
+m4_define([b4_symbol(61, is_token)],
+[[0]])
+
+
+m4_define([b4_symbol(60, type)],
+[[objectVal]])
+
+
+m4_define([b4_symbol(37, user_number)],
+[[292]])
+
+
+m4_define([b4_symbol(15, is_token)],
+[[1]])
+
+
+m4_define([b4_percent_define_syncline(lr.default-reduction)],
+[[]])
+
+
+m4_define([b4_symbol(24, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(47, user_number)],
+[[302]])
+
+
+m4_define([b4_symbol(11, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(8, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(31, has_type)],
+[[1]])
+
+
+m4_define([b4_defgoto],
+[[    -1,     1,    28,    29,    30,    31,    32,    33,    34,    35,
+      90,    91,    92,   130,   131,    62,    36,    63,    64,    65,
+      37,    38,   100,    48,    39,   143,   144,    40,    41,    44,
+      42,    45,    43]])
+
+
+m4_define([b4_symbol(63, number)],
+[[63]])
+
+
+m4_define([b4_symbol(57, user_number)],
+[[-1]])
+
+
+m4_define([b4_symbol(17, id)],
+[[AND]])
+
+
+m4_define([b4_symbol(30, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(67, user_number)],
+[[-1]])
+
+
+m4_define([b4_symbol(67, id)],
+[[elist]])
+
+
+m4_define([b4_symbol(77, user_number)],
+[[-1]])
+
+
+m4_define([b4_symbol(39, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(22, type)],
+[[stringVal]])
+
+
+m4_define([b4_stos_max],
+[[84]])
+
+
+m4_define([b4_symbol(15, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(62, tag)],
+[[callsuffix]])
+
+
+m4_define([b4_symbol(77, type)],
+[[objectVal]])
+
+
+m4_define([b4_symbol(32, id)],
+[[NOT_EQUAL]])
+
+
+m4_define([b4_symbol(2, tag)],
+[[$][undefined]])
+
+
+m4_define([b4_symbol(4, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(25, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(15, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(67, tag)],
+[[elist]])
+
+
+m4_define([b4_rules_number],
+[[97]])
+
+
+m4_define([b4_symbol(7, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(35, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(82, id)],
+[[forstmt]])
+
+
+m4_define([b4_symbol(67, number)],
+[[67]])
+
+
+m4_define([b4_symbol(7, tag)],
+[[MULTI_LINE_COMMENT]])
+
+
+m4_define([b4_symbol(3, is_token)],
+[[1]])
+
+
+m4_define([b4_symbol(13, tag)],
+[[FUNCTION]])
+
+
+m4_define([b4_symbol(45, has_printer)],
+[[0]])
+
+
+m4_define([b4_percent_define_loc(lr.type)],
+[[[[<default value>:-1.-1]], [[<default value>:-1.-1]]]])
+
+
+m4_define([b4_symbol(56, has_type)],
+[[1]])
+
+
+m4_define([b4_spec_outfile],
+[[C:/Users/user/Desktop/cs540/src/parser/generated/parser.cpp]])
+
+
+m4_define([b4_symbol(42, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(8, type)],
+[[]])
+
+
+m4_define([b4_symbol(55, has_printer)],
+[[0]])
+
+
+m4_define([b4_pact_ninf],
+[[-137]])
+
+
+m4_define([b4_symbol(18, tag)],
+[[OR]])
+
+
+m4_define([b4_symbol(1, id)],
+[[error]])
+
+
+m4_define([b4_symbol(55, is_token)],
+[[0]])
+
+
+m4_define([b4_symbol(65, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(39, type)],
+[[stringVal]])
+
+
+m4_define([b4_max_left_semantic_context],
+[[0]])
+
+
+m4_define([b4_symbol(74, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(22, number)],
+[[22]])
+
+
+m4_define([b4_symbol(75, has_printer)],
+[[0]])
+
+
+m4_define([b4_symbol(71, has_type)],
+[[1]])
+
+
+m4_define([b4_symbol(19, has_id)],
+[[1]])
+
+
+m4_define([b4_symbol(25, has_type)],
+[[1]])
+
+
+m4_define([b4_glr_flag],
+[[0]])
+
+
+m4_define([b4_symbol(70, is_token)],
+[[0]])
+
+
+m4_define([b4_symbol(71, tag)],
+[[tmp_block]])
+
+
+m4_define([b4_symbol(56, type)],
+[[objectVal]])
+
+
+m4_define([b4_symbol(55, id)],
+[[expr]])
+
+
+m4_define([b4_symbol(43, has_destructor)],
+[[0]])
+
+
+m4_define([b4_symbol(24, is_token)],
+[[1]])
+
+

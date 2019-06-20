@@ -8,10 +8,7 @@
 
 #define map_t std::unordered_map<std::string, Value> 
 
-#define ASTnode					Object
-#define BlockEnvironment		Object
-#define FunctionEnvironment	Object
-#define ClosureEnvironment	Object
+#define ASTnode		Object
 
 class Object {
 	map_t symbols;
@@ -37,6 +34,16 @@ class Object {
 		template <class T>
 		void Set(std::string key, T value) {
 				symbols[key].Set(value);
+		}
+
+		template <>
+		void Set<const char *>(std::string key, const char * value) {
+			symbols[key].Set(std::string(value));
+		}
+
+		template <>
+		void Set<Value>(std::string key, Value value) {
+			symbols[key] = value;
 		}
 };
 

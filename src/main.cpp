@@ -34,5 +34,6 @@ int main(int argc,char** argv){
 	yyparse(ast, scanner);
 	yylex_destroy(scanner);
 
+	std::cout << ast->GetRoot(); 
 	return 0;
 }
