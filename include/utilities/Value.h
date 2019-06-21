@@ -22,17 +22,17 @@ public:
 	Value( const char * value);
 	Value( Object* value);
 
-	bool& GetBoolValue();
-	double& GetNumberValue();
-	std::string& GetStringValue();
-	Object* GetObjectValue();
+	const bool& GetBoolValue() const;
+	const double& GetNumberValue() const;
+	const std::string& GetStringValue() const;
+	Object* GetObjectValue() const;
 	
 	bool toBool();
 
-	bool isBool();
-	bool isNumber();
-	bool isString();
-	bool isObject();
+	bool isBool() const;
+	bool isNumber()const;
+	bool isString() const;
+	bool isObject() const;
 
 	void PrintValue();
 
@@ -95,3 +95,27 @@ public:
 
 };
 
+namespace std
+{
+	template<> struct hash<Value>
+	{
+		typedef Value argument_type;
+		typedef std::size_t result_type;
+		result_type operator()(Value const& v) const noexcept
+		{
+
+			if (v.isBool()) {
+				return std::hash<bool>{}(v.GetBoolValue());
+			}
+			else if (v.isNumber()) {
+				return std::hash<double>{}(v.GetNumberValue());
+			}
+			else if (v.isString()) {
+				return std::hash<std::string>{}(v.GetStringValue());
+			}
+			else {
+				return std::hash<Object*>{}(v.GetObjectValue());
+			}
+		}
+	};
+}  
