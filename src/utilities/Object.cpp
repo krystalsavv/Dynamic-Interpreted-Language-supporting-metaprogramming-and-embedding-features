@@ -4,11 +4,20 @@ Object::Object(const Value& key, const Value& value) {
 	symbols[key] = value;
 }
 
-Value& Object::GetValue(const Value& key) {
-	return symbols[key];
+const Value& Object::GetValue(const Value& key) const {
+	auto value = symbols.find(key); 
+	if (value != symbols.end())
+		return value->second;
+	else {
+		assert(false);
+	}		
 }
 
-bool Object::ContainsKey(const Value& key) const{
+void Object::Set(const Value& key, const Value& value) {
+	symbols[key] = value;
+}
+
+bool Object::ContainsKey(const Value& key) const {
 	if (symbols.find(key) != symbols.end())
 		return true;
 	else
@@ -24,9 +33,9 @@ Value  Object::operator!=(Object* obj) {
 	return (this != obj);
 }
 
-std::ostream& operator << (std::ostream& out, const Object& o) {
+std::ostream& operator << (std::ostream& out, const Object& obj) {
 	out << "{" << std::endl;
-	for (auto& [key, value] : o.symbols) {
+	for (auto& [key, value] : obj.symbols) {
 		out << "key: " << key << "value: " << value;
 		out << std::endl;
 	}

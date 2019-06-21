@@ -12,7 +12,6 @@ class Object;
 
 class Value
 {
-
 	variant_t variant;
 
 public:
@@ -29,23 +28,24 @@ public:
 	const std::string& GetStringValue() const;
 	Object* GetObjectValue() const;
 	
-	bool toBool();
+	bool toBool() const;
 
 	bool isBool() const;
 	bool isNumber()const;
 	bool isString() const;
 	bool isObject() const;
 
+	void Set(const Value& value);
 	//template set
-	template <class T>
+	/*template <class T>
 	void  Set(T value) {
-		variant =value;
+		variant = value;
 	}
 
 	template <>
 	void  Set<const char *>(const char * value) {
 		variant = std::string(value);
-	}
+	}*/
 
 	//template <>
 	//void  Set<Value>(Value value) {
@@ -81,7 +81,6 @@ public:
 	//Value operator<(const Value& right) const;
 	//Value operator<=(const Value& right) const;
 
-
 	Value operator==(Value& right);
 	Value operator!=(Value& right);
 	//for consts (unordered map comparison)
@@ -93,8 +92,9 @@ public:
 	Value operator||(Value& right);
 	Value operator!();
 
-	friend std::ostream& operator << (std::ostream& out, const Value& c);
+	friend std::ostream& operator << (std::ostream& out, const Value& value);
 };
+
 
 namespace std
 {

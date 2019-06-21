@@ -61,7 +61,7 @@ bool Value::isObject() const {
 	return std::holds_alternative<Object*>(variant);
 }
 
-bool Value::toBool() {
+bool Value::toBool() const {
 	if (this->isNumber()) {
 		if (this->GetNumberValue() > 0)
 			return true;
@@ -85,6 +85,14 @@ bool Value::toBool() {
 	}
 	// TODO: libfunc
 }
+
+
+void Value::Set(const Value& value) {
+	variant = value.variant;
+}
+
+
+
 
 /****************************overloads***********************************/
 //arithmetics
@@ -339,13 +347,13 @@ Value Value::operator!() {
 	return !(this->toBool());
 }
 
-std::ostream& operator << (std::ostream& out, const Value& v) {
-	if (v.isBool())
-		return out << v.GetBoolValue();
-	else if (v.isNumber())
-		return out << v.GetNumberValue();
-	else if (v.isString())
-		return out << v.GetStringValue();
-	else if (v.isObject())
-		return out << *(v.GetObjectValue());
+std::ostream& operator << (std::ostream& out, const Value& value) {
+	if (value.isBool())
+		return out << value.GetBoolValue();
+	else if (value.isNumber())
+		return out << value.GetNumberValue();
+	else if (value.isString())
+		return out << value.GetStringValue();
+	else if (value.isObject())
+		return out << *(value.GetObjectValue());
 }
