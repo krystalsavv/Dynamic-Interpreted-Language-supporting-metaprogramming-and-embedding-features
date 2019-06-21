@@ -24,36 +24,36 @@ Value::Value( Object* value) {
 
 
 //getters
-bool& Value::GetBoolValue() {
+const bool& Value::GetBoolValue() const {
 	return std::get<bool>(variant);
 }
 
-double& Value::GetNumberValue() {
+const double& Value::GetNumberValue() const {
 	return std::get<double>(variant);
 }
 
-std::string& Value::GetStringValue() {
+const std::string& Value::GetStringValue() const {
 	return std::get<std::string>(variant);
 }
 
-Object* Value::GetObjectValue() {
+Object* Value::GetObjectValue() const {
 	return std::get<Object*>(variant);
 }
 
 
-bool Value::isBool() {
+bool Value::isBool() const {
 	return std::holds_alternative<bool>(variant);
 }
 
-bool Value::isNumber() {
+bool Value::isNumber() const {
 	return std::holds_alternative<double>(variant);
 }
 
-bool Value::isString() {
+bool Value::isString() const {
 	return std::holds_alternative<std::string>(variant);
 }
 
-bool Value::isObject() {
+bool Value::isObject() const {
 	return std::holds_alternative<Object*>(variant);
 }
 
