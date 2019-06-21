@@ -28,7 +28,7 @@ class Object {
 		void PrintMap();
 
 		//overloads
-		//bool operator==(Object* obj);
+		bool operator==(Object* obj);
 		//bool operator!=(Object* obj);
 
 		template <class T>

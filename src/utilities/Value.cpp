@@ -214,7 +214,7 @@ Value Value::Value::operator-() {
 Value Value::operator>(Value& right) {
 	Value val;
 	if (this->isNumber() && right.isNumber())
-		val = *this > right;
+		val = (this->GetNumberValue() > right.GetNumberValue());
 	else
 		// TODO: error in different types
 		val = false;
@@ -224,7 +224,7 @@ Value Value::operator>(Value& right) {
 Value Value::operator>=(Value& right) {
 	Value val;
 	if (this->isNumber() && right.isNumber())
-		val = *this >= right;
+		val = (this->GetNumberValue() >= right.GetNumberValue());
 	else
 		// TODO: error in different types
 		val = false;
@@ -234,7 +234,7 @@ Value Value::operator>=(Value& right) {
 Value Value::operator<(Value& right) {
 	Value val;
 	if (this->isNumber() && right.isNumber())
-		val = *this < right;
+		val = (this->GetNumberValue() < right.GetNumberValue());
 	else
 		// TODO: error in different types
 		val = false;
@@ -244,25 +244,28 @@ Value Value::operator<(Value& right) {
 Value Value::operator<=(Value& right) {
 	Value val;
 	if (this->isNumber() && right.isNumber())
-		val = *this <= right;
+		val = (this->GetNumberValue() <= right.GetNumberValue());
 	else
 		// TODO: error in different types
 		val = false;
 	return val;
 }
 
+
 Value Value::operator==(Value& right) {
 	Value val;
-	if ( (this->isNumber() && right.isNumber()) || 
-		 (this->isString() && right.isString()) || 
-		 (this->isBool() && right.isBool()) )
-			val = *this == right;
+	if (this->isNumber() && right.isNumber())
+		val = (this->GetNumberValue() == right.GetNumberValue());
+	else if (this->isString() && right.isString())
+		val = (this->GetStringValue() == right.GetStringValue());
+	else if (this->isBool() && right.isBool())
+		val = (this->GetBoolValue() == right.GetBoolValue());
 	// TODO: NO OVERLOAD FOR OBJECT, STRANGER THINGS
 	else if (this->isObject() && right.isObject()) {
-		if (this->GetObjectValue() == NULL || right.GetObjectValue() == NULL)
+		if (this->GetObjectValue() == nullptr || right.GetObjectValue() == nullptr)
 			val = false;
 		else
-			val = *this == right;
+			val = this->GetObjectValue() == right.GetObjectValue();
 	}
 	else
 		// TODO: error in different types
@@ -272,16 +275,18 @@ Value Value::operator==(Value& right) {
 
 Value Value::operator!=(Value& right) {
 	Value val;
-	if ((this->isNumber() && right.isNumber()) ||
-		(this->isString() && right.isString()) ||
-		(this->isBool() && right.isBool()))
-		val = *this != right;
+	if (this->isNumber() && right.isNumber())
+		val = (this->GetNumberValue() != right.GetNumberValue());
+	else if (this->isString() && right.isString())
+		val = (this->GetStringValue() != right.GetStringValue());
+	else if (this->isBool() && right.isBool())
+		val = (this->GetBoolValue() != right.GetBoolValue());
 	// TODO: NO OVERLOAD FOR OBJECT, STRANGER THINGS
 	else if (this->isObject() && right.isObject()) {
 		if (this->GetObjectValue() == NULL || right.GetObjectValue() == NULL)
 			val = true;
 		else
-			val = *this != right;
+			val = this->GetObjectValue() != right.GetObjectValue();
 	}
 	else
 		// TODO: error in different types
@@ -289,14 +294,21 @@ Value Value::operator!=(Value& right) {
 	return val;
 }
 
+Value Value::operator==(const Value& right) const {
+	
+}
+
+Value Value::operator!=(const Value& right) const {
+
+}
 
 //logical
 Value Value::operator&&(Value& right) {
-	return this->toBool() && right.toBool();
+	return (this->toBool() && right.toBool());
 }
 
 Value Value::operator||(Value& right) {
-	return this->toBool() || right.toBool();
+	return (this->toBool() || right.toBool());
 }
 
 Value Value::operator!() {

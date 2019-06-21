@@ -43,9 +43,9 @@ void Object::PrintMap() {
 }
 
 //overloads
-//bool Object::operator==(Object* obj) {
-//	bool boolean = this->symbols == obj->symbols;
-//}
+bool Object::operator==(Object* obj) {
+	return (symbols == obj->symbols);
+}
 
 //bool  Object::operator!=(Object* obj) {
 //	bool boolean = this->symbols != obj->symbols;
