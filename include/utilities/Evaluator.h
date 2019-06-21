@@ -63,9 +63,15 @@ private:
 	Value EvaluateElist(ASTnode* node);
 	Value EvaluateEmptyElist(ASTnode* node);
 	
+	//indexed
+	Value EvaluateIndexed(ASTnode* node);
+
+	//indexedElem
+	Value EvaluateIndexedElem(ASTnode* node);
+
 	//object
 	Value EvaluateElistObjectdef(ASTnode* node);
-	//Value EvaluateIndexedObjectdef(ASTnode* node);
+	Value EvaluateIndexedObjectdef(ASTnode* node);
 
 };
 

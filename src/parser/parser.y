@@ -490,15 +490,15 @@ indexed : indexedelem
 				std::cout << ("indexedelem\n");
 				$$ = new ASTnode("type", "indexed");
 				$$->Set("numOfElems", 1.0);
-				$$->Set("elem1", $1); 
+				$$->Set("0", $1); 
 			}
 	| indexed COMMA indexedelem	
 			{
 				std::cout << ("indexedelem, intexedelem\n");
 				$$ = $1;
 				double numOfElems = $$->GetValue("numOfElems").GetNumberValue();
+				$$->Set(std::to_string((int)numOfElems), $3);
 				numOfElems++;
-				$$->Set(std::string("elem") + std::to_string((int)numOfElems), $3);
 				$$->Set("numOfElems", numOfElems);
 			}
 			;
@@ -506,7 +506,7 @@ indexed : indexedelem
 indexedelem : LEFT_BRACKET expr COLON expr RIGHT_BRACKET  
 				{
 					std::cout << ("{ expression : expression }\n");
-					$$ = new ASTnode("type", "indexedelem");
+					$$ = new ASTnode("type", "indexedElem");
 					$$->Set("keyExpr", $2);
 					$$->Set("valueExpr", $4);
 				}
