@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include <cassert>
+#include <iostream> 
 
 class Object;
 
@@ -16,11 +17,12 @@ class Value
 
 public:
 	Value() = default;
-	Value( bool value);
-	Value( double value);
+	Value(bool value);
+	Value(double value);
 	Value(std::string value);
-	Value( const char * value);
-	Value( Object* value);
+	Value(const char * value);
+	Value(Object* value);
+	Value(const Value& value);
 
 	const bool& GetBoolValue() const;
 	const double& GetNumberValue() const;
@@ -33,8 +35,6 @@ public:
 	bool isNumber()const;
 	bool isString() const;
 	bool isObject() const;
-
-	void PrintValue() const;
 
 	//template set
 	template <class T>
@@ -93,6 +93,7 @@ public:
 	Value operator||(Value& right);
 	Value operator!();
 
+	friend std::ostream& operator << (std::ostream& out, const Value& c);
 };
 
 namespace std

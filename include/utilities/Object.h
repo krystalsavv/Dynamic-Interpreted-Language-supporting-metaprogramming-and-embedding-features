@@ -6,7 +6,8 @@
 #include "utilities/Value.h"
 
 
-#define map_t std::unordered_map<std::string, Value> 
+//#define map_t std::unordered_map<std::string, Value> 
+#define map_t std::unordered_map<Value, Value> 
 
 #define ASTnode		Object
 
@@ -15,21 +16,17 @@ class Object {
 
 	public:
 		Object() = default;
-		Object(std::string key, bool value);
-		Object(std::string key, double value);
-		Object(std::string key, std::string value);
-		Object(std::string key, const char * value);
-		Object(std::string key, Object* value);
+		Object(const Value& key, const Value& value);
 		
-		Value& GetValue(std::string key);
+		Value& GetValue(const Value& key);
 
-		bool ContainsKey(std::string key) const;
-
-		void PrintMap() const;
+		bool ContainsKey(const Value&) const;
 
 		//overloads
 		Value operator==(Object* obj);
 		Value operator!=(Object* obj);
+
+		friend std::ostream& operator << (std::ostream& out, const Object& o);
 
 		template <class T>
 		void Set(std::string key, T value) {

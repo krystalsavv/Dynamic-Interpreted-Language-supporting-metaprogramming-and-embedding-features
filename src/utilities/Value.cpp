@@ -18,8 +18,12 @@ Value::Value(const char * value) {
 	variant = std::string(value);
 }
 
-Value::Value( Object* value) {
+Value::Value(Object* value) {
 	variant = value;
+}
+
+Value::Value(const Value& value) {
+	variant = value.variant;
 }
 
 
@@ -80,17 +84,6 @@ bool Value::toBool() {
 		return this->GetBoolValue();
 	}
 	// TODO: libfunc
-}
-
-void Value::PrintValue() const{
-	if (this->isBool())
-		std::cout << this->GetBoolValue();
-	else if (this->isNumber())
-		std::cout << this->GetNumberValue();
-	else if (this->isString())
-		std::cout << this->GetStringValue();
-	else if (this->isObject())
-		this->GetObjectValue()->PrintMap();
 }
 
 /****************************overloads***********************************/
@@ -347,4 +340,15 @@ Value Value::operator||(Value& right) {
 
 Value Value::operator!() {
 	return !(this->toBool());
+}
+
+std::ostream& operator << (std::ostream& out, const Value& v) {
+	if (v.isBool())
+		return out << v.GetBoolValue();
+	else if (v.isNumber())
+		return out << v.GetNumberValue();
+	else if (v.isString())
+		return out << v.GetStringValue();
+	else if (v.isObject())
+		return out << *(v.GetObjectValue());
 }
