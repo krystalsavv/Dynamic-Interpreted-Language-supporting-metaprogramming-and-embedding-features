@@ -34,11 +34,12 @@ Value  Object::operator!=(Object* obj) {
 }
 
 std::ostream& operator << (std::ostream& out, const Object& obj) {
-	out << "{" << std::endl;
+	out << "\n{" << std::endl;
 	for (auto& [key, value] : obj.symbols) {
-		out << "key: " << key << "value: " << value;
+		out << "key: " << key << "\tvalue: " << value;
 		out << std::endl;
 	}
 	out << "}" << std::endl;
 	return out; 
 }
+

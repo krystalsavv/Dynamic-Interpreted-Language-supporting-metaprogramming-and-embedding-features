@@ -12,4 +12,6 @@ public:
 
 	Object* GetRoot();
 	void SetRoot(Object* root);
+
+	void Print();
 };

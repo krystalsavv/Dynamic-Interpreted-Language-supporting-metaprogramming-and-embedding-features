@@ -33,5 +33,7 @@ int main(int argc,char** argv){
 	AST* ast = new AST(); 
 	yyparse(ast, scanner);
 	yylex_destroy(scanner);
+
+	ast->Print();
 	return 0;
 }
