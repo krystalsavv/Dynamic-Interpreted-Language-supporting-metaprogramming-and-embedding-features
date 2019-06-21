@@ -28,14 +28,14 @@ Value& Object::GetValue(std::string key) {
 }
 
 
-bool Object::ContainsKey(std::string key) {
+bool Object::ContainsKey(std::string key) const{
 	if (symbols.find(key) != symbols.end())
 		return true;
 	else
 		return false;
 }
 
-void Object::PrintMap() {
+void Object::PrintMap() const{
 	for (auto& [key, value] : symbols) {
 		std::cout << "key: " << key << "value: ";  
 		value.PrintValue();
@@ -43,10 +43,10 @@ void Object::PrintMap() {
 }
 
 //overloads
-bool Object::operator==(Object* obj) {
-	return (symbols == obj->symbols);
+Value Object::operator==(Object* obj) {
+	return (this == obj);
 }
 
-//bool  Object::operator!=(Object* obj) {
-//	bool boolean = this->symbols != obj->symbols;
-//}
+Value  Object::operator!=(Object* obj) {
+	return (this != obj);
+}

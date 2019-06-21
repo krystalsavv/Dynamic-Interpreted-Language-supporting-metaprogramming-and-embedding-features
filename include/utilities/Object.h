@@ -23,13 +23,13 @@ class Object {
 		
 		Value& GetValue(std::string key);
 
-		bool ContainsKey(std::string key);
+		bool ContainsKey(std::string key) const;
 
-		void PrintMap();
+		void PrintMap() const;
 
 		//overloads
-		bool operator==(Object* obj);
-		//bool operator!=(Object* obj);
+		Value operator==(Object* obj);
+		Value operator!=(Object* obj);
 
 		template <class T>
 		void Set(std::string key, T value) {

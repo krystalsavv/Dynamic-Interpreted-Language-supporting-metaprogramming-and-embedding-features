@@ -82,7 +82,7 @@ bool Value::toBool() {
 	// TODO: libfunc
 }
 
-void Value::PrintValue() {
+void Value::PrintValue() const{
 	if (this->isBool())
 		std::cout << this->GetBoolValue();
 	else if (this->isNumber())
@@ -293,14 +293,48 @@ Value Value::operator!=(Value& right) {
 		val = true;
 	return val;
 }
-
-Value Value::operator==(const Value& right) const {
-	
-}
-
-Value Value::operator!=(const Value& right) const {
-
-}
+//for consts (unordered map comparison)
+//Value Value::operator==(const Value& right) const {
+//	Value val;
+//	if (this->isNumber() && right.isNumber())
+//		val = (this->GetNumberValue() == right.GetNumberValue());
+//	else if (this->isString() && right.isString())
+//		val = (this->GetStringValue() == right.GetStringValue());
+//	else if (this->isBool() && right.isBool())
+//		val = (this->GetBoolValue() == right.GetBoolValue());
+//	// TODO: NO OVERLOAD FOR OBJECT, STRANGER THINGS
+//	else if (this->isObject() && right.isObject()) {
+//		if (this->GetObjectValue() == nullptr || right.GetObjectValue() == nullptr)
+//			val = false;
+//		else
+//			val = this->GetObjectValue() == right.GetObjectValue();
+//	}
+//	else
+//		// TODO: error in different types
+//		val = false;
+//	return val;
+//}
+//for consts (unordered map comparison)
+//Value Value::operator!=(const Value& right) const {
+//	Value val;
+//	if (this->isNumber() && right.isNumber())
+//		val = (this->GetNumberValue() != right.GetNumberValue());
+//	else if (this->isString() && right.isString())
+//		val = (this->GetStringValue() != right.GetStringValue());
+//	else if (this->isBool() && right.isBool())
+//		val = (this->GetBoolValue() != right.GetBoolValue());
+//	// TODO: NO OVERLOAD FOR OBJECT, STRANGER THINGS
+//	else if (this->isObject() && right.isObject()) {
+//		if (this->GetObjectValue() == NULL || right.GetObjectValue() == NULL)
+//			val = true;
+//		else
+//			val = this->GetObjectValue() != right.GetObjectValue();
+//	}
+//	else
+//		// TODO: error in different types
+//		val = true;
+//	return val;
+//}
 
 //logical
 Value Value::operator&&(Value& right) {

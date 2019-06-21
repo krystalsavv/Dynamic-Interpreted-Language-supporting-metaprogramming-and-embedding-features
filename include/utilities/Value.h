@@ -34,7 +34,7 @@ public:
 	bool isString() const;
 	bool isObject() const;
 
-	void PrintValue();
+	void PrintValue() const;
 
 	//template set
 	template <class T>
@@ -84,9 +84,9 @@ public:
 
 	Value operator==(Value& right);
 	Value operator!=(Value& right);
-
-	Value operator==(const Value& right) const;
-	Value operator!=(const Value& right) const;
+	//for consts (unordered map comparison)
+	//Value operator==(const Value& right) const;
+	//Value operator!=(const Value& right) const;
 
 	//logical
 	Value operator&&(Value& right);
