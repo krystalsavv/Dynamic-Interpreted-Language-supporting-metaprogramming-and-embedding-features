@@ -85,8 +85,8 @@ public:
 	Value operator==(Value& right);
 	Value operator!=(Value& right);
 	//for consts (unordered map comparison)
-	//Value operator==(const Value& right) const;
-	//Value operator!=(const Value& right) const;
+	bool operator==(const Value& right) const;
+	bool operator!=(const Value& right) const;
 
 	//logical
 	Value operator&&(Value& right);

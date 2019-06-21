@@ -6,7 +6,7 @@
 #include "utilities/Value.h"
 
 
-#define map_t std::unordered_map<std::string, Value> 
+#define map_t std::unordered_map<Value, Value> 
 
 #define ASTnode		Object
 
