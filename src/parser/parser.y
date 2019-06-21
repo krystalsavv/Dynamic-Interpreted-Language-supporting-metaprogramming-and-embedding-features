@@ -83,7 +83,6 @@ program : program stmt
 				$$ = new ASTnode("type", "program");
 				$$->Set("numOfStmt", 0.0);
 				ast->SetRoot($$);
-				std::cout << "program Fisnish\n";
 			}
 		;
 

@@ -27,7 +27,7 @@ Value::Value(const Value& value) {
 }
 
 
-//getters
+// Getters
 const bool& Value::GetBoolValue() const {
 	return std::get<bool>(variant);
 }
@@ -61,6 +61,7 @@ bool Value::isObject() const {
 	return std::holds_alternative<Object*>(variant);
 }
 
+
 bool Value::toBool() const {
 	if (this->isNumber()) {
 		if (this->GetNumberValue() > 0)
@@ -90,8 +91,6 @@ bool Value::toBool() const {
 void Value::Set(const Value& value) {
 	variant = value.variant;
 }
-
-
 
 
 /****************************overloads***********************************/

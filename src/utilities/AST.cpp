@@ -15,3 +15,8 @@ void AST::SetRoot(Object* root) {
 void AST::Print() {
 	std::cout << *root; 
 }
+
+void AST::Evaluate() {
+	//TODO
+	//Value tmp = Evaluator::Evaluate(root);
+}

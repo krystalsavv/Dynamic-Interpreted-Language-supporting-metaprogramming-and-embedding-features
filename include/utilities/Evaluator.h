@@ -7,11 +7,14 @@
 class Evaluator {
 public:
 	Evaluator() = default;
-	Value Evaluate(ASTnode* node);
+	Value static Evaluate(ASTnode* node);
 private:
 	static std::map<std::string, Value (Evaluator::*)(ASTnode*)> EvaluateDispatcher;
 	static std::map<std::string, Value(Evaluator::*)(ASTnode*)> IntializeDispatcher();
 	
+	// program
+	Value EvaluateProgram(ASTnode* node);
+
 	// term
 	Value EvaluateParenthesis(ASTnode* node);
 	Value EvaluateUminus(ASTnode* node);

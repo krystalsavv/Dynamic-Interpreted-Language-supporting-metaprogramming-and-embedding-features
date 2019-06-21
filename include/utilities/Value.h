@@ -36,23 +36,6 @@ public:
 	bool isObject() const;
 
 	void Set(const Value& value);
-	//template set
-	/*template <class T>
-	void  Set(T value) {
-		variant = value;
-	}
-
-	template <>
-	void  Set<const char *>(const char * value) {
-		variant = std::string(value);
-	}*/
-
-	//template <>
-	//void  Set<Value>(Value value) {
-	//	variant = std::string(value);
-	//}
-
-
 
 	//overloads
 	Value operator+(Value& right);
@@ -75,14 +58,9 @@ public:
 	Value operator>=(Value& right);
 	Value operator<(Value& right);
 	Value operator<=(Value& right);
-
-	//Value operator>(const Value& right) const;
-	//Value operator>=(const Value& right) const;
-	//Value operator<(const Value& right) const;
-	//Value operator<=(const Value& right) const;
-
 	Value operator==(Value& right);
 	Value operator!=(Value& right);
+
 	//for consts (unordered map comparison)
 	bool operator==(const Value& right) const;
 	bool operator!=(const Value& right) const;
@@ -104,7 +82,6 @@ namespace std
 		typedef std::size_t result_type;
 		result_type operator()(Value const& v) const noexcept
 		{
-
 			if (v.isBool()) {
 				return std::hash<bool>{}(v.GetBoolValue());
 			}

@@ -35,5 +35,6 @@ int main(int argc,char** argv){
 	yylex_destroy(scanner);
 
 	ast->Print();
+	//ast->Evaluate();
 	return 0;
 }

@@ -12,7 +12,7 @@
 
 class Object {
 	map_t symbols;
-
+	unsigned referenceCounter = 0; 
 	public:
 		Object() = default;
 		Object(const Value& key, const Value& value);
@@ -26,23 +26,6 @@ class Object {
 		Value operator==(Object* obj);
 		Value operator!=(Object* obj);
 		friend std::ostream& operator << (std::ostream& out, const Object& obj);
-
-		/*template <class T>
-		void Set(std::string key, T value) {
-				symbols[key].Set(value);
-		}
-
-		template <>
-		void Set<const char *>(std::string key, const char * value) {
-			symbols[key].Set(std::string(value));
-		}
-
-		template <>
-		void Set<Value>(std::string key, Value value) {
-			symbols[key] = value;
-		}*/
-
-
 };
 
 

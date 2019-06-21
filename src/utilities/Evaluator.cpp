@@ -3,6 +3,8 @@
 
 std::map<std::string, Value(Evaluator::*)(ASTnode*)> Evaluator::IntializeDispatcher() {
 	std::map<std::string, Value(Evaluator::*)(ASTnode*)> table;
+	table["program"] = &Evaluator::EvaluateProgram;
+	
 	// term
 	table["parentheses"] = &Evaluator::EvaluateParenthesis; 
 	table["uminus"] = &Evaluator::EvaluateUminus;
@@ -59,10 +61,19 @@ std::map<std::string, Value(Evaluator::*)(ASTnode*)> Evaluator::IntializeDispatc
 
 std::map<std::string, Value(Evaluator::*)(ASTnode*) > Evaluator::EvaluateDispatcher = IntializeDispatcher();
 
-
 Value Evaluator::Evaluate(ASTnode* node) {
 	return EvaluateDispatcher[node->GetValue("type").GetStringValue()];
 }
+
+Value Evaluator::EvaluateProgram(ASTnode* node) {
+	Value tmp;
+	double numOfExpr = node->GetValue("numOfExpr").GetNumberValue();
+	for (int i = 0; i < numOfExpr; i++) {
+		tmp = Evaluate(node->GetValue(std::to_string(i)).GetObjectValue());
+	}
+	return nil;
+}
+
 
 // term
 Value Evaluator::EvaluateParenthesis(ASTnode* node) {
