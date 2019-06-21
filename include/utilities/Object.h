@@ -17,17 +17,17 @@ class Object {
 		Object() = default;
 		Object(const Value& key, const Value& value);
 		
-		Value& GetValue(const Value& key);
+		const Value& GetValue(const Value& key) const;
+		void Set(const Value& key, const Value& value);
 
-		bool ContainsKey(const Value&) const;
+		bool ContainsKey(const Value& key) const;
 
 		//overloads
 		Value operator==(Object* obj);
 		Value operator!=(Object* obj);
+		friend std::ostream& operator << (std::ostream& out, const Object& obj);
 
-		friend std::ostream& operator << (std::ostream& out, const Object& o);
-
-		template <class T>
+		/*template <class T>
 		void Set(std::string key, T value) {
 				symbols[key].Set(value);
 		}
@@ -40,7 +40,9 @@ class Object {
 		template <>
 		void Set<Value>(std::string key, Value value) {
 			symbols[key] = value;
-		}
+		}*/
+
+
 };
 
 
