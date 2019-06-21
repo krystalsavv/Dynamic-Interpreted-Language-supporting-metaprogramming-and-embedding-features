@@ -287,47 +287,44 @@ Value Value::operator!=(Value& right) {
 	return val;
 }
 //for consts (unordered map comparison)
-//Value Value::operator==(const Value& right) const {
-//	Value val;
-//	if (this->isNumber() && right.isNumber())
-//		val = (this->GetNumberValue() == right.GetNumberValue());
-//	else if (this->isString() && right.isString())
-//		val = (this->GetStringValue() == right.GetStringValue());
-//	else if (this->isBool() && right.isBool())
-//		val = (this->GetBoolValue() == right.GetBoolValue());
-//	// TODO: NO OVERLOAD FOR OBJECT, STRANGER THINGS
-//	else if (this->isObject() && right.isObject()) {
-//		if (this->GetObjectValue() == nullptr || right.GetObjectValue() == nullptr)
-//			val = false;
-//		else
-//			val = this->GetObjectValue() == right.GetObjectValue();
-//	}
-//	else
-//		// TODO: error in different types
-//		val = false;
-//	return val;
-//}
+bool Value::operator==(const Value& right) const {
+	if (this->isNumber() && right.isNumber())
+		return (this->GetNumberValue() == right.GetNumberValue());
+	else if (this->isString() && right.isString())
+		return (this->GetStringValue() == right.GetStringValue());
+	else if (this->isBool() && right.isBool())
+		return (this->GetBoolValue() == right.GetBoolValue());
+	// TODO: NO OVERLOAD FOR OBJECT, STRANGER THINGS
+	else if (this->isObject() && right.isObject()) {
+		if (this->GetObjectValue() == nullptr || right.GetObjectValue() == nullptr)
+			return false;
+		else
+			return this->GetObjectValue() == right.GetObjectValue();
+	}
+	else
+		// TODO: error in different types
+		return false;
+
+}
 //for consts (unordered map comparison)
-//Value Value::operator!=(const Value& right) const {
-//	Value val;
-//	if (this->isNumber() && right.isNumber())
-//		val = (this->GetNumberValue() != right.GetNumberValue());
-//	else if (this->isString() && right.isString())
-//		val = (this->GetStringValue() != right.GetStringValue());
-//	else if (this->isBool() && right.isBool())
-//		val = (this->GetBoolValue() != right.GetBoolValue());
-//	// TODO: NO OVERLOAD FOR OBJECT, STRANGER THINGS
-//	else if (this->isObject() && right.isObject()) {
-//		if (this->GetObjectValue() == NULL || right.GetObjectValue() == NULL)
-//			val = true;
-//		else
-//			val = this->GetObjectValue() != right.GetObjectValue();
-//	}
-//	else
-//		// TODO: error in different types
-//		val = true;
-//	return val;
-//}
+bool Value::operator!=(const Value& right) const {
+	if (this->isNumber() && right.isNumber())
+		return (this->GetNumberValue() != right.GetNumberValue());
+	else if (this->isString() && right.isString())
+		return (this->GetStringValue() != right.GetStringValue());
+	else if (this->isBool() && right.isBool())
+		return (this->GetBoolValue() != right.GetBoolValue());
+	// TODO: NO OVERLOAD FOR OBJECT, STRANGER THINGS
+	else if (this->isObject() && right.isObject()) {
+		if (this->GetObjectValue() == NULL || right.GetObjectValue() == NULL)
+			return true;
+		else
+			return this->GetObjectValue() != right.GetObjectValue();
+	}
+	else
+		// TODO: error in different types
+		return true;
+}
 
 //logical
 Value Value::operator&&(Value& right) {
