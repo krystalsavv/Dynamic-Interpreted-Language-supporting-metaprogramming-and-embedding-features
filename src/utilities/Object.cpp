@@ -1,5 +1,7 @@
 #include "utilities/Object.h"
 
+unsigned int Object::nestedCounterPrint = 0;
+
 Object::Object(const Value& key, const Value& value) {
 	symbols[key] = value;
 }
@@ -24,6 +26,12 @@ bool Object::ContainsKey(const Value& key) const {
 		return false;
 }
 
+void Object::PrintTabs(std::ostream& out) {
+	for (int i = 0; i < Object::nestedCounterPrint; i++) {
+		out << "\t";
+	}
+}
+
 //overloads
 Value Object::operator==(Object* obj) {
 	return (this == obj);
@@ -34,11 +42,18 @@ Value  Object::operator!=(Object* obj) {
 }
 
 std::ostream& operator << (std::ostream& out, const Object& obj) {
-	out << "\n{" << std::endl;
+	out << "{" << std::endl;
+	Object::nestedCounterPrint++;
+	int commaCounter = 0;
 	for (auto& [key, value] : obj.symbols) {
-		out << "key: " << key << "\tvalue: " << value;
-		out << std::endl;
+		Object::PrintTabs(out);
+		out << key << " : " << value ;
+		if (commaCounter++ < obj.symbols.size()-1)
+			out << ", ";
+		out << std::endl;	
 	}
+	Object::nestedCounterPrint--;
+	Object::PrintTabs(out);
 	out << "}" << std::endl;
 	return out; 
 }

@@ -430,15 +430,15 @@ argList : arg
 				//std::cout << "arg  " << $1->GetValue("ID").GetNumberValue() << std::endl ;
 				$$ = new ASTnode("type", "argList");
 				$$->Set("numOfArg", 1.0);
-				$$->Set("arg1", $1);
+				$$->Set("0", $1);
 			}	
-	| argList COMMA arg 
+	| argList COMMA arg
 			{
 				//std::cout << "argList, arg "<< $3->GetValue("ID")->GetNumberValue() << std::endl;
 				$$ = $1;
 				double numofArgs = $$->GetValue("numOfArg").GetNumberValue();
+				$$->Set(std::to_string((int)numofArgs), $3);
 				numofArgs++;
-				$$->Set(std::string("arg") + std::to_string((int)numofArgs), $3);
 				$$->Set("numOfArg", numofArgs);
 			}
 	|		{
@@ -514,8 +514,8 @@ tmp_block: tmp_block stmt
 				{
 					$$ = $1;
 					double numOfStmt = $$->GetValue("numOfStmt").GetNumberValue();
+					$$->Set(std::to_string((int)numOfStmt), $2);
 					numOfStmt++;
-					$$->Set(std::string("stmt") + std::to_string((int)numOfStmt), $2);
 					$$->Set("numOfStmt", numOfStmt);
 				}
 		|		{ 
@@ -611,15 +611,15 @@ idlist : formal
 			std::cout << ("formal\n");
 			$$ = new ASTnode("type", "idlist");
 			$$->Set("numOfParams", 1.0);
-			$$->Set("param1", $1); 
+			$$->Set("0", $1); 
 			}
 	| idlist COMMA formal	
 			{
 				std::cout << ("idlist, id\n");	
 				$$ = $1;
 				double numOfParams = $$->GetValue("numOfParams").GetNumberValue();
+				$$->Set(std::to_string((int)numOfParams), $3);
 				numOfParams++;
-				$$->Set(std::string("param") + std::to_string((int)numOfParams), $3);
 				$$->Set("numOfParams", numOfParams);
 			}
 	|		{

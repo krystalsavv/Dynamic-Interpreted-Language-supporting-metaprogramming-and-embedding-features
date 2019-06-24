@@ -12,7 +12,9 @@
 
 class Object {
 	map_t symbols;
-	unsigned referenceCounter = 0; 
+	unsigned referenceCounter = 0;
+	static unsigned int nestedCounterPrint;
+	static void PrintTabs(std::ostream& out);
 	public:
 		Object() = default;
 		Object(const Value& key, const Value& value);
@@ -22,6 +24,7 @@ class Object {
 
 		bool ContainsKey(const Value& key) const;
 
+		
 		//overloads
 		Value operator==(Object* obj);
 		Value operator!=(Object* obj);
