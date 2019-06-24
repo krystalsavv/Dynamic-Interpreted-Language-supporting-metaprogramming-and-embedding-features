@@ -8,4 +8,5 @@ target_link_libraries(  Interpreter             # To
                         Parser
 						Value
 						Evaluator
+						EnvironmentHolder
                         )                

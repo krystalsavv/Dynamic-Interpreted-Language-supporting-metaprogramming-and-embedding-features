@@ -4,6 +4,7 @@
 	#include <errno.h>
 	#include <iostream>	
 	#include "utilities/AST.h"
+	#include "utilities/EnvironmentHolder.h"
 
 
 	#include "parser.hpp"
