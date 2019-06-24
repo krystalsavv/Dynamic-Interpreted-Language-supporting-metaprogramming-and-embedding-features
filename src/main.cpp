@@ -35,6 +35,7 @@ int main(int argc,char** argv){
 	yylex_destroy(scanner);
 
 	ast->Print();
+	Evaluator::getInstance()->Evaluate(ast->GetRoot());
 	//ast->Evaluate();
 	return 0;
 }

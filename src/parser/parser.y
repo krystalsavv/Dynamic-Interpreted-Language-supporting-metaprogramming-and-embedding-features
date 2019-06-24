@@ -74,8 +74,8 @@ program : program stmt
 					std::cout << "stmt program" << std::endl;
 					$$ = $1;
 					double numOfStmt = $$->GetValue("numOfStmt").GetNumberValue();
+					$$->Set(std::to_string((int)numOfStmt), $2);
 					numOfStmt++;
-					$$->Set(std::string("stmt") + std::to_string((int)numOfStmt), $2);
 					$$->Set("numOfStmt", numOfStmt);
 				}
 		|	{

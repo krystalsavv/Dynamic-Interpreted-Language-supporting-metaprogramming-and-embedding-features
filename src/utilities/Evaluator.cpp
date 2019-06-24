@@ -1,6 +1,8 @@
 #include "utilities/Evaluator.h"
 #define nil (Object *)nullptr
 
+Evaluator* Evaluator::evaluator = nullptr;
+
 std::map<std::string, Value(Evaluator::*)(ASTnode*)> Evaluator::IntializeDispatcher() {
 	std::map<std::string, Value(Evaluator::*)(ASTnode*)> table;
 	table["program"] = &Evaluator::EvaluateProgram;
@@ -53,22 +55,31 @@ std::map<std::string, Value(Evaluator::*)(ASTnode*)> Evaluator::IntializeDispatc
 	table["indexedelem"] = &Evaluator::EvaluateIndexedElem;
 
 	//object
-	table["elistObjectdef"] = &EvaluateElistObjectdef;
-	//table["indexedObjectdef"] = &EvaluateIndexedObjectdef;
+	table["elistObjectdef"] = &Evaluator::EvaluateElistObjectdef;
+	//table["indexedObjectdef"] = &Evaluator::EvaluateIndexedObjectdef;
 
 	return table;
 }
 
-std::map<std::string, Value(Evaluator::*)(ASTnode*) > Evaluator::EvaluateDispatcher = IntializeDispatcher();
+
+Evaluator::Evaluator() {
+	EvaluateDispatcher = IntializeDispatcher();
+}
+
+Evaluator* Evaluator::getInstance() {
+	if (!evaluator)
+		evaluator = new Evaluator();
+	return evaluator;
+}
 
 Value Evaluator::Evaluate(ASTnode* node) {
-	return EvaluateDispatcher[node->GetValue("type").GetStringValue()];
+	return (this->*EvaluateDispatcher[node->GetValue("type").GetStringValue()])(node);
 }
 
 Value Evaluator::EvaluateProgram(ASTnode* node) {
 	Value tmp;
-	double numOfExpr = node->GetValue("numOfExpr").GetNumberValue();
-	for (int i = 0; i < numOfExpr; i++) {
+	double numOfStmt = node->GetValue("numOfStmt").GetNumberValue();
+	for (int i = 0; i < numOfStmt; i++) {
 		tmp = Evaluate(node->GetValue(std::to_string(i)).GetObjectValue());
 	}
 	return nil;

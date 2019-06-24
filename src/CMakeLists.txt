@@ -7,4 +7,5 @@ target_link_libraries(  Interpreter             # To
                         Object                  # What
                         Parser
 						Value
+						Evaluator
                         )                

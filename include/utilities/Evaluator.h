@@ -6,12 +6,18 @@
 
 class Evaluator {
 public:
-	Evaluator() = default;
-	Value static Evaluate(ASTnode* node);
+	static Evaluator* getInstance();
+
+	//generic Evaluate
+	Value Evaluate(ASTnode* node);
+
 private:
-	static std::map<std::string, Value (Evaluator::*)(ASTnode*)> EvaluateDispatcher;
-	static std::map<std::string, Value(Evaluator::*)(ASTnode*)> IntializeDispatcher();
+	std::map<std::string, Value (Evaluator::*)(ASTnode*)> EvaluateDispatcher;
+	std::map<std::string, Value(Evaluator::*)(ASTnode*)> IntializeDispatcher();
 	
+	static Evaluator* evaluator;
+	Evaluator();
+
 	// program
 	Value EvaluateProgram(ASTnode* node);
 
