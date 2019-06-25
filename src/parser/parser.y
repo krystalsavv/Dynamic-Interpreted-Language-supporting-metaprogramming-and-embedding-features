@@ -402,6 +402,9 @@ normcall: LEFT_PARENTHESIS argList RIGHT_PARENTHESIS
 				std::cout << ("(argList)\n");
 				$$ = new ASTnode("type", "normcall");
 				$$->Set("argList", $2);
+				FunctionEnvironment* funcEnv = new FunctionEnvironment();
+				funcEnv->Set("$outer",EnvironmentHolder::getInstance()->GetCurrentEnv());
+				EnvironmentHolder::getInstance()->SetCurrentEnv(funcEnv);
 			}
 			;
 
@@ -411,6 +414,9 @@ methodcall : DOUBLE_DOT IDENT LEFT_PARENTHESIS argList RIGHT_PARENTHESIS
 				$$ = new ASTnode("type", "methodcall");
 				$$->Set("ID", $2); 
 				$$->Set("argList", $4); 
+				FunctionEnvironment* funcEnv = new FunctionEnvironment();
+				funcEnv->Set("$outer",EnvironmentHolder::getInstance()->GetCurrentEnv());
+				EnvironmentHolder::getInstance()->SetCurrentEnv(funcEnv);
 			}
 			;
 

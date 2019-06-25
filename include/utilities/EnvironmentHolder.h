@@ -21,6 +21,7 @@ public:
 	void SetGlobalEnv(Object* env);
 	Object* GetGlobalEnv();
 
+
 	void PrintEnvironmentChain();
 
 private:
