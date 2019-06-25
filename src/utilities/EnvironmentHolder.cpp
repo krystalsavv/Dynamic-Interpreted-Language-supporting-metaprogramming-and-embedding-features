@@ -24,3 +24,7 @@ void EnvironmentHolder::SetGlobalEnv(Object* env) {
 Object* EnvironmentHolder::GetGlobalEnv() {
 	return globalEnv;
 }
+
+void EnvironmentHolder::PrintEnvironmentChain() {
+	std::cout << *currentEnv;
+}

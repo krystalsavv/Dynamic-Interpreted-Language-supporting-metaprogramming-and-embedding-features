@@ -10,7 +10,7 @@ class EnvironmentHolder
 	static EnvironmentHolder* envHolder;
 	Object* currentEnv = nullptr;
 	Object* globalEnv = nullptr;
-	EnvironmentHolder();
+	EnvironmentHolder()=default;
 public:
 
 	static EnvironmentHolder* getInstance();
@@ -20,6 +20,8 @@ public:
 
 	void SetGlobalEnv(Object* env);
 	Object* GetGlobalEnv();
+
+	void PrintEnvironmentChain();
 
 private:
 	

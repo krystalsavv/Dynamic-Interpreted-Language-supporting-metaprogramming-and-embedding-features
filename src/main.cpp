@@ -5,6 +5,7 @@
 #include "scanner.h"
 #include "utilities/Object.h"
 #include "utilities/AST.h"
+#include "utilities/EnvironmentHolder.h"
 
 
 std::string InputToString(const char* filename) {
@@ -35,7 +36,9 @@ int main(int argc,char** argv){
 	yylex_destroy(scanner);
 
 	ast->Print();
-	Evaluator::getInstance()->Evaluate(ast->GetRoot());
+	std::cout << "-----------------------------------------------------------------" << std::endl << std::endl;
+	EnvironmentHolder::getInstance()->PrintEnvironmentChain();
+	//Evaluator::getInstance()->Evaluate(ast->GetRoot());
 	//ast->Evaluate();
 	return 0;
 }

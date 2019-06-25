@@ -4,7 +4,6 @@
 	#include <errno.h>
 	#include <iostream>	
 	#include "utilities/AST.h"
-	#include "utilities/EnvironmentHolder.h"
 
 
 	#include "parser.hpp"
@@ -16,6 +15,7 @@
 %code requires {
   #include "utilities/Object.h"
   #include "utilities/AST.h"
+  #include "utilities/EnvironmentHolder.h"
 }
 
 
@@ -84,6 +84,8 @@ program : program stmt
 				$$ = new ASTnode("type", "program");
 				$$->Set("numOfStmt", 0.0);
 				ast->SetRoot($$);
+				BlockEnvironment* block = new BlockEnvironment();
+				EnvironmentHolder::getInstance()->SetCurrentEnv(block);
 			}
 		;
 
@@ -133,7 +135,7 @@ stmt : expr SEMICOLON	{
 							}
 	;
 
-expr :	 assignexpr		{ $$ = $1; }
+expr :	 assignexpr	{ $$ = $1;}
 	| expr PLUS expr	{
 							std::cout << ("expression + expression \n"); 
 							$$ = new ASTnode("type", "add");
@@ -525,10 +527,16 @@ tmp_block: tmp_block stmt
 				}
 		;
 
-block : LEFT_BRACKET tmp_block RIGHT_BRACKET
+block : LEFT_BRACKET
+			{
+				BlockEnvironment* block = new BlockEnvironment();
+				block->Set("$outer",EnvironmentHolder::getInstance()->GetCurrentEnv());
+				EnvironmentHolder::getInstance()->SetCurrentEnv(block);
+			}  
+			tmp_block RIGHT_BRACKET
 				{
 					std::cout << ("{ stmt }\n");
-					$$ = $2; 
+					$$ = $3; 
 				}
 		;
 
