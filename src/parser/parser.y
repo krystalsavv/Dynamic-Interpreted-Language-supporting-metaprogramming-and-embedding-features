@@ -49,7 +49,7 @@
 
 %type <objectVal> stmt tmp_block
 %type <objectVal> expr
-%type <objectVal> ifstmt whilestmt forstmt returnstmt block funcdef
+%type <objectVal> ifstmt whilestmt forstmt returnstmt block funcdef funcbody
 %type <objectVal> assignexpr term
 %type <objectVal> lvalue primary call objectdef const member
 %type <objectVal> elist idlist arg argList formal callsuffix normcall methodcall indexed indexedelem
@@ -397,26 +397,33 @@ callsuffix : normcall
 				}
 	;
 
-normcall: LEFT_PARENTHESIS argList RIGHT_PARENTHESIS 
+normcall: LEFT_PARENTHESIS 
 			{
-				std::cout << ("(argList)\n");
-				$$ = new ASTnode("type", "normcall");
-				$$->Set("argList", $2);
 				FunctionEnvironment* funcEnv = new FunctionEnvironment();
 				funcEnv->Set("$outer",EnvironmentHolder::getInstance()->GetCurrentEnv());
 				EnvironmentHolder::getInstance()->SetCurrentEnv(funcEnv);
 			}
+			argList RIGHT_PARENTHESIS 
+			{
+				std::cout << ("(argList)\n");
+				$$ = new ASTnode("type", "normcall");
+				$$->Set("argList", $3);
+			}
 			;
 
-methodcall : DOUBLE_DOT IDENT LEFT_PARENTHESIS argList RIGHT_PARENTHESIS 
+methodcall : DOUBLE_DOT IDENT LEFT_PARENTHESIS
+			{
+				FunctionEnvironment* funcEnv = new FunctionEnvironment();
+				funcEnv->Set("$outer",EnvironmentHolder::getInstance()->GetCurrentEnv());
+				EnvironmentHolder::getInstance()->SetCurrentEnv(funcEnv);
+			} 
+			argList RIGHT_PARENTHESIS 
 			{
 				std::cout << ("..ident(argList)\n");
 				$$ = new ASTnode("type", "methodcall");
 				$$->Set("ID", $2); 
-				$$->Set("argList", $4); 
-				FunctionEnvironment* funcEnv = new FunctionEnvironment();
-				funcEnv->Set("$outer",EnvironmentHolder::getInstance()->GetCurrentEnv());
-				EnvironmentHolder::getInstance()->SetCurrentEnv(funcEnv);
+				$$->Set("argList", $5); 
+				
 			}
 			;
 
@@ -546,29 +553,45 @@ block : LEFT_BRACKET
 				}
 		;
 
+
+funcbody: LEFT_BRACKET tmp_block RIGHT_BRACKET
+				{
+					std::cout << ("{ stmt }\n");
+					$$ = $2; 
+				}
+		;
+
 funcdef : FUNCTION IDENT 
 				{
-					std::cout << ("function ident\n");			
+					std::cout << ("function ident\n");
 				}
 			
-			LEFT_PARENTHESIS idlist RIGHT_PARENTHESIS block
+			LEFT_PARENTHESIS idlist RIGHT_PARENTHESIS funcbody
 				{
 					std::cout << ("function id(idlist) block\n");
 					$$ = new ASTnode("type", "funcdef");
-					$$->Set("ID", $2);
+					$$->Set("ID", *$2);
 					$$->Set("idlist", $5);			//prosoxh an vgalw panq action
 					$$->Set("block", $7);
+					EnvironmentHolder::getInstance()->GetCurrentEnv()->Set(*$2,$$);
+					BlockEnvironment* block = new BlockEnvironment();
+					block->Set("$previous",EnvironmentHolder::getInstance()->GetCurrentEnv());
+					EnvironmentHolder::getInstance()->SetCurrentEnv(block);											// NOT SURE CurrentEnv is the sliced one
 				}
 		| FUNCTION 
 				{
 					std::cout << ("function\n");				
 				}
-			LEFT_PARENTHESIS idlist RIGHT_PARENTHESIS block
+			LEFT_PARENTHESIS idlist RIGHT_PARENTHESIS funcbody
 				{
 					std::cout << ("function (idlist) block\n");
 					$$ = new ASTnode("type", "anonymousFuncdef");
 					$$->Set("idlist", $4);			//prosoxh an vgalw panq action
 					$$->Set("block", $6);
+					EnvironmentHolder::getInstance()->GetCurrentEnv()->Set("_0",$$);								//Generate funcName for anonymous
+					BlockEnvironment* block = new BlockEnvironment();
+					block->Set("$previous",EnvironmentHolder::getInstance()->GetCurrentEnv());
+					EnvironmentHolder::getInstance()->SetCurrentEnv(block);											// NOT SURE CurrentEnv is the sliced one
 				}
 		; 
 
