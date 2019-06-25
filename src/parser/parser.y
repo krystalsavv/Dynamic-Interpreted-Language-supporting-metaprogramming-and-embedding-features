@@ -325,10 +325,10 @@ lvalue : IDENT
 				delete($2); 
 			}
 	| member	{ 
-					std::cout << ("member\n");
-					$$ = $1; 
-				}
-	;
+						std::cout << ("member\n");
+						$$ = $1; 
+					}
+					;
 
 member : lvalue DOT IDENT
 				{
@@ -363,12 +363,18 @@ member : lvalue DOT IDENT
 				}
 	;
 
-call : call LEFT_PARENTHESIS argList RIGHT_PARENTHESIS 
+call : call LEFT_PARENTHESIS
+				{
+					FunctionEnvironment* funcEnv = new FunctionEnvironment();
+					funcEnv->Set("$outer",EnvironmentHolder::getInstance()->GetCurrentEnv());
+					EnvironmentHolder::getInstance()->SetCurrentEnv(funcEnv);
+				}
+				argList RIGHT_PARENTHESIS 
 				{
 					std::cout << ("call(argList)\n");
 					$$ = new ASTnode("type", "multiCall");
 					$$->Set("call", $1);
-					$$->Set("argList", $3);
+					$$->Set("argList", $4);
 				}
 	| lvalue callsuffix
 				{
@@ -376,12 +382,19 @@ call : call LEFT_PARENTHESIS argList RIGHT_PARENTHESIS
 					$$ = new ASTnode("type", "lvalueCall");
 					$$->Set("lvalue", $1);
 				}
-	| LEFT_PARENTHESIS funcdef RIGHT_PARENTHESIS LEFT_PARENTHESIS argList RIGHT_PARENTHESIS 
+	| LEFT_PARENTHESIS funcdef RIGHT_PARENTHESIS LEFT_PARENTHESIS
+				{
+					FunctionEnvironment* funcEnv = new FunctionEnvironment();
+					funcEnv->Set("$outer",EnvironmentHolder::getInstance()->GetCurrentEnv());
+					EnvironmentHolder::getInstance()->SetCurrentEnv(funcEnv);
+				}
+				argList RIGHT_PARENTHESIS
 				{
 					std::cout << ("(funcdef)(argList)\n");
 					$$ = new ASTnode("type", "funcdefCall");
 					$$->Set("funcdef", $2);
-					$$->Set("argList", $5);
+					$$->Set("argList", $6);
+
 				}
 	;
 
