@@ -86,6 +86,7 @@ program : program stmt
 				ast->SetRoot($$);
 				BlockEnvironment* block = new BlockEnvironment();
 				EnvironmentHolder::getInstance()->SetCurrentEnv(block);
+				EnvironmentHolder::getInstance()->SetGlobalEnv(block);
 			}
 		;
 
@@ -324,11 +325,12 @@ lvalue : IDENT
 				$$->Set("ID", *$2);
 				delete($2); 
 			}
-	| member	{ 
-						std::cout << ("member\n");
-						$$ = $1; 
-					}
-					;
+	| member	
+			{ 
+				std::cout << ("member\n");
+				$$ = $1; 
+			}
+			;
 
 member : lvalue DOT IDENT
 				{
@@ -408,7 +410,7 @@ callsuffix : normcall
 					std::cout << ("methodcall\n");
 					$$ = $1; 
 				}
-	;
+				;
 
 normcall: LEFT_PARENTHESIS 
 			{
@@ -558,12 +560,14 @@ block : LEFT_BRACKET
 				BlockEnvironment* block = new BlockEnvironment();
 				block->Set("$outer",EnvironmentHolder::getInstance()->GetCurrentEnv());
 				EnvironmentHolder::getInstance()->SetCurrentEnv(block);
+				EnvironmentHolder::getInstance()->IncrementNestedBlock();
 			}  
 			tmp_block RIGHT_BRACKET
-				{
-					std::cout << ("{ stmt }\n");
-					$$ = $3; 
-				}
+			{
+				std::cout << ("{ stmt }\n");
+				$$ = $3; 
+				EnvironmentHolder::getInstance()->DecrementNestedBlock();
+			}
 		;
 
 
@@ -590,6 +594,8 @@ funcdef : FUNCTION IDENT
 					BlockEnvironment* block = new BlockEnvironment();
 					block->Set("$previous",EnvironmentHolder::getInstance()->GetCurrentEnv());
 					EnvironmentHolder::getInstance()->SetCurrentEnv(block);											// NOT SURE CurrentEnv is the sliced one
+					if(EnvironmentHolder::getInstance()->GetNestedBlock() == 0)
+						EnvironmentHolder::getInstance()->SetGlobalEnv(block);
 				}
 		| FUNCTION 
 				{
@@ -605,6 +611,8 @@ funcdef : FUNCTION IDENT
 					BlockEnvironment* block = new BlockEnvironment();
 					block->Set("$previous",EnvironmentHolder::getInstance()->GetCurrentEnv());
 					EnvironmentHolder::getInstance()->SetCurrentEnv(block);											// NOT SURE CurrentEnv is the sliced one
+					if(EnvironmentHolder::getInstance()->GetNestedBlock() == 0)
+						EnvironmentHolder::getInstance()->SetGlobalEnv(block);
 				}
 		; 
 

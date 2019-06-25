@@ -36,8 +36,10 @@ int main(int argc,char** argv){
 	yylex_destroy(scanner);
 
 	ast->Print();
-	std::cout << "-----------------------------------------------------------------" << std::endl << std::endl;
+	std::cout << "------------------------------ EnvironmentChain -----------------------------------" << std::endl << std::endl;
 	EnvironmentHolder::getInstance()->PrintEnvironmentChain();
+	std::cout << "------------------------------ GlobalEnvironment -----------------------------------" << std::endl << std::endl;
+	EnvironmentHolder::getInstance()->PrintGlobalEnvironment();
 	//Evaluator::getInstance()->Evaluate(ast->GetRoot());
 	//ast->Evaluate();
 	return 0;
