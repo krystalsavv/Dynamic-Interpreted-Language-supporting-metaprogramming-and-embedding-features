@@ -2,10 +2,6 @@
 
 using namespace interpreter;
 
-EnvironmentHolder* EnvironmentHolder::envHolder = nullptr;
-unsigned int EnvironmentHolder::nestedBlock = 0;
-
-
 EnvironmentHolder* EnvironmentHolder::getInstance() {
 	if (!envHolder)
 		envHolder = new EnvironmentHolder();

@@ -9,8 +9,9 @@ namespace interpreter {
 
 	class EnvironmentHolder
 	{
-		static EnvironmentHolder* envHolder;
-		static unsigned int nestedBlock;
+		inline static EnvironmentHolder* envHolder = nullptr;
+
+		inline static unsigned int nestedBlock = 0;
 		Object* currentEnv = nullptr;
 		Object* globalEnv = nullptr;
 		EnvironmentHolder() = default;

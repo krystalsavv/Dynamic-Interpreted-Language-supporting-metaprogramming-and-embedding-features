@@ -10,7 +10,7 @@ namespace interpreter {
 
 	class Object {
 		map_t symbols;
-		unsigned referenceCounter = 0;
+		unsigned int referenceCounter = 0;
 		inline static unsigned int nestedCounterPrint = 0;
 		static void AddTabs(std::string& s);
 	public:

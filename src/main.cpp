@@ -41,6 +41,5 @@ int main(int argc,char** argv){
 	std::cout << "------------------------------ GlobalEnvironment -----------------------------------" << std::endl << std::endl;
 	EnvironmentHolder::getInstance()->PrintGlobalEnvironment();
 	//Evaluator::getInstance()->Evaluate(ast->GetRoot());
-	//ast->Evaluate();
 	return 0;
 }
