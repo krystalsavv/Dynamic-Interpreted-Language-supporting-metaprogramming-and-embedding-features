@@ -1,17 +1,21 @@
 #pragma once
 #include "utilities/Object.h"
-#include "utilities/Evaluator.h"
 
-class AST {
-	Object* root = nullptr;
+namespace interpreter {
 
-public:
-	AST() = default;
-	AST(Object* root);
+	using ASTnode = Object;
 
-	Object* GetRoot();
-	void SetRoot(Object* root);
+	class AST {
+		Object* root = nullptr;
 
-	void Print();
-	void Evaluate();
-};
+	public:
+		AST() = default;
+		AST(ASTnode* root);
+
+		ASTnode* GetRoot();
+		void SetRoot(ASTnode* root);
+
+		void Print();
+		//void Evaluate();
+	};
+}

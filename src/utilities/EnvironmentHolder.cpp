@@ -1,5 +1,7 @@
 #include "utilities/EnvironmentHolder.h"
 
+using namespace interpreter;
+
 EnvironmentHolder* EnvironmentHolder::envHolder = nullptr;
 unsigned int EnvironmentHolder::nestedBlock = 0;
 

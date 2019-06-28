@@ -1,6 +1,6 @@
 #include "utilities/Object.h"
 
-unsigned int Object::nestedCounterPrint = 0;
+using namespace interpreter;
 
 Object::Object(const Value& key, const Value& value) {
 	symbols[key] = value;
@@ -26,9 +26,9 @@ bool Object::ContainsKey(const Value& key) const {
 		return false;
 }
 
-void Object::PrintTabs(std::ostream& out) {
+void Object::AddTabs(std::string& s) {
 	for (int i = 0; i < Object::nestedCounterPrint; i++) {
-		out << "\t";
+		s += "\t";
 	}
 }
 
@@ -41,20 +41,23 @@ Value  Object::operator!=(Object* obj) {
 	return (this != obj);
 }
 
-std::ostream& operator << (std::ostream& out, const Object& obj) {
-	out << "{" << std::endl;
-	Object::nestedCounterPrint++;
+std::string Object::toString() const {
+	std::string s = "{\n"; 
+	nestedCounterPrint++;
 	int commaCounter = 0;
-	for (auto& [key, value] : obj.symbols) {
-		Object::PrintTabs(out);
-		out << key << " : " << value ;
-		if (commaCounter++ < obj.symbols.size()-1)
-			out << ", ";
-		out << std::endl;	
+	for (auto& [key, value] : symbols) {
+		AddTabs(s);
+		s += key.toString() + " : " + value.toString();
+		if (commaCounter++ < symbols.size() - 1)
+			s += ", ";
+		s += "\n";
 	}
-	Object::nestedCounterPrint--;
-	Object::PrintTabs(out);
-	out << "}" << std::endl;
-	return out; 
+	nestedCounterPrint--;
+	AddTabs(s);
+	s += "}\n" ;
+	return s;
 }
 
+std::ostream& interpreter::operator<< (std::ostream& out, const Object& obj) {
+	return out << obj.toString();
+	}

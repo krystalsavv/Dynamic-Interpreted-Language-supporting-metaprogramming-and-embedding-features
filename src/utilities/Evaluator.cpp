@@ -1,7 +1,7 @@
 #include "utilities/Evaluator.h"
 #define nil (Object *)nullptr
 
-Evaluator* Evaluator::evaluator = nullptr;
+using namespace interpreter;
 
 std::map<std::string, Value(Evaluator::*)(ASTnode*)> Evaluator::IntializeDispatcher() {
 	std::map<std::string, Value(Evaluator::*)(ASTnode*)> table;

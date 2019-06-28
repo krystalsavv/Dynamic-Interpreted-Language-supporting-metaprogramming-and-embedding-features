@@ -1,14 +1,16 @@
 #include "utilities/AST.h"
 
-AST::AST(Object* root) {
+using namespace interpreter;
+
+AST::AST(ASTnode* root) {
 	this->root = root;
 }
 
-Object* AST::GetRoot() {
+ASTnode* AST::GetRoot() {
 	return root;
 }
 
-void AST::SetRoot(Object* root) {
+void AST::SetRoot(ASTnode* root) {
 	this->root = root;
 }
 
@@ -16,7 +18,7 @@ void AST::Print() {
 	std::cout << *root; 
 }
 
-void AST::Evaluate() {
-	//TODO
-	//Value tmp = Evaluator::Evaluate(root);
-}
+//void AST::Evaluate() {
+//	//TODO
+//	// Value tmp = Evaluator::Evaluate(root);
+//}

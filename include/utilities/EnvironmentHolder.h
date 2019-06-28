@@ -1,35 +1,37 @@
 #pragma once
 #include "utilities/Object.h"
 
-#define BlockEnvironment	Object
-#define FunctionEnvironment	Object
-#define ClosureEnvironment	Object
+namespace interpreter {
 
-class EnvironmentHolder
-{
-	static EnvironmentHolder* envHolder;
-	static unsigned int nestedBlock;
-	Object* currentEnv = nullptr;
-	Object* globalEnv = nullptr;
-	EnvironmentHolder()=default;
-public:
+	using BlockEnvironment = Object;
+	using FunctionEnvironment =	Object;
+	using ClosureEnvironment = Object;
 
-	static EnvironmentHolder* getInstance();
+	class EnvironmentHolder
+	{
+		static EnvironmentHolder* envHolder;
+		static unsigned int nestedBlock;
+		Object* currentEnv = nullptr;
+		Object* globalEnv = nullptr;
+		EnvironmentHolder() = default;
+	public:
 
-	void SetCurrentEnv(Object* env);
-	Object* GetCurrentEnv();
+		static EnvironmentHolder* getInstance();
 
-	void SetGlobalEnv(Object* env);
-	Object* GetGlobalEnv();
+		void SetCurrentEnv(Object* env);
+		Object* GetCurrentEnv();
 
-	static unsigned int GetNestedBlock();
-	static void IncrementNestedBlock();
-	static void DecrementNestedBlock();
+		void SetGlobalEnv(Object* env);
+		Object* GetGlobalEnv();
 
-	void PrintEnvironmentChain();
-	void PrintGlobalEnvironment();
+		static unsigned int GetNestedBlock();
+		static void IncrementNestedBlock();
+		static void DecrementNestedBlock();
 
-private:
-	
-};
+		void PrintEnvironmentChain();
+		void PrintGlobalEnvironment();
 
+	private:
+
+	};
+}

@@ -1,6 +1,7 @@
 #include "utilities/Value.h"
 #include "utilities/Object.h"
 
+using namespace interpreter;
 
 Value::Value(bool value) {
 	variant = value;
@@ -92,6 +93,17 @@ void Value::Set(const Value& value) {
 	variant = value.variant;
 }
 
+
+std::string Value::toString() const {
+	if (isBool())
+		return std::to_string(GetBoolValue());
+	else if (isNumber())
+		return std::to_string(GetNumberValue());
+	else if (isString())
+		return GetStringValue();
+	else if (isObject())
+		return GetObjectValue()->toString();
+}
 
 /****************************overloads***********************************/
 //arithmetics
@@ -346,13 +358,6 @@ Value Value::operator!() {
 	return !(this->toBool());
 }
 
-std::ostream& operator << (std::ostream& out, const Value& value) {
-	if (value.isBool())
-		return out << value.GetBoolValue();
-	else if (value.isNumber())
-		return out << value.GetNumberValue();
-	else if (value.isString())
-		return out << value.GetStringValue();
-	else if (value.isObject())
-		return out << *(value.GetObjectValue());
+std::ostream& interpreter::operator<< (std::ostream& out, const Value& value) {
+	return out << value.toString();
 }

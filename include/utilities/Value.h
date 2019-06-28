@@ -6,73 +6,78 @@
 #include <cassert>
 #include <iostream> 
 
-class Object;
-
 #define variant_t std::variant<bool, double, std::string, Object*> 
 
-class Value
-{
-	variant_t variant;
+namespace interpreter {
 
-public:
-	Value() = default;
-	Value(bool value);
-	Value(double value);
-	Value(std::string value);
-	Value(const char * value);
-	Value(Object* value);
-	Value(const Value& value);
+	class Object;
 
-	const bool& GetBoolValue() const;
-	const double& GetNumberValue() const;
-	const std::string& GetStringValue() const;
-	Object* GetObjectValue() const;
-	
-	bool toBool() const;
+	class Value
+	{
+		variant_t variant;
 
-	bool isBool() const;
-	bool isNumber()const;
-	bool isString() const;
-	bool isObject() const;
+	public:
+		Value() = default;
+		Value(bool value);
+		Value(double value);
+		Value(std::string value);
+		Value(const char* value);
+		Value(Object* value);
+		Value(const Value& value);
 
-	void Set(const Value& value);
+		const bool& GetBoolValue() const;
+		const double& GetNumberValue() const;
+		const std::string& GetStringValue() const;
+		Object* GetObjectValue() const;
 
-	//overloads
-	Value operator+(Value& right);
-	Value operator-(Value& right);
-	Value operator*(Value& right);
-	Value operator/(Value& right);
-	Value operator%(Value& right);
-	//prefix
-	Value& operator++();
-	//postfix
-	Value operator++(int);
-	//prefix
-	Value& operator--();
-	//postfix
-	Value operator--(int);
-	Value operator-();
+		bool toBool() const;
+		std::string toString() const;
 
-	//equals
-	Value operator>(Value& right);
-	Value operator>=(Value& right);
-	Value operator<(Value& right);
-	Value operator<=(Value& right);
-	Value operator==(Value& right);
-	Value operator!=(Value& right);
+		bool isBool() const;
+		bool isNumber()const;
+		bool isString() const;
+		bool isObject() const;
 
-	//for consts (unordered map comparison)
-	bool operator==(const Value& right) const;
-	bool operator!=(const Value& right) const;
+		void Set(const Value& value);
 
-	//logical
-	Value operator&&(Value& right);
-	Value operator||(Value& right);
-	Value operator!();
+		//overloads
+		Value operator+(Value& right);
+		Value operator-(Value& right);
+		Value operator*(Value& right);
+		Value operator/(Value& right);
+		Value operator%(Value& right);
+		//prefix
+		Value& operator++();
+		//postfix
+		Value operator++(int);
+		//prefix
+		Value& operator--();
+		//postfix
+		Value operator--(int);
+		Value operator-();
 
-	friend std::ostream& operator << (std::ostream& out, const Value& value);
-};
+		//equals
+		Value operator>(Value& right);
+		Value operator>=(Value& right);
+		Value operator<(Value& right);
+		Value operator<=(Value& right);
+		Value operator==(Value& right);
+		Value operator!=(Value& right);
 
+		//for consts (unordered map comparison)
+		bool operator==(const Value& right) const;
+		bool operator!=(const Value& right) const;
+
+		//logical
+		Value operator&&(Value& right);
+		Value operator||(Value& right);
+		Value operator!();
+
+		friend std::ostream& operator<< (std::ostream& out, const Value& value);
+	};
+}
+
+using namespace interpreter;
 
 namespace std
 {
@@ -96,4 +101,4 @@ namespace std
 			}
 		}
 	};
-}  
+}
