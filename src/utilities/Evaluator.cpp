@@ -28,22 +28,22 @@ std::map<std::string, Value(Evaluator::*)(ASTnode*)> Evaluator::IntializeDispatc
 	//table["pre_decrement"] = &Evaluator::EvaluatePreDecrement;
 	//table["post_decrement"] = &Evaluator::EvaluatePostDecrement;
 	//table["parentheses_funcdef"] = &Evaluator::EvaluateParenthesisFuncdef;
-	table["var"] = &Evaluator::EvaluateIdent;
-	table["localVar"] = &Evaluator::EvaluateLocalIdent;
-	table["scopeVar"] = &Evaluator::EvaluateScopeIdent;
-	table["member_lvalueVar"] = &Evaluator::EvaluateLvalueIdent;
-	table["member_lvalueBrackets"] = &Evaluator::EvaluateLvalueBrackets;
-	table["member_callVar"] = &Evaluator::EvaluateCallIdent;
-	table["member_callBrackets"] = &Evaluator::EvaluateCallBrackets;
-	table["multiCall"] = &Evaluator::EvaluateMultiCall;
-	table["lvalueCall"] = &Evaluator::EvaluateLvalueCallSuffix;
-	table["funcdefCall"] = &Evaluator::EvaluateFuncdefCall;
+	//table["var"] = &Evaluator::EvaluateIdent;
+	//table["localVar"] = &Evaluator::EvaluateLocalIdent;
+	//table["scopeVar"] = &Evaluator::EvaluateScopeIdent;
+	//table["member_lvalueVar"] = &Evaluator::EvaluateLvalueIdent;
+	//table["member_lvalueBrackets"] = &Evaluator::EvaluateLvalueBrackets;
+	//table["member_callVar"] = &Evaluator::EvaluateCallIdent;
+	//table["member_callBrackets"] = &Evaluator::EvaluateCallBrackets;
+	//table["multiCall"] = &Evaluator::EvaluateMultiCall;
+	//table["lvalueCall"] = &Evaluator::EvaluateLvalueCallSuffix;
+	//table["funcdefCall"] = &Evaluator::EvaluateFuncdefCall;
 	table["normcall"] = &Evaluator::EvaluateNormCall;
-	table["methodcall"] = &Evaluator::EvaluateMethodCall;
-	table["namedParam"] = &Evaluator::EvaluateArg;
-	table["argList"] = &Evaluator::EvaluateArglist;
-	table["emptyArgList"] = &Evaluator::EvaluateEmptyArglist;
-	table["assignexpr"] = &Evaluator::EvaluateAssignExpr;
+	//table["methodcall"] = &Evaluator::EvaluateMethodCall;
+	//table["namedParam"] = &Evaluator::EvaluateArg;
+	//table["argList"] = &Evaluator::EvaluateArglist;
+	//table["emptyArgList"] = &Evaluator::EvaluateEmptyArglist;
+	//table["assignexpr"] = &Evaluator::EvaluateAssignExpr;
 	table["ifstmt"] = &Evaluator::EvaluateIfStmt;
 	table["if_elsestmt"] = &Evaluator::EvaluateIfElseStmt;
 	table["whilestmt"] = &Evaluator::EvaluateWhileStmt;
@@ -60,15 +60,15 @@ std::map<std::string, Value(Evaluator::*)(ASTnode*)> Evaluator::IntializeDispatc
 	table["elistObjectdef"] = &Evaluator::EvaluateElistObjectdef;
 	table["indexedObjectdef"] = &Evaluator::EvaluateIndexedObjectdef;
 	table["block"] = &Evaluator::EvaluateBlock;
-	table["funcdef"] = &Evaluator::EvaluateFuncdef;
+	//table["funcdef"] = &Evaluator::EvaluateFuncdef;
 	table["numConst"] = &Evaluator::EvaluateNumberConst;
 	table["stringConst"] = &Evaluator::EvaluateStringConst;
 	table["boolConst"] = &Evaluator::EvaluateBoolConst;
 	table["nil"] = &Evaluator::EvaluateNIL;
-	table["param"] = &Evaluator::EvaluateParam;
-	table["optionalParam"] = &Evaluator::EvaluateOptionalParam;
-	table["idlist"] = &Evaluator::EvaluateIdlist;
-	table["emptyIdlist"] = &Evaluator::EvaluateEmptyIdlist;
+	//table["param"] = &Evaluator::EvaluateParam;
+	//table["optionalParam"] = &Evaluator::EvaluateOptionalParam;
+	//table["idlist"] = &Evaluator::EvaluateIdlist;
+	//table["emptyIdlist"] = &Evaluator::EvaluateEmptyIdlist;
 
 
 	return table;
@@ -100,104 +100,6 @@ Value Evaluator::EvaluateProgram(ASTnode* node) {
 	}
 	return nil;
 }
-
-
-// term
-Value Evaluator::EvaluateParenthesis(ASTnode* node) {
-	return Evaluate(node->GetValue("expr").GetObjectValue());
-}
-
-Value Evaluator::EvaluateUminus(ASTnode* node) {
-	return Evaluate(node->GetValue("expr").GetObjectValue()) * Value(-1.0);
-}
-
-Value Evaluator::EvaluateNot(ASTnode* node) {
-	return !Evaluate(node->GetValue("expr").GetObjectValue());
-}
-
-/*
-Value Evaluator::EvaluatePreIncrement(ASTnode* node) {				// TODO
-	ASTnode* lvalueNode = node->GetValue("lvalue").GetObjectValue();
-	
-	ASTnode * num = new ASTnode("type", "numConst");
-	num->Set("value", 1.0);
-	ASTnode* add = new ASTnode("type", "ADD");
-	add->Set("left", lvalueNode);
-	add->Set("right", num);
-	ASTnode* assign = new ASTnode("type", "assignexpr");
-	assign->Set("lvalue", lvalueNode);
-	assign->Set("expr", add);
-
-	return Evaluate(add);
-}
-
-Value Evaluator::EvaluatePostIncrement(ASTnode* node) {
-	Value old = Evaluate(node->GetValue("lvalue").GetObjectValue());
-	
-	// TODO: na allaksei kai na kanoume oti kanei h assign sto environment kai allazei thn timh to komvoy kai oxi ASTnodes
-	ASTnode* num = new ASTnode("type", "numConst");
-	num->Set("value", 1.0);
-	ASTnode* add = new ASTnode("type", "ADD"); 
-	add->Set("left", old);
-	add->Set("right", num);
-	ASTnode* assign = new ASTnode("type", "assignexpr");
-	assign->Set("lvalue", old);
-	assign->Set("expr", add);
-	Evaluate(add);
-	
-	return old;
-}
-
-Value Evaluator::EvaluatePreDecrement(ASTnode* node) {				// TODO
-	ASTnode* lvalueNode = node->GetValue("lvalue").GetObjectValue();
-	ASTnode* num = new ASTnode("type", "numConst");
-	num->Set("value", 1.0);
-	ASTnode* sub = new ASTnode("type", "SUB");
-	sub->Set("left", lvalueNode);
-	sub->Set("right", num);
-	ASTnode* assign = new ASTnode("type", "assignexpr");
-	assign->Set("lvalue", lvalueNode);
-	assign->Set("expr", sub);
-
-	return Evaluate(sub);
-}
-
-Value Evaluator::EvaluatePostDecrement(ASTnode* node) {
-	Value old = Evaluate(node->GetValue("lvalue").GetObjectValue());
-
-	// TODO: na allaksei kai na kanoume oti kanei h assign sto environment kai allazei thn timh to komvoy kai oxi ASTnodes
-	ASTnode* num = new ASTnode("type", "numConst");
-	num->Set("value", 1.0);
-	ASTnode* sub = new ASTnode("type", "SUB");
-	sub->Set("left", old);
-	sub->Set("right", num);
-	ASTnode* assign = new ASTnode("type", "assignexpr");
-	assign->Set("lvalue", old);
-	assign->Set("expr", sub);
-	Evaluate(sub);
-
-	return old;
-}
-*/
-
-// const
-Value Evaluator::EvaluateNumberConst(ASTnode* node) {
-	return node->GetValue("value").GetNumberValue();
-}
-
-Value Evaluator::EvaluateStringConst(ASTnode* node) {
-	return node->GetValue("value").GetStringValue();
-}
-
-Value Evaluator::EvaluateBoolConst(ASTnode* node) {
-	return node->GetValue("value").GetBoolValue();
-}
-
-Value Evaluator::EvaluateNIL(ASTnode* node) {
-	return nil;
-}
-
-
 
 // expr
 Value Evaluator::EvaluateAddExpr(ASTnode* node) {
@@ -279,8 +181,119 @@ Value Evaluator::EvaluateOrExpr(ASTnode* node) {
 }
 
 
+// term
+Value Evaluator::EvaluateParenthesis(ASTnode* node) {
+	return Evaluate(node->GetValue("expr").GetObjectValue());
+}
+
+Value Evaluator::EvaluateUminus(ASTnode* node) {
+	return Evaluate(node->GetValue("expr").GetObjectValue()) * Value(-1.0);
+}
+
+Value Evaluator::EvaluateNot(ASTnode* node) {
+	return !Evaluate(node->GetValue("expr").GetObjectValue());
+}
+
+/*
+Value Evaluator::EvaluatePreIncrement(ASTnode* node) {				// TODO
+	ASTnode* lvalueNode = node->GetValue("lvalue").GetObjectValue();
+	
+	ASTnode * num = new ASTnode("type", "numConst");
+	num->Set("value", 1.0);
+	ASTnode* add = new ASTnode("type", "ADD");
+	add->Set("left", lvalueNode);
+	add->Set("right", num);
+	ASTnode* assign = new ASTnode("type", "assignexpr");
+	assign->Set("lvalue", lvalueNode);
+	assign->Set("expr", add);
+
+	return Evaluate(add);
+}
+
+Value Evaluator::EvaluatePostIncrement(ASTnode* node) {
+	Value old = Evaluate(node->GetValue("lvalue").GetObjectValue());
+	
+	// TODO: na allaksei kai na kanoume oti kanei h assign sto environment kai allazei thn timh to komvoy kai oxi ASTnodes
+	ASTnode* num = new ASTnode("type", "numConst");
+	num->Set("value", 1.0);
+	ASTnode* add = new ASTnode("type", "ADD"); 
+	add->Set("left", old);
+	add->Set("right", num);
+	ASTnode* assign = new ASTnode("type", "assignexpr");
+	assign->Set("lvalue", old);
+	assign->Set("expr", add);
+	Evaluate(add);
+	
+	return old;
+}
+
+Value Evaluator::EvaluatePreDecrement(ASTnode* node) {				// TODO
+	ASTnode* lvalueNode = node->GetValue("lvalue").GetObjectValue();
+	ASTnode* num = new ASTnode("type", "numConst");
+	num->Set("value", 1.0);
+	ASTnode* sub = new ASTnode("type", "SUB");
+	sub->Set("left", lvalueNode);
+	sub->Set("right", num);
+	ASTnode* assign = new ASTnode("type", "assignexpr");
+	assign->Set("lvalue", lvalueNode);
+	assign->Set("expr", sub);
+
+	return Evaluate(sub);
+}
+
+Value Evaluator::EvaluatePostDecrement(ASTnode* node) {
+	Value old = Evaluate(node->GetValue("lvalue").GetObjectValue());
+
+	// TODO: na allaksei kai na kanoume oti kanei h assign sto environment kai allazei thn timh to komvoy kai oxi ASTnodes
+	ASTnode* num = new ASTnode("type", "numConst");
+	num->Set("value", 1.0);
+	ASTnode* sub = new ASTnode("type", "SUB");
+	sub->Set("left", old);
+	sub->Set("right", num);
+	ASTnode* assign = new ASTnode("type", "assignexpr");
+	assign->Set("lvalue", old);
+	assign->Set("expr", sub);
+	Evaluate(sub);
+
+	return old;
+}
+*/
+
+// primary
+//Value EvaluateParenthesisFuncdef(ASTnode* node);
+
+//normalcall
+Value Evaluator::EvaluateNormCall(ASTnode* node) {
+	//Create a function Env
+
+	//Evaluate the arguments and put them into an arguments table
+	Value argsTable = Evaluate(node->GetValue("argList").GetObjectValue());
+
+	//Invoke the target function (its value should be a function address)
+
+	return nil;	// TODO: ??
+}
+
+//arg
+Value EvaluateArg(ASTnode* node) {
+	return Value();
+}
+
+//arglist
+Value EvaluateArglist(ASTnode* node) {
+	return Value();
+	//double numofArgs = node->GetValue("numOfArg").GetNumberValue();
+}
+
+Value EvaluateEmptyArglist(ASTnode* node) {
+	return Value();
+}
+
+//table["argList"] = &Evaluator::EvaluateArglist;
+//table["emptyArgList"] = &Evaluator::EvaluateEmptyArglist;
+
 // stmt
-Value Evaluator::EvaluateIfStmt(ASTnode* node){
+Value Evaluator::EvaluateIfStmt(ASTnode* node) {
 	Value tmp;
 	if (Evaluate(node->GetValue("condition").GetObjectValue()).toBool()) {
 		try { tmp = Evaluate(node->GetValue("stmt").GetObjectValue()); }
@@ -321,9 +334,9 @@ Value Evaluator::EvaluateWhileStmt(ASTnode* node) {
 
 Value Evaluator::EvaluateForStmt(ASTnode* node) {
 	Value tmp;
-	for ( tmp = Evaluate(node->GetValue("init_elist").GetObjectValue()); 
-		  Evaluate(node->GetValue("condition").GetObjectValue()).toBool(); 
-		  tmp = Evaluate(node->GetValue("elist").GetObjectValue()) ) {
+	for (tmp = Evaluate(node->GetValue("init_elist").GetObjectValue());
+		Evaluate(node->GetValue("condition").GetObjectValue()).toBool();
+		tmp = Evaluate(node->GetValue("elist").GetObjectValue())) {
 		try { tmp = Evaluate(node->GetValue("stmt").GetObjectValue()); }
 		catch (BreakException& e) { break; }
 		catch (ContinueException& e) { continue; }
@@ -354,26 +367,14 @@ Value Evaluator::EvaluateContinue(ASTnode* node)
 
 Value Evaluator::EvaluateSemicolon(ASTnode* node) { return nil; };
 
-Value Evaluator::EvaluateBlock(ASTnode* node) {
-	CreateBlockEnvironment();
-	
-	Value tmp;
-	double numOfStmt = node->GetValue("numOfStmt").GetNumberValue();
-	for (int i = 0; i < numOfStmt; i++) {
-		tmp = Evaluate(node->GetValue(std::to_string(i)).GetObjectValue());
-	}
-
-	LeaveBlockEnvironment();
-	return nil; 
-}
 
 
 //elist
 Value Evaluator::EvaluateElist(ASTnode* node) {
-	Object* elistMap = new Object(); 
+	Object* elistMap = new Object();
 	double numOfExpr = node->GetValue("numOfExpr").GetNumberValue();
 	for (int i = 0; i < numOfExpr; i++) {
-		 elistMap->Set(std::to_string(i), Evaluate(node->GetValue(std::to_string(i)).GetObjectValue()));
+		elistMap->Set(std::to_string(i), Evaluate(node->GetValue(std::to_string(i)).GetObjectValue()));
 	}
 	return elistMap;
 }
@@ -398,7 +399,7 @@ Value Evaluator::EvaluateIndexedElem(ASTnode* node) {
 	Object* newObject = new Object();
 	Value key = Evaluate(node->GetValue("keyExpr").GetObjectValue());
 	Value value = Evaluate(node->GetValue("valueExpr").GetObjectValue());
-	newObject->Set(key,value);
+	newObject->Set(key, value);
 	return newObject;
 }
 
@@ -410,5 +411,38 @@ Value Evaluator::EvaluateElistObjectdef(ASTnode* node) {
 
 Value Evaluator::EvaluateIndexedObjectdef(ASTnode* node) {
 	return Evaluate(node->GetValue("indexed").GetObjectValue());
+}
+
+
+//block
+Value Evaluator::EvaluateBlock(ASTnode* node) {
+	CreateBlockEnvironment();
+
+	Value tmp;
+	double numOfStmt = node->GetValue("numOfStmt").GetNumberValue();
+	for (int i = 0; i < numOfStmt; i++) {
+		tmp = Evaluate(node->GetValue(std::to_string(i)).GetObjectValue());
+	}
+
+	LeaveBlockEnvironment();
+	return nil;
+}
+
+
+// const
+Value Evaluator::EvaluateNumberConst(ASTnode* node) {
+	return node->GetValue("value").GetNumberValue();
+}
+
+Value Evaluator::EvaluateStringConst(ASTnode* node) {
+	return node->GetValue("value").GetStringValue();
+}
+
+Value Evaluator::EvaluateBoolConst(ASTnode* node) {
+	return node->GetValue("value").GetBoolValue();
+}
+
+Value Evaluator::EvaluateNIL(ASTnode* node) {
+	return nil;
 }
 

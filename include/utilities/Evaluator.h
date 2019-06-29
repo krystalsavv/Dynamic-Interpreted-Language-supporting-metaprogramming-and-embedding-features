@@ -94,7 +94,6 @@ namespace interpreter {
 		Value EvaluateReturnValueStmt(ASTnode* node);
 		Value EvaluateBreak(ASTnode* node);
 		Value EvaluateContinue(ASTnode* node);
-		Value EvaluateBlock(ASTnode* node);
 		Value EvaluateSemicolon(ASTnode* node);
 
 		//elist
