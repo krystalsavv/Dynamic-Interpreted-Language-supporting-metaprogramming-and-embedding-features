@@ -11,10 +11,10 @@ std::map<std::string, Value(Evaluator::*)(ASTnode*)> Evaluator::IntializeDispatc
 	table["parentheses"] = &Evaluator::EvaluateParenthesis; 
 	table["uminus"] = &Evaluator::EvaluateUminus;
 	table["not"] = &Evaluator::EvaluateNot;
-	//table["PRE_INCREMENT"] = &Evaluator::EvaluatePreIncrement;
-	//table["POST_INCREMENT"] = &Evaluator::EvaluatePostIncrement;
-	//table["PRE_DECREMENT"] = &Evaluator::EvaluatePreDecrement;
-	//table["POST_DECREMENT"] = &Evaluator::EvaluatePostDecrement;
+	//table["pre_increment"] = &Evaluator::EvaluatePreIncrement;
+	//table["post_incremen"] = &Evaluator::EvaluatePostIncrement;
+	//table["pre_decrement"] = &Evaluator::EvaluatePreDecrement;
+	//table["post_decrement"] = &Evaluator::EvaluatePostDecrement;
 	//const 
 	table["numConst"] = &Evaluator::EvaluateNumberConst;
 	table["stringConst"] = &Evaluator::EvaluateStringConst;
@@ -40,10 +40,11 @@ std::map<std::string, Value(Evaluator::*)(ASTnode*)> Evaluator::IntializeDispatc
 	table["if_elsestmt"] = &Evaluator::EvaluateIfElseStmt;
 	table["whilestmt"] = &Evaluator::EvaluateWhileStmt;
 	table["forstmt"] = &Evaluator::EvaluateForStmt;
-	table["semicolon"] = &Evaluator::EvaluateSemicolon;
 	/*table["return"] = &Evaluator::EvaluateReturnStmt;
 	table["return_value"] = &Evaluator::EvaluateReturnValueStmt;*/
-
+	table["block"] = &Evaluator::EvaluateBlock;
+	table["semicolon"] = &Evaluator::EvaluateSemicolon;
+	
 	//elist
 	table["elist"] = &Evaluator::EvaluateElist;
 	table["emptyElist"] = &Evaluator::EvaluateEmptyElist;
@@ -77,6 +78,8 @@ Value Evaluator::Evaluate(ASTnode* node) {
 }
 
 Value Evaluator::EvaluateProgram(ASTnode* node) {
+	InitGlobalEnvironment();
+
 	Value tmp;
 	double numOfStmt = node->GetValue("numOfStmt").GetNumberValue();
 	for (int i = 0; i < numOfStmt; i++) {
@@ -301,6 +304,19 @@ Value Evaluator::EvaluateForStmt(ASTnode* node) {
 //}
 
 Value Evaluator::EvaluateSemicolon(ASTnode* node) { return nil; };
+
+Value Evaluator::EvaluateBlock(ASTnode* node) {
+	CreateBlockEnvironment();
+	
+	Value tmp;
+	double numOfStmt = node->GetValue("numOfStmt").GetNumberValue();
+	for (int i = 0; i < numOfStmt; i++) {
+		tmp = Evaluate(node->GetValue(std::to_string(i)).GetObjectValue());
+	}
+
+	LeaveBlockEnvironment();
+	return nil; 
+}
 
 
 //elist

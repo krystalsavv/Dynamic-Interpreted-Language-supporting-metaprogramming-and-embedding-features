@@ -85,7 +85,6 @@ program : program stmt
 				$$ = new ASTnode("type", "program");
 				$$->Set("numOfStmt", 0.0);
 				ast->SetRoot($$);
-				InitGlobalEnvironment();
 			}
 		;
 
@@ -366,7 +365,7 @@ member : lvalue DOT IDENT
 
 call : call LEFT_PARENTHESIS
 				{
-					CreateFunctionEnvironment();
+					//CreateFunctionEnvironment();
 				}
 				argList RIGHT_PARENTHESIS 
 				{
@@ -383,7 +382,7 @@ call : call LEFT_PARENTHESIS
 				}
 	| LEFT_PARENTHESIS funcdef RIGHT_PARENTHESIS LEFT_PARENTHESIS
 				{
-					CreateFunctionEnvironment();
+					//CreateFunctionEnvironment();
 				}
 				argList RIGHT_PARENTHESIS
 				{
@@ -409,7 +408,7 @@ callsuffix : normcall
 
 normcall: LEFT_PARENTHESIS 
 			{
-				CreateFunctionEnvironment();
+				//CreateFunctionEnvironment();
 			}
 			argList RIGHT_PARENTHESIS 
 			{
@@ -421,7 +420,7 @@ normcall: LEFT_PARENTHESIS
 
 methodcall : DOUBLE_DOT IDENT LEFT_PARENTHESIS
 			{
-				CreateFunctionEnvironment();
+				//CreateFunctionEnvironment();
 			} 
 			argList RIGHT_PARENTHESIS 
 			{
@@ -546,16 +545,10 @@ tmp_block: tmp_block stmt
 				}
 		;
 
-block : LEFT_BRACKET
-			{
-				CreateBlockEnvironment(); 
-			}  
-			tmp_block RIGHT_BRACKET
+block : LEFT_BRACKET tmp_block RIGHT_BRACKET
 			{
 				std::cout << ("{ stmt }\n");
-				$$ = $3; 
-				LeaveBlockEnvironment();
-
+				$$ = $2; 
 			}
 		;
 
@@ -564,6 +557,7 @@ funcbody: LEFT_BRACKET tmp_block RIGHT_BRACKET
 				{
 					std::cout << ("{ stmt }\n");
 					$$ = $2; 
+					$2->Set("type", "funcbody");
 				}
 		;
 
@@ -574,13 +568,13 @@ funcdef : FUNCTION IDENT
 			
 			LEFT_PARENTHESIS idlist RIGHT_PARENTHESIS funcbody
 				{
-					std::cout << ("function id(idlist) block\n");
+					std::cout << ("function id(idlist) funcbody\n");
 					$$ = new ASTnode("type", "funcdef");
 					$$->Set("ID", *$2);
 					$$->Set("idlist", $5);			//prosoxh an vgalw panw action
-					$$->Set("block", $7);
-					InsertFunctionDefinition(*$2, $$);
-					SliceEnvironment();
+					$$->Set("funcbody", $7);
+					//InsertFunctionDefinition(*$2, $$);
+					//SliceEnvironment();
 				}
 		| FUNCTION 
 				{
@@ -588,12 +582,12 @@ funcdef : FUNCTION IDENT
 				}
 			LEFT_PARENTHESIS idlist RIGHT_PARENTHESIS funcbody
 				{
-					std::cout << ("function (idlist) block\n");
+					std::cout << ("function (idlist) funcbody\n");
 					$$ = new ASTnode("type", "anonymousFuncdef");
 					$$->Set("idlist", $4);			//prosoxh an vgalw panq action
-					$$->Set("block", $6);
-					InsertFunctionDefinition("ANONYMOUS_FUNCTION_NAME", $$);			//Generate funcName for anonymous
-					SliceEnvironment();
+					$$->Set("funcbody", $6);
+					//InsertFunctionDefinition("ANONYMOUS_FUNCTION_NAME", $$);			//Generate funcName for anonymous
+					//SliceEnvironment();
 				}
 		; 
 

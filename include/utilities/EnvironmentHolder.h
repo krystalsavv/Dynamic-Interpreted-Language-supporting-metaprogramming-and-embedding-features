@@ -7,25 +7,26 @@ namespace interpreter {
 	using BlockEnvironment = Object;
 	using FunctionEnvironment =	Object;
 	using ClosureEnvironment = Object;
+	using Environment = Object;
 
 	class EnvironmentHolder
 	{
 		inline static EnvironmentHolder* envHolder = nullptr;
 
 		inline static unsigned int nestedBlock = 0;
-		Object* currentEnv = nullptr;
-		Object* storedEnv = nullptr;
-		Object* globalEnv = nullptr;
+		Environment* currentEnv = nullptr;
+		Environment* storedEnv = nullptr;
+		Environment* globalEnv = nullptr;
 		EnvironmentHolder() = default;
 
 	public:
 		static EnvironmentHolder* getInstance();
 
-		void SetCurrentEnv(Object* env);
-		Object* GetCurrentEnv();
+		void SetCurrentEnv(Environment* env);
+		Environment* GetCurrentEnv();
 
-		void SetGlobalEnv(Object* env);
-		Object* GetGlobalEnv();
+		void SetGlobalEnv(Environment* env);
+		Environment* GetGlobalEnv();
 
 		static unsigned int GetNestedBlock();
 		static void IncrementNestedBlock();
@@ -39,7 +40,7 @@ namespace interpreter {
 	void CreateFunctionEnvironment();
 	void CreateBlockEnvironment();
 	void LeaveBlockEnvironment(); 
+	BlockEnvironment* SliceEnvironment(Environment* previous);
 	void InsertFunctionDefinition(std::string id, ASTnode* node);
-	void SliceEnvironment();
 	
 }

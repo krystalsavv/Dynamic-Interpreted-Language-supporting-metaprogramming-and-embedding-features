@@ -8,20 +8,24 @@ EnvironmentHolder* EnvironmentHolder::getInstance() {
 	return envHolder;
 }
 
-void EnvironmentHolder::SetCurrentEnv(Object* env) {
+void EnvironmentHolder::SetCurrentEnv(Environment* env) {
+	currentEnv->DecreaseReferenceCounter();
+	env->IncreaseReferenceCounter();
 	currentEnv = env;
 }
 
-Object* EnvironmentHolder::GetCurrentEnv() {
+Environment* EnvironmentHolder::GetCurrentEnv() {
 	return currentEnv;
 }
 
 
-void EnvironmentHolder::SetGlobalEnv(Object* env) {
+void EnvironmentHolder::SetGlobalEnv(Environment* env) {
+	globalEnv->DecreaseReferenceCounter();
+	env->IncreaseReferenceCounter();
 	globalEnv = env;
 }
 
-Object* EnvironmentHolder::GetGlobalEnv() {
+Environment* EnvironmentHolder::GetGlobalEnv() {
 	return globalEnv;
 }
 
@@ -53,6 +57,7 @@ void interpreter::InitGlobalEnvironment() {
 	BlockEnvironment* blockEnv = new BlockEnvironment();
 	EnvironmentHolder::getInstance()->SetCurrentEnv(blockEnv);
 	EnvironmentHolder::getInstance()->SetGlobalEnv(blockEnv);
+	// TODO: Insert/add libfunctions in current scope
 }
 
 void interpreter::CreateFunctionEnvironment() {
@@ -64,23 +69,39 @@ void interpreter::CreateFunctionEnvironment() {
 void interpreter::CreateBlockEnvironment() {
 	BlockEnvironment* blockEnv = new BlockEnvironment();
 	blockEnv->Set("$outer", EnvironmentHolder::getInstance()->GetCurrentEnv());
+	blockEnv->Set("$sliced", false);
 	EnvironmentHolder::getInstance()->SetCurrentEnv(blockEnv);
-	EnvironmentHolder::getInstance()->IncrementNestedBlock();
 }
 
 void interpreter::LeaveBlockEnvironment() {
-	EnvironmentHolder::getInstance()->DecrementNestedBlock();
+	Environment* envPointer = EnvironmentHolder::getInstance()->GetCurrentEnv();
+	while (envPointer->HasProperty("$previous")) {
+		envPointer = envPointer->GetValue("$previous").GetObjectValue();
+	}
+
+	Environment* nextEnv;
+	if (envPointer->GetValue("$sliced").GetBoolValue()){
+		nextEnv = SliceEnvironment(envPointer->GetValue("$outer").GetObjectValue());
+	}
+	else {
+		nextEnv = envPointer->GetValue("$outer").GetObjectValue();
+	}
+	EnvironmentHolder::getInstance()->SetCurrentEnv(nextEnv);
+
+	//EnvironmentHolder::getInstance()->DecrementNestedBlock();
+}
+
+BlockEnvironment* interpreter::SliceEnvironment(Environment* previous) {
+	BlockEnvironment* blockEnv = new BlockEnvironment();
+	blockEnv->Set("$previous", previous);
+	return blockEnv; 
+	//if (EnvironmentHolder::getInstance()->GetNestedBlock() == 0)
+	//EnvironmentHolder::getInstance()->SetGlobalEnv(blockEnv);
 }
 
 void interpreter::InsertFunctionDefinition(std::string id, ASTnode* node) {
 	EnvironmentHolder::getInstance()->GetCurrentEnv()->Set(id, node);
 }
 
-void interpreter::SliceEnvironment() {
-	BlockEnvironment* blockEnv = new BlockEnvironment();
-	blockEnv->Set("$previous", EnvironmentHolder::getInstance()->GetCurrentEnv());
-	EnvironmentHolder::getInstance()->SetCurrentEnv(blockEnv);											// NOT SURE CurrentEnv is the sliced one
-	if (EnvironmentHolder::getInstance()->GetNestedBlock() == 0)
-		EnvironmentHolder::getInstance()->SetGlobalEnv(blockEnv);
-}
+
 
