@@ -20,8 +20,12 @@ namespace interpreter {
 		const Value& GetValue(const Value& key) const;
 		void Set(const Value& key, const Value& value);
 
-		bool ContainsKey(const Value& key) const;
+		bool HasProperty(const Value& key) const;
 		std::string toString() const;
+
+		void IncreaseReferenceCounter();
+		void DecreaseReferenceCounter();
+
 
 		//overloads
 		Value operator==(Object* obj);

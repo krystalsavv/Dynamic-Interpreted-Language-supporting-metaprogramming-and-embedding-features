@@ -23,10 +23,10 @@ std::map<std::string, Value(Evaluator::*)(ASTnode*)> Evaluator::IntializeDispatc
 	table["parentheses"] = &Evaluator::EvaluateParenthesis; 
 	table["uminus"] = &Evaluator::EvaluateUminus;
 	table["not"] = &Evaluator::EvaluateNot;
-	//table["PRE_INCREMENT"] = &Evaluator::EvaluatePreIncrement;
-	//table["POST_INCREMENT"] = &Evaluator::EvaluatePostIncrement;
-	//table["PRE_DECREMENT"] = &Evaluator::EvaluatePreDecrement;
-	//table["POST_DECREMENT"] = &Evaluator::EvaluatePostDecrement;
+	//table["pre_increment"] = &Evaluator::EvaluatePreIncrement;
+	//table["post_incremen"] = &Evaluator::EvaluatePostIncrement;
+	//table["pre_decrement"] = &Evaluator::EvaluatePreDecrement;
+	//table["post_decrement"] = &Evaluator::EvaluatePostDecrement;
 	//table["parentheses_funcdef"] = &Evaluator::EvaluateParenthesisFuncdef;
 	table["var"] = &Evaluator::EvaluateIdent;
 	table["localVar"] = &Evaluator::EvaluateLocalIdent;
@@ -42,17 +42,17 @@ std::map<std::string, Value(Evaluator::*)(ASTnode*)> Evaluator::IntializeDispatc
 	table["methodcall"] = &Evaluator::EvaluateMethodCall;
 	table["namedParam"] = &Evaluator::EvaluateArg;
 	table["argList"] = &Evaluator::EvaluateArglist;
-	table["EmptyArgList"] = &Evaluator::EvaluateEmptyArglist;
+	table["emptyArgList"] = &Evaluator::EvaluateEmptyArglist;
 	table["assignexpr"] = &Evaluator::EvaluateAssignExpr;
 	table["ifstmt"] = &Evaluator::EvaluateIfStmt;
 	table["if_elsestmt"] = &Evaluator::EvaluateIfElseStmt;
 	table["whilestmt"] = &Evaluator::EvaluateWhileStmt;
 	table["forstmt"] = &Evaluator::EvaluateForStmt;
-	table["semicolon"] = &Evaluator::EvaluateSemicolon;
 	table["return"] = &Evaluator::EvaluateReturnStmt;
 	table["return_value"] = &Evaluator::EvaluateReturnValueStmt;
 	table["break"] = &Evaluator::EvaluateBreak;
 	table["continue"] = &Evaluator::EvaluateContinue;
+	table["semicolon"] = &Evaluator::EvaluateSemicolon;
 	table["elist"] = &Evaluator::EvaluateElist;
 	table["emptyElist"] = &Evaluator::EvaluateEmptyElist;
 	table["indexed"] = &Evaluator::EvaluateIndexed;
@@ -90,6 +90,8 @@ Value Evaluator::Evaluate(ASTnode* node) {
 }
 
 Value Evaluator::EvaluateProgram(ASTnode* node) {
+	InitGlobalEnvironment();
+
 	Value tmp;
 	double numOfStmt = node->GetValue("numOfStmt").GetNumberValue();
 	for (int i = 0; i < numOfStmt; i++) {
@@ -351,6 +353,19 @@ Value Evaluator::EvaluateContinue(ASTnode* node)
 }
 
 Value Evaluator::EvaluateSemicolon(ASTnode* node) { return nil; };
+
+Value Evaluator::EvaluateBlock(ASTnode* node) {
+	CreateBlockEnvironment();
+	
+	Value tmp;
+	double numOfStmt = node->GetValue("numOfStmt").GetNumberValue();
+	for (int i = 0; i < numOfStmt; i++) {
+		tmp = Evaluate(node->GetValue(std::to_string(i)).GetObjectValue());
+	}
+
+	LeaveBlockEnvironment();
+	return nil; 
+}
 
 
 //elist
