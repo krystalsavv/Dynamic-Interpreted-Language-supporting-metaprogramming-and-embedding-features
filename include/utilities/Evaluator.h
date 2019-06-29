@@ -2,8 +2,10 @@
 
 #include <string>
 #include <map>
+#include "utilities/Exceptions.h"
 #include "utilities/Object.h"
 #include "utilities/AST.h"
+
 
 namespace interpreter {
 
@@ -18,7 +20,8 @@ namespace interpreter {
 		std::map<std::string, Value(Evaluator::*)(ASTnode*)> EvaluateDispatcher;
 		std::map<std::string, Value(Evaluator::*)(ASTnode*)> IntializeDispatcher();
 		inline static Evaluator* evaluator = nullptr;
-		
+		Value retVal;
+
 		Evaluator();
 
 		// program
@@ -65,10 +68,10 @@ namespace interpreter {
 		Value EvaluateIfElseStmt(ASTnode* node);
 		Value EvaluateWhileStmt(ASTnode* node);
 		Value EvaluateForStmt(ASTnode* node);
-		//Value EvaluateReturnStmt(ASTnode* node);
-		//Value EvaluateReturnValueStmt(ASTnode* node);
-		//Value EvaluateBreak(ASTnode* node);
-		//Value EvaluateContinue(ASTnode* node);
+		Value EvaluateReturnStmt(ASTnode* node);
+		Value EvaluateReturnValueStmt(ASTnode* node);
+		Value EvaluateBreak(ASTnode* node);
+		Value EvaluateContinue(ASTnode* node);
 		Value EvaluateSemicolon(ASTnode* node);
 
 		//elist
