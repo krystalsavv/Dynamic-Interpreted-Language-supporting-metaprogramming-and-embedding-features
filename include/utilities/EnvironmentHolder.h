@@ -1,5 +1,6 @@
 #pragma once
 #include "utilities/Object.h"
+#include "utilities/AST.h"
 
 namespace interpreter {
 
@@ -13,10 +14,11 @@ namespace interpreter {
 
 		inline static unsigned int nestedBlock = 0;
 		Object* currentEnv = nullptr;
+		Object* storedEnv = nullptr;
 		Object* globalEnv = nullptr;
 		EnvironmentHolder() = default;
-	public:
 
+	public:
 		static EnvironmentHolder* getInstance();
 
 		void SetCurrentEnv(Object* env);
@@ -31,8 +33,13 @@ namespace interpreter {
 
 		void PrintEnvironmentChain();
 		void PrintGlobalEnvironment();
-
-	private:
-
 	};
+
+	void InitGlobalEnvironment();
+	void CreateFunctionEnvironment();
+	void CreateBlockEnvironment();
+	void LeaveBlockEnvironment(); 
+	void InsertFunctionDefinition(std::string id, ASTnode* node);
+	void SliceEnvironment();
+	
 }

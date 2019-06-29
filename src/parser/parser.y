@@ -5,9 +5,10 @@
 	#include <iostream>	
 	#include "utilities/AST.h"
 
-
 	#include "parser.hpp"
 	#include "scanner.h"
+
+	using namespace interpreter; 
 
 	int yyerror (AST* ast, yyscan_t scanner, const char* yaccProvidedMessage);
 %}
@@ -84,9 +85,7 @@ program : program stmt
 				$$ = new ASTnode("type", "program");
 				$$->Set("numOfStmt", 0.0);
 				ast->SetRoot($$);
-				BlockEnvironment* block = new BlockEnvironment();
-				EnvironmentHolder::getInstance()->SetCurrentEnv(block);
-				EnvironmentHolder::getInstance()->SetGlobalEnv(block);
+				InitGlobalEnvironment();
 			}
 		;
 
@@ -367,9 +366,7 @@ member : lvalue DOT IDENT
 
 call : call LEFT_PARENTHESIS
 				{
-					FunctionEnvironment* funcEnv = new FunctionEnvironment();
-					funcEnv->Set("$outer",EnvironmentHolder::getInstance()->GetCurrentEnv());
-					EnvironmentHolder::getInstance()->SetCurrentEnv(funcEnv);
+					CreateFunctionEnvironment();
 				}
 				argList RIGHT_PARENTHESIS 
 				{
@@ -386,9 +383,7 @@ call : call LEFT_PARENTHESIS
 				}
 	| LEFT_PARENTHESIS funcdef RIGHT_PARENTHESIS LEFT_PARENTHESIS
 				{
-					FunctionEnvironment* funcEnv = new FunctionEnvironment();
-					funcEnv->Set("$outer",EnvironmentHolder::getInstance()->GetCurrentEnv());
-					EnvironmentHolder::getInstance()->SetCurrentEnv(funcEnv);
+					CreateFunctionEnvironment();
 				}
 				argList RIGHT_PARENTHESIS
 				{
@@ -414,9 +409,7 @@ callsuffix : normcall
 
 normcall: LEFT_PARENTHESIS 
 			{
-				FunctionEnvironment* funcEnv = new FunctionEnvironment();
-				funcEnv->Set("$outer",EnvironmentHolder::getInstance()->GetCurrentEnv());
-				EnvironmentHolder::getInstance()->SetCurrentEnv(funcEnv);
+				CreateFunctionEnvironment();
 			}
 			argList RIGHT_PARENTHESIS 
 			{
@@ -428,9 +421,7 @@ normcall: LEFT_PARENTHESIS
 
 methodcall : DOUBLE_DOT IDENT LEFT_PARENTHESIS
 			{
-				FunctionEnvironment* funcEnv = new FunctionEnvironment();
-				funcEnv->Set("$outer",EnvironmentHolder::getInstance()->GetCurrentEnv());
-				EnvironmentHolder::getInstance()->SetCurrentEnv(funcEnv);
+				CreateFunctionEnvironment();
 			} 
 			argList RIGHT_PARENTHESIS 
 			{
@@ -557,16 +548,14 @@ tmp_block: tmp_block stmt
 
 block : LEFT_BRACKET
 			{
-				BlockEnvironment* block = new BlockEnvironment();
-				block->Set("$outer",EnvironmentHolder::getInstance()->GetCurrentEnv());
-				EnvironmentHolder::getInstance()->SetCurrentEnv(block);
-				EnvironmentHolder::getInstance()->IncrementNestedBlock();
+				CreateBlockEnvironment(); 
 			}  
 			tmp_block RIGHT_BRACKET
 			{
 				std::cout << ("{ stmt }\n");
 				$$ = $3; 
-				EnvironmentHolder::getInstance()->DecrementNestedBlock();
+				LeaveBlockEnvironment();
+
 			}
 		;
 
@@ -588,14 +577,10 @@ funcdef : FUNCTION IDENT
 					std::cout << ("function id(idlist) block\n");
 					$$ = new ASTnode("type", "funcdef");
 					$$->Set("ID", *$2);
-					$$->Set("idlist", $5);			//prosoxh an vgalw panq action
+					$$->Set("idlist", $5);			//prosoxh an vgalw panw action
 					$$->Set("block", $7);
-					EnvironmentHolder::getInstance()->GetCurrentEnv()->Set(*$2,$$);
-					BlockEnvironment* block = new BlockEnvironment();
-					block->Set("$previous",EnvironmentHolder::getInstance()->GetCurrentEnv());
-					EnvironmentHolder::getInstance()->SetCurrentEnv(block);											// NOT SURE CurrentEnv is the sliced one
-					if(EnvironmentHolder::getInstance()->GetNestedBlock() == 0)
-						EnvironmentHolder::getInstance()->SetGlobalEnv(block);
+					InsertFunctionDefinition(*$2, $$);
+					SliceEnvironment();
 				}
 		| FUNCTION 
 				{
@@ -607,12 +592,8 @@ funcdef : FUNCTION IDENT
 					$$ = new ASTnode("type", "anonymousFuncdef");
 					$$->Set("idlist", $4);			//prosoxh an vgalw panq action
 					$$->Set("block", $6);
-					EnvironmentHolder::getInstance()->GetCurrentEnv()->Set("_0",$$);								//Generate funcName for anonymous
-					BlockEnvironment* block = new BlockEnvironment();
-					block->Set("$previous",EnvironmentHolder::getInstance()->GetCurrentEnv());
-					EnvironmentHolder::getInstance()->SetCurrentEnv(block);											// NOT SURE CurrentEnv is the sliced one
-					if(EnvironmentHolder::getInstance()->GetNestedBlock() == 0)
-						EnvironmentHolder::getInstance()->SetGlobalEnv(block);
+					InsertFunctionDefinition("ANONYMOUS_FUNCTION_NAME", $$);			//Generate funcName for anonymous
+					SliceEnvironment();
 				}
 		; 
 
