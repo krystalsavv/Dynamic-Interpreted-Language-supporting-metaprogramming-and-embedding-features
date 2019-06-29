@@ -40,11 +40,13 @@ std::map<std::string, Value(Evaluator::*)(ASTnode*)> Evaluator::IntializeDispatc
 	table["if_elsestmt"] = &Evaluator::EvaluateIfElseStmt;
 	table["whilestmt"] = &Evaluator::EvaluateWhileStmt;
 	table["forstmt"] = &Evaluator::EvaluateForStmt;
-	/*table["return"] = &Evaluator::EvaluateReturnStmt;
-	table["return_value"] = &Evaluator::EvaluateReturnValueStmt;*/
+	table["return"] = &Evaluator::EvaluateReturnStmt;
+	table["return_value"] = &Evaluator::EvaluateReturnValueStmt;
+	table["break"] = &Evaluator::EvaluateBreak;
+	table["continue"] = &Evaluator::EvaluateContinue;
 	table["block"] = &Evaluator::EvaluateBlock;
 	table["semicolon"] = &Evaluator::EvaluateSemicolon;
-	
+
 	//elist
 	table["elist"] = &Evaluator::EvaluateElist;
 	table["emptyElist"] = &Evaluator::EvaluateEmptyElist;
@@ -83,7 +85,8 @@ Value Evaluator::EvaluateProgram(ASTnode* node) {
 	Value tmp;
 	double numOfStmt = node->GetValue("numOfStmt").GetNumberValue();
 	for (int i = 0; i < numOfStmt; i++) {
-		tmp = Evaluate(node->GetValue(std::to_string(i)).GetObjectValue());
+		try { tmp = Evaluate(node->GetValue(std::to_string(i)).GetObjectValue()); }
+		catch (const std::exception& e) { std::cout << std::endl << e.what() << std::endl;  exit(0); }
 	}
 	return nil;
 }
@@ -268,23 +271,40 @@ Value Evaluator::EvaluateOrExpr(ASTnode* node) {
 
 // stmt
 Value Evaluator::EvaluateIfStmt(ASTnode* node){
+	Value tmp;
 	if (Evaluate(node->GetValue("condition").GetObjectValue()).toBool()) {
-		auto tmp = Evaluate(node->GetValue("stmt").GetObjectValue());
+		try { tmp = Evaluate(node->GetValue("stmt").GetObjectValue()); }
+		catch (BreakException& e) { throw; }
+		catch (ContinueException& e) { throw; }
+		catch (ReturnException& e) { throw; }
+		catch (ReturnValueException& e) { throw; }
 		return true;
 	}
 	return false;
 }
 
 Value Evaluator::EvaluateIfElseStmt(ASTnode* node) {
-	if (!Evaluate(node->GetValue("ifstmt").GetObjectValue()).toBool()) {
-		auto tmp = Evaluate(node->GetValue("elsestmt").GetObjectValue());
+	Value tmp;
+	try {
+		if (!Evaluate(node->GetValue("ifstmt").GetObjectValue()).toBool()) {
+			tmp = Evaluate(node->GetValue("elsestmt").GetObjectValue());
+		}
+		return nil;
 	}
-	return nil;
+	catch (BreakException& e) { throw; }
+	catch (ContinueException& e) { throw; }
+	catch (ReturnException& e) { throw; }
+	catch (ReturnValueException& e) { throw; }
 }
 
 Value Evaluator::EvaluateWhileStmt(ASTnode* node) {
+	Value tmp;
 	while (Evaluate(node->GetValue("condition").GetObjectValue()).toBool()) {
-		auto tmp = Evaluate(node->GetValue("stmt").GetObjectValue());
+		try { tmp = Evaluate(node->GetValue("stmt").GetObjectValue()); }
+		catch (BreakException& e) { break; }
+		catch (ContinueException& e) { continue; }
+		catch (ReturnException& e) { throw; }
+		catch (ReturnValueException& e) { throw; }
 	}
 	return nil;
 }
@@ -294,14 +314,33 @@ Value Evaluator::EvaluateForStmt(ASTnode* node) {
 	for ( tmp = Evaluate(node->GetValue("init_elist").GetObjectValue()); 
 		  Evaluate(node->GetValue("condition").GetObjectValue()).toBool(); 
 		  tmp = Evaluate(node->GetValue("elist").GetObjectValue()) ) {
-		tmp = Evaluate(node->GetValue("stmt").GetObjectValue());
+		try { tmp = Evaluate(node->GetValue("stmt").GetObjectValue()); }
+		catch (BreakException& e) { break; }
+		catch (ContinueException& e) { continue; }
+		catch (ReturnException& e) { throw; }
+		catch (ReturnValueException& e) { throw; }
 	}
 	return nil;
 }
 
-//Value Evaluator::EvaluateReturnStmt(ASTnode* node) {
-//
-//}
+Value Evaluator::EvaluateReturnStmt(ASTnode* node) {
+	throw ReturnException();
+}
+
+Value Evaluator::EvaluateReturnValueStmt(ASTnode* node) {
+	retVal = Evaluate(node->GetValue("expr").GetObjectValue());
+	throw ReturnValueException();
+}
+
+Value Evaluator::EvaluateBreak(ASTnode* node)
+{
+	throw BreakException();
+}
+
+Value Evaluator::EvaluateContinue(ASTnode* node)
+{
+	throw ContinueException();
+}
 
 Value Evaluator::EvaluateSemicolon(ASTnode* node) { return nil; };
 
