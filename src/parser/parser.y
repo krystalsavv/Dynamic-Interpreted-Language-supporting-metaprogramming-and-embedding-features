@@ -589,7 +589,7 @@ funcdef : FUNCTION IDENT
 			LEFT_PARENTHESIS idlist RIGHT_PARENTHESIS funcbody
 				{
 					std::cout << ("function (idlist) block\n");
-					$$ = new ASTnode("type", "anonymousFuncdef");
+					$$ = new ASTnode("type", "funcdef");
 					$$->Set("idlist", $4);			//prosoxh an vgalw panq action
 					$$->Set("block", $6);
 					InsertFunctionDefinition("ANONYMOUS_FUNCTION_NAME", $$);			//Generate funcName for anonymous

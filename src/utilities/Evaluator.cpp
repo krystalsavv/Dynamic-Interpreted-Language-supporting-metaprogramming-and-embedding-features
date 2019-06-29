@@ -5,22 +5,8 @@ using namespace interpreter;
 
 std::map<std::string, Value(Evaluator::*)(ASTnode*)> Evaluator::IntializeDispatcher() {
 	std::map<std::string, Value(Evaluator::*)(ASTnode*)> table;
+
 	table["program"] = &Evaluator::EvaluateProgram;
-	
-	// term
-	table["parentheses"] = &Evaluator::EvaluateParenthesis; 
-	table["uminus"] = &Evaluator::EvaluateUminus;
-	table["not"] = &Evaluator::EvaluateNot;
-	//table["PRE_INCREMENT"] = &Evaluator::EvaluatePreIncrement;
-	//table["POST_INCREMENT"] = &Evaluator::EvaluatePostIncrement;
-	//table["PRE_DECREMENT"] = &Evaluator::EvaluatePreDecrement;
-	//table["POST_DECREMENT"] = &Evaluator::EvaluatePostDecrement;
-	//const 
-	table["numConst"] = &Evaluator::EvaluateNumberConst;
-	table["stringConst"] = &Evaluator::EvaluateStringConst;
-	table["boolConst"] = &Evaluator::EvaluateBoolConst;
-	table["nil"] = &Evaluator::EvaluateNIL;
-	// expr
 	table["add"] = &Evaluator::EvaluateAddExpr;
 	table["sub"] = &Evaluator::EvaluateSubExpr;
 	table["mul"] = &Evaluator::EvaluateMulExpr;
@@ -34,8 +20,30 @@ std::map<std::string, Value(Evaluator::*)(ASTnode*)> Evaluator::IntializeDispatc
 	table["not_equal"] = &Evaluator::EvaluateNotEqualExpr;
 	table["and"] = &Evaluator::EvaluateAndExpr;
 	table["or"] = &Evaluator::EvaluateOrExpr;
-
-	//stmt
+	table["parentheses"] = &Evaluator::EvaluateParenthesis; 
+	table["uminus"] = &Evaluator::EvaluateUminus;
+	table["not"] = &Evaluator::EvaluateNot;
+	//table["PRE_INCREMENT"] = &Evaluator::EvaluatePreIncrement;
+	//table["POST_INCREMENT"] = &Evaluator::EvaluatePostIncrement;
+	//table["PRE_DECREMENT"] = &Evaluator::EvaluatePreDecrement;
+	//table["POST_DECREMENT"] = &Evaluator::EvaluatePostDecrement;
+	//table["parentheses_funcdef"] = &Evaluator::EvaluateParenthesisFuncdef;
+	table["var"] = &Evaluator::EvaluateIdent;
+	table["localVar"] = &Evaluator::EvaluateLocalIdent;
+	table["scopeVar"] = &Evaluator::EvaluateScopeIdent;
+	table["member_lvalueVar"] = &Evaluator::EvaluateLvalueIdent;
+	table["member_lvalueBrackets"] = &Evaluator::EvaluateLvalueBrackets;
+	table["member_callVar"] = &Evaluator::EvaluateCallIdent;
+	table["member_callBrackets"] = &Evaluator::EvaluateCallBrackets;
+	table["multiCall"] = &Evaluator::EvaluateMultiCall;
+	table["lvalueCall"] = &Evaluator::EvaluateLvalueCallSuffix;
+	table["funcdefCall"] = &Evaluator::EvaluateFuncdefCall;
+	table["normcall"] = &Evaluator::EvaluateNormCall;
+	table["methodcall"] = &Evaluator::EvaluateMethodCall;
+	table["namedParam"] = &Evaluator::EvaluateArg;
+	table["argList"] = &Evaluator::EvaluateArglist;
+	table["EmptyArgList"] = &Evaluator::EvaluateEmptyArglist;
+	table["assignexpr"] = &Evaluator::EvaluateAssignExpr;
 	table["ifstmt"] = &Evaluator::EvaluateIfStmt;
 	table["if_elsestmt"] = &Evaluator::EvaluateIfElseStmt;
 	table["whilestmt"] = &Evaluator::EvaluateWhileStmt;
@@ -45,20 +53,23 @@ std::map<std::string, Value(Evaluator::*)(ASTnode*)> Evaluator::IntializeDispatc
 	table["return_value"] = &Evaluator::EvaluateReturnValueStmt;
 	table["break"] = &Evaluator::EvaluateBreak;
 	table["continue"] = &Evaluator::EvaluateContinue;
-
-	//elist
 	table["elist"] = &Evaluator::EvaluateElist;
 	table["emptyElist"] = &Evaluator::EvaluateEmptyElist;
-	
-	//indexed
 	table["indexed"] = &Evaluator::EvaluateIndexed;
-
-	//indexedElem
-	table["indexedelem"] = &Evaluator::EvaluateIndexedElem;
-
-	//object
+	table["indexedElem"] = &Evaluator::EvaluateIndexedElem;
 	table["elistObjectdef"] = &Evaluator::EvaluateElistObjectdef;
-	//table["indexedObjectdef"] = &Evaluator::EvaluateIndexedObjectdef;
+	table["indexedObjectdef"] = &Evaluator::EvaluateIndexedObjectdef;
+	table["block"] = &Evaluator::EvaluateBlock;
+	table["funcdef"] = &Evaluator::EvaluateFuncdef;
+	table["numConst"] = &Evaluator::EvaluateNumberConst;
+	table["stringConst"] = &Evaluator::EvaluateStringConst;
+	table["boolConst"] = &Evaluator::EvaluateBoolConst;
+	table["nil"] = &Evaluator::EvaluateNIL;
+	table["param"] = &Evaluator::EvaluateParam;
+	table["optionalParam"] = &Evaluator::EvaluateOptionalParam;
+	table["idlist"] = &Evaluator::EvaluateIdlist;
+	table["emptyIdlist"] = &Evaluator::EvaluateEmptyIdlist;
+
 
 	return table;
 }

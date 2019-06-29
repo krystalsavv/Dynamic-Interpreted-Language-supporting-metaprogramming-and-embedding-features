@@ -27,24 +27,6 @@ namespace interpreter {
 		// program
 		Value EvaluateProgram(ASTnode* node);
 
-		// term
-		Value EvaluateParenthesis(ASTnode* node);
-		Value EvaluateUminus(ASTnode* node);
-		Value EvaluateNot(ASTnode* node);
-		//Value EvaluatePreIncrement(ASTnode* node);
-		//Value EvaluatePostIncrement(ASTnode* node);
-		//Value EvaluatePreDecrement(ASTnode* node);
-		//Value EvaluatePostDecrement(ASTnode* node);
-
-		// primary
-		//Value EvaluateParenthesisFuncdef(ASTnode* node);
-
-		// const
-		Value EvaluateNumberConst(ASTnode* node);
-		Value EvaluateStringConst(ASTnode* node);
-		Value EvaluateBoolConst(ASTnode* node);
-		Value EvaluateNIL(ASTnode* node);
-
 		// expr
 		Value EvaluateAddExpr(ASTnode* node);
 		Value EvaluateSubExpr(ASTnode* node);
@@ -60,8 +42,47 @@ namespace interpreter {
 		Value EvaluateAndExpr(ASTnode* node);
 		Value EvaluateOrExpr(ASTnode* node);
 
+
+		// term
+		Value EvaluateParenthesis(ASTnode* node);
+		Value EvaluateUminus(ASTnode* node);
+		Value EvaluateNot(ASTnode* node);
+		//Value EvaluatePreIncrement(ASTnode* node);
+		//Value EvaluatePostIncrement(ASTnode* node);
+		//Value EvaluatePreDecrement(ASTnode* node);
+		//Value EvaluatePostDecrement(ASTnode* node);
+
+		// primary
+		//Value EvaluateParenthesisFuncdef(ASTnode* node);
+
+		//lvalue
+		Value EvaluateIdent(ASTnode* node);
+		Value EvaluateLocalIdent(ASTnode* node);
+		Value EvaluateScopeIdent(ASTnode* node);
+
+		//member
+		Value EvaluateLvalueIdent(ASTnode* node);
+		Value EvaluateLvalueBrackets(ASTnode* node);
+		Value EvaluateCallIdent(ASTnode* node);
+		Value EvaluateCallBrackets(ASTnode* node);
+
+		//call
+		Value EvaluateMultiCall(ASTnode* node);
+		Value EvaluateLvalueCallSuffix(ASTnode* node);
+		Value EvaluateFuncdefCall(ASTnode* node);
+
+		Value EvaluateNormCall(ASTnode* node);
+		Value EvaluateMethodCall(ASTnode* node);
+
+		//arg
+		Value EvaluateArg(ASTnode* node);
+
+		//arglist
+		Value EvaluateArglist(ASTnode* node);
+		Value EvaluateEmptyArglist(ASTnode* node);
+
 		// assignment
-		//Value EvaluateAssignExpr(ASTnode* node);
+		Value EvaluateAssignExpr(ASTnode* node);
 
 		//stmt
 		Value EvaluateIfStmt(ASTnode* node);
@@ -87,6 +108,26 @@ namespace interpreter {
 		//object
 		Value EvaluateElistObjectdef(ASTnode* node);
 		Value EvaluateIndexedObjectdef(ASTnode* node);
+
+		//block
+		Value EvaluateBlock(ASTnode* node);
+
+		//funcdef
+		Value EvaluateFuncdef(ASTnode* node);
+
+		// const
+		Value EvaluateNumberConst(ASTnode* node);
+		Value EvaluateStringConst(ASTnode* node);
+		Value EvaluateBoolConst(ASTnode* node);
+		Value EvaluateNIL(ASTnode* node);
+
+		//formal
+		Value EvaluateParam(ASTnode* node);
+		Value EvaluateOptionalParam(ASTnode* node);
+
+		//idlist
+		Value EvaluateIdlist(ASTnode* node);
+		Value EvaluateEmptyIdlist(ASTnode* node);
 
 	};
 
