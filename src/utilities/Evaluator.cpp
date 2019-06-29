@@ -82,7 +82,8 @@ Value Evaluator::EvaluateProgram(ASTnode* node) {
 	Value tmp;
 	double numOfStmt = node->GetValue("numOfStmt").GetNumberValue();
 	for (int i = 0; i < numOfStmt; i++) {
-		tmp = Evaluate(node->GetValue(std::to_string(i)).GetObjectValue());
+		try { tmp = Evaluate(node->GetValue(std::to_string(i)).GetObjectValue()); }
+		catch (const std::exception& e) { std::cout << std::endl << e.what() << std::endl;  exit(0); }
 	}
 	return nil;
 }

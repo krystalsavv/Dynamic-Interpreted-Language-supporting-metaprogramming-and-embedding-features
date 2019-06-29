@@ -4,6 +4,7 @@ namespace interpreter {
 
 	class BreakException : public std::exception
 	{
+	public:
 		const char* what() const noexcept override {
 			return "A break exception for loops";
 		}
@@ -11,6 +12,7 @@ namespace interpreter {
 
 	class ContinueException : public std::exception
 	{
+	public:
 		const char* what() const noexcept override {
 			return "A continue exception for loops";
 		}
@@ -18,6 +20,7 @@ namespace interpreter {
 
 	class ReturnException : public std::exception
 	{
+	public:
 		const char* what() const noexcept override {
 			return "A return exception without value ";
 		}
@@ -25,6 +28,7 @@ namespace interpreter {
 
 	class ReturnValueException : public std::exception
 	{
+	public:
 		const char* what() const noexcept override {
 			return "A return exception with value";
 		}
