@@ -450,17 +450,17 @@ argList : arg
 			{ 
 				//std::cout << "arg  " << $1->GetValue("ID").GetNumberValue() << std::endl ;
 				$$ = new ASTnode("type", "argList");
-				$$->Set("numOfArg", 1.0);
+				$$->Set("numOfArgs", 1.0);
 				$$->Set("0", $1);
 			}	
 	| argList COMMA arg
 			{
 				//std::cout << "argList, arg "<< $3->GetValue("ID")->GetNumberValue() << std::endl;
 				$$ = $1;
-				double numofArgs = $$->GetValue("numOfArg").GetNumberValue();
+				double numofArgs = $$->GetValue("numOfArgs").GetNumberValue();
 				$$->Set(std::to_string((int)numofArgs), $3);
 				numofArgs++;
-				$$->Set("numOfArg", numofArgs);
+				$$->Set("numOfArgs", numofArgs);
 			}
 	|		{
 				std::cout << "empty argList\n";
@@ -472,17 +472,17 @@ elist :  expr
 			{
 				std::cout << ("expression\n");
 				$$ = new ASTnode("type", "elist");
-				$$->Set("numOfExpr", 1.0);
+				$$->Set("numOfExprs", 1.0);
 				$$->Set("0", $1);
 			}
 	| elist COMMA expr  
 			{
 				std::cout << ("elist, expression\n");
 				$$ = $1;
-				double numOfExpr = $$->GetValue("numOfExpr").GetNumberValue();
-				$$->Set(std::to_string((int)numOfExpr), $3);
-				numOfExpr++;
-				$$->Set("numOfExpr", numOfExpr);
+				double numOfExprs = $$->GetValue("numOfExprs").GetNumberValue();
+				$$->Set(std::to_string((int)numOfExprs), $3);
+				numOfExprs++;
+				$$->Set("numOfExprs", numOfExprs);
 			}
 	|		{
 				std::cout << ("empty (elist)\n");

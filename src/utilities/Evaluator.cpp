@@ -41,8 +41,8 @@ std::map<std::string, Value(Evaluator::*)(ASTnode*)> Evaluator::IntializeDispatc
 	table["normcall"] = &Evaluator::EvaluateNormCall;
 	//table["methodcall"] = &Evaluator::EvaluateMethodCall;
 	//table["namedParam"] = &Evaluator::EvaluateArg;
-	//table["argList"] = &Evaluator::EvaluateArglist;
-	//table["emptyArgList"] = &Evaluator::EvaluateEmptyArglist;
+	table["argList"] = &Evaluator::EvaluateArglist;
+	table["emptyArgList"] = &Evaluator::EvaluateEmptyArglist;
 	//table["assignexpr"] = &Evaluator::EvaluateAssignExpr;
 	table["ifstmt"] = &Evaluator::EvaluateIfStmt;
 	table["if_elsestmt"] = &Evaluator::EvaluateIfElseStmt;
@@ -68,8 +68,8 @@ std::map<std::string, Value(Evaluator::*)(ASTnode*)> Evaluator::IntializeDispatc
 	table["nil"] = &Evaluator::EvaluateNIL;
 	//table["param"] = &Evaluator::EvaluateParam;
 	//table["optionalParam"] = &Evaluator::EvaluateOptionalParam;
-	//table["idlist"] = &Evaluator::EvaluateIdlist;
-	//table["emptyIdlist"] = &Evaluator::EvaluateEmptyIdlist;
+	table["idlist"] = &Evaluator::EvaluateIdlist;
+	table["emptyIdlist"] = &Evaluator::EvaluateEmptyIdlist;
 
 
 	return table;
@@ -281,18 +281,22 @@ Value Evaluator::EvaluateNormCall(ASTnode* node) {
 }
 
 //arg
-Value EvaluateArg(ASTnode* node) {
+Value Evaluator::EvaluateArg(ASTnode* node) {
 	return Value();
 }
 
 //arglist
-Value EvaluateArglist(ASTnode* node) {
-	return Value();
-	//double numofArgs = node->GetValue("numOfArg").GetNumberValue();
+Value Evaluator::EvaluateArglist(ASTnode* node) {
+	Object* argList = new Object();
+	double numofArgs = node->GetValue("numOfArgs").GetNumberValue();
+	for (int i = 0; i < numofArgs; i++) {
+		argList->Set(std::to_string(i), Evaluate(node->GetValue(std::to_string(i)).GetObjectValue()));
+	}
+	return argList;
 }
 
-Value EvaluateEmptyArglist(ASTnode* node) {
-	return Value();
+Value Evaluator::EvaluateEmptyArglist(ASTnode* node) {
+	return new Object();
 }
 
 // stmt
@@ -375,16 +379,15 @@ Value Evaluator::EvaluateSemicolon(ASTnode* node) { return nil; };
 //elist
 Value Evaluator::EvaluateElist(ASTnode* node) {
 	Object* elistMap = new Object();
-	double numOfExpr = node->GetValue("numOfExpr").GetNumberValue();
-	for (int i = 0; i < numOfExpr; i++) {
+	double numOfExprs = node->GetValue("numOfExprs").GetNumberValue();
+	for (int i = 0; i < numOfExprs; i++) {
 		elistMap->Set(std::to_string(i), Evaluate(node->GetValue(std::to_string(i)).GetObjectValue()));
 	}
 	return elistMap;
 }
 
 Value Evaluator::EvaluateEmptyElist(ASTnode* node) {
-	Object* emptyElistMap = new Object();
-	return emptyElistMap;
+	return new Object();
 }
 
 //indexed
@@ -467,3 +470,26 @@ Value Evaluator::EvaluateNIL(ASTnode* node) {
 	return nil;
 }
 
+
+//formal
+Value Evaluator::EvaluateParam(ASTnode* node) {
+	return Value();
+}
+
+Value Evaluator::EvaluateOptionalParam(ASTnode* node) {
+	return Value();
+}
+
+//idlist
+Value Evaluator::EvaluateIdlist(ASTnode* node) {
+	Object* idList = new Object();
+	double numOfParams = node->GetValue("numOfParams").GetNumberValue();
+	for (int i = 0; i < numOfParams; i++) {
+		idList->Set(std::to_string(i), Evaluate(node->GetValue(std::to_string(i)).GetObjectValue()));
+	}
+	return idList;
+}
+
+Value Evaluator::EvaluateEmptyIdlist(ASTnode* node) {
+	return new Object();
+}
