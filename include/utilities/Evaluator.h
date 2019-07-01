@@ -115,6 +115,7 @@ namespace interpreter {
 
 		//funcdef
 		Value EvaluateFuncdef(ASTnode* node);
+		Value EvaluateAnonymousFuncdef(ASTnode* node);
 
 		// const
 		Value EvaluateNumberConst(ASTnode* node);

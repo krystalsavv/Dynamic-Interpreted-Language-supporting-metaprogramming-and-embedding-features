@@ -6,7 +6,7 @@
 #include "utilities/Object.h"
 #include "utilities/AST.h"
 #include "utilities/EnvironmentHolder.h"
-
+#include "utilities/Evaluator.h"
 
 std::string InputToString(const char* filename) {
 	std::ifstream ifs(filename);
