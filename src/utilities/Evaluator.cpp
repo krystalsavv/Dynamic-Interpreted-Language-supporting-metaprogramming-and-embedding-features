@@ -60,8 +60,8 @@ std::map<std::string, Value(Evaluator::*)(ASTnode*)> Evaluator::IntializeDispatc
 	table["elistObjectdef"] = &Evaluator::EvaluateElistObjectdef;
 	table["indexedObjectdef"] = &Evaluator::EvaluateIndexedObjectdef;
 	table["block"] = &Evaluator::EvaluateBlock;
-	//table["funcdef"] = &Evaluator::EvaluateFuncdef;
-	//table["anonymousFuncdef"] = &Evaluator::EvaluateAnonymousFuncdef;
+	table["funcdef"] = &Evaluator::EvaluateFuncdef;
+	table["anonymousFuncdef"] = &Evaluator::EvaluateAnonymousFuncdef;
 	table["numConst"] = &Evaluator::EvaluateNumberConst;
 	table["stringConst"] = &Evaluator::EvaluateStringConst;
 	table["boolConst"] = &Evaluator::EvaluateBoolConst;
@@ -429,6 +429,24 @@ Value Evaluator::EvaluateBlock(ASTnode* node) {
 	}
 
 	LeaveBlockEnvironment();
+	return nil;
+}
+
+Value interpreter::Evaluator::EvaluateFuncdef(ASTnode* node)
+{
+	InsertFunctionDefinition(node->GetValue("ID").GetStringValue(),node);
+	BlockEnvironment* block = SliceEnvironment(EnvironmentHolder::getInstance()->GetCurrentEnv());
+	EnvironmentHolder::getInstance()->SetCurrentEnv(block);
+
+	return nil;
+}
+
+Value interpreter::Evaluator::EvaluateAnonymousFuncdef(ASTnode* node)
+{
+	InsertFunctionDefinition(Object::GenerateAnonymousName(), node);
+	BlockEnvironment* block = SliceEnvironment(EnvironmentHolder::getInstance()->GetCurrentEnv());
+	EnvironmentHolder::getInstance()->SetCurrentEnv(block);
+
 	return nil;
 }
 

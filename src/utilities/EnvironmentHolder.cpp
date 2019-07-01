@@ -101,6 +101,8 @@ BlockEnvironment* interpreter::SliceEnvironment(Environment* previous) {
 
 void interpreter::InsertFunctionDefinition(std::string id, ASTnode* node) {
 	EnvironmentHolder::getInstance()->GetCurrentEnv()->Set(id, node);
+	node->Set("$closure", EnvironmentHolder::getInstance()->GetCurrentEnv());
+	node->Set("$global", EnvironmentHolder::getInstance()->GetGlobalEnv());
 }
 
 

@@ -64,3 +64,34 @@ Value  Object::operator!=(Object* obj) {
 std::ostream& interpreter::operator<< (std::ostream& out, const Object& obj) {
 	return out << obj.toString();
 	}
+
+std::string Object::GenerateAnonymousName()
+{
+	int counter = 0, tmp = anonymousFuncCounter;
+	while (anonymousFuncCounter > 0) {
+		counter++;
+		anonymousFuncCounter = anonymousFuncCounter - anonymousFuncCounter % 10;
+		anonymousFuncCounter = anonymousFuncCounter / 10;
+	}
+	std::string name = "$f";
+	std::string c;
+	while (counter > 0) {
+		int x = tmp % 10;
+		if (x == 0) c = "0";
+		else if (x == 1) c = "1";
+		else if (x == 2) c = "2";
+		else if (x == 3) c = "3";
+		else if (x == 4) c = "4";
+		else if (x == 5) c = "5";
+		else if (x == 6) c = "6";
+		else if (x == 7) c = "7";
+		else if (x == 8) c = "8";
+		else if (x == 9) c = "9";
+		else c = "";
+		tmp = tmp - tmp % 10;
+		tmp = tmp / 10;
+		name += c;
+		counter--;
+	}
+	return name;
+}

@@ -12,6 +12,7 @@ namespace interpreter {
 		map_t symbols;
 		unsigned int referenceCounter = 0;
 		inline static unsigned int nestedCounterPrint = 0;
+		inline static unsigned int anonymousFuncCounter = 0;
 		static void AddTabs(std::string& s);
 	public:
 		Object() = default;
@@ -26,11 +27,11 @@ namespace interpreter {
 		void IncreaseReferenceCounter();
 		void DecreaseReferenceCounter();
 
-
-		//overloads
 		Value operator==(Object* obj);
 		Value operator!=(Object* obj);
 		friend std::ostream& operator<< (std::ostream& out, const Object& obj);
+
+		static std::string GenerateAnonymousName();
 	};	
 }
 
