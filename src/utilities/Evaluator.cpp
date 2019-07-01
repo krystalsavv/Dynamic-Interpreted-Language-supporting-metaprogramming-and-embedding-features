@@ -27,7 +27,7 @@ std::map<std::string, Value(Evaluator::*)(ASTnode*)> Evaluator::IntializeDispatc
 	//table["post_incremen"] = &Evaluator::EvaluatePostIncrement;
 	//table["pre_decrement"] = &Evaluator::EvaluatePreDecrement;
 	//table["post_decrement"] = &Evaluator::EvaluatePostDecrement;
-	//table["parentheses_funcdef"] = &Evaluator::EvaluateParenthesisFuncdef;
+	table["parentheses_funcdef"] = &Evaluator::EvaluateParenthesisFuncdef;
 	//table["var"] = &Evaluator::EvaluateIdent;
 	//table["localVar"] = &Evaluator::EvaluateLocalIdent;
 	//table["scopeVar"] = &Evaluator::EvaluateScopeIdent;
@@ -264,9 +264,11 @@ Value Evaluator::EvaluatePostDecrement(ASTnode* node) {
 */
 
 // primary
-//Value EvaluateParenthesisFuncdef(ASTnode* node);
+Value Evaluator::EvaluateParenthesisFuncdef(ASTnode* node) {
+	return Evaluate(node->GetValue("funcdef").GetObjectValue()); 
+}
 
-//normalcall
+//normcall
 Value Evaluator::EvaluateNormCall(ASTnode* node) {
 	//Create a function Env
 
@@ -292,9 +294,6 @@ Value EvaluateArglist(ASTnode* node) {
 Value EvaluateEmptyArglist(ASTnode* node) {
 	return Value();
 }
-
-//table["argList"] = &Evaluator::EvaluateArglist;
-//table["emptyArgList"] = &Evaluator::EvaluateEmptyArglist;
 
 // stmt
 Value Evaluator::EvaluateIfStmt(ASTnode* node) {

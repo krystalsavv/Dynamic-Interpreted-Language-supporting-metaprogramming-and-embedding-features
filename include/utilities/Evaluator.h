@@ -54,7 +54,7 @@ namespace interpreter {
 		//Value EvaluatePostDecrement(ASTnode* node);
 
 		// primary
-		//Value EvaluateParenthesisFuncdef(ASTnode* node);
+		Value EvaluateParenthesisFuncdef(ASTnode* node);
 
 		//lvalue
 		Value EvaluateIdent(ASTnode* node);
