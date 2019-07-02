@@ -27,6 +27,7 @@ namespace interpreter {
 
 		void SetGlobalEnv(Environment* env);
 		Environment* GetGlobalEnv();
+		bool isGlobalScope();
 
 		static unsigned int GetNestedBlock();
 		static void IncrementNestedBlock();
@@ -37,6 +38,7 @@ namespace interpreter {
 	};
 
 	void InitGlobalEnvironment();
+	bool hasCollisionWithLibFunc(std::string str);
 	void CreateFunctionEnvironment();
 	void CreateBlockEnvironment();
 	void LeaveBlockEnvironment(); 
@@ -46,7 +48,7 @@ namespace interpreter {
 
 	void InsertFunctionDefinition(std::string id, ASTnode* node);
 	void InsertLvalue(std::string id, const Value& value);
-	Environment* LookupLocal(std::string id, Environment* envIterator);
-	Environment* LookupNormal(std::string id);
-	Environment* LookupGlobal(std::string id, Environment* envIterator);
+	Environment* LocalLookUp(std::string id, Environment* envIterator = EnvironmentHolder::getInstance()->GetCurrentEnv());
+	Environment* NormalLookUp(std::string id);
+	Environment* GlobalLookUp(std::string id, Environment* envIterator = EnvironmentHolder::getInstance()->GetGlobalEnv());
 }

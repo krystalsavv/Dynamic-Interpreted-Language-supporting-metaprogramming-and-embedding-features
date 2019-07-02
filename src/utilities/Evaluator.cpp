@@ -271,38 +271,33 @@ Value Evaluator::EvaluateParenthesisFuncdef(ASTnode* node) {
 //lvalue
 Value Evaluator::EvaluateIdent(ASTnode* node) {
 	//return the environment that includes id
-	//Value block = EnvironmentHolder::getInstance()->LookupNormal(node->GetValue("ID").GetStringValue());
-	//if(var)
-		//check for access
-		//return block;
-	//else {
-		//EnvironmentHolder::getInstance()->GetCurrentEnv()->Set(node->GetValue("ID").GetStringValue(),Value());
-		//return EnvironmentHolder::getInstance()->GetCurrentEnv();
-	//}
-		
-	return Value();
+	Environment* env = NormalLookUp(node->GetValue("ID").GetStringValue());
+	if(env != nullptr)
+		return env;
+	else 
+		InsertLvalue(node->GetValue("ID").GetStringValue(), Value());
+	return EnvironmentHolder::getInstance()->GetCurrentEnv();
 }
 
 Value Evaluator::EvaluateLocalIdent(ASTnode* node) {
-	//Value block = EnvironmentHolder::getInstance()->LookupLocal(node->GetValue("ID").GetStringValue());
-	//if( block )
-		//return block;
-	//else if( !var && (!CollisionLibFunc() || GlobalScope() ) ){
-		//EnvironmentHolder::getInstance()->GetCurrentEnv()->Set(node->GetValue("ID").GetStringValue(),Value());
-		//return EnvironmentHolder::getInstance()->GetCurrentEnv();
-	//}
-	//else
-		//error collision with lib func
-	return Value();
+	Environment* env = LocalLookUp(node->GetValue("ID").GetStringValue());
+	if ((env != nullptr && !hasCollisionWithLibFunc(node->GetValue("ID").GetStringValue())) ||
+		(env != nullptr && hasCollisionWithLibFunc(node->GetValue("ID").GetStringValue()) && EnvironmentHolder::getInstance()->isGlobalScope()))
+		return env;
+	else if (env != nullptr && hasCollisionWithLibFunc(node->GetValue("ID").GetStringValue()))
+		assert(false);
+	else {
+		InsertLvalue(node->GetValue("ID").GetStringValue(),Value());
+		return EnvironmentHolder::getInstance()->GetCurrentEnv();
+	}
 }
 
 Value Evaluator::EvaluateGlobalIdent(ASTnode* node) {
-	//Value block = EnvironmentHolder::getInstance()->LookupGlobal(node->GetValue("ID").GetStringValue());
-	//if (block)
-		//return block;
-	//else
-		//error no symbol found (no insertion)
-	return Value();
+	Environment* env = GlobalLookUp(node->GetValue("ID").GetStringValue());
+	if (env != nullptr)
+		return env;
+	else
+		assert(false);
 }
 
 //normcall
@@ -473,19 +468,17 @@ Value Evaluator::EvaluateBlock(ASTnode* node) {
 
 Value interpreter::Evaluator::EvaluateFuncdef(ASTnode* node)
 {
-	//Value var = EnvironmentHolder::getInstance()->LookupLocal(node->GetValue("ID").GetStringValue());
-	//if(var || CollisionLibFunc())
-		//error collision or symbol is found
+	Environment* env = LocalLookUp(node->GetValue("ID").GetStringValue());
+	if (env != nullptr || hasCollisionWithLibFunc(node->GetValue("ID").GetStringValue()))
+		assert(false);
 	InsertFunctionDefinition(node->GetValue("ID").GetStringValue(),node);
-	
-	return nil;
+	return EnvironmentHolder::getInstance()->GetCurrentEnv();
 }
 
 Value interpreter::Evaluator::EvaluateAnonymousFuncdef(ASTnode* node)
 {
 	InsertFunctionDefinition(Object::GenerateAnonymousName(), node);
-
-	return nil;
+	return EnvironmentHolder::getInstance()->GetCurrentEnv();
 }
 
 

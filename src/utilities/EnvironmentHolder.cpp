@@ -38,6 +38,10 @@ void EnvironmentHolder::PrintGlobalEnvironment()
 	std::cout << *globalEnv;
 }
 
+bool EnvironmentHolder::isGlobalScope() {
+	return nestedBlock == 0;
+}
+
 unsigned int  EnvironmentHolder::GetNestedBlock() {
 	return nestedBlock;
 }
@@ -59,6 +63,13 @@ void interpreter::InitGlobalEnvironment() {
 	EnvironmentHolder::getInstance()->SetCurrentEnv(blockEnv);
 	EnvironmentHolder::getInstance()->SetGlobalEnv(blockEnv);
 	// TODO: Insert/add libfunctions in current scope
+}
+
+bool interpreter::hasCollisionWithLibFunc(std::string str)
+{
+	if (GlobalLookUp(str) != nullptr)
+		return true;
+	return false;
 }
 
 void interpreter::CreateFunctionEnvironment() {
@@ -115,7 +126,7 @@ void interpreter::InsertLvalue(std::string id, const Value& value) {
 	EnvironmentHolder::getInstance()->GetCurrentEnv()->Set(id, value);
 }
 
-Environment* interpreter::LookupLocal(std::string id, Environment* envIterator = EnvironmentHolder::getInstance()->GetCurrentEnv()) {		// kai tous environment pointers tous epistrefei ws values 
+Environment* interpreter::LocalLookUp(std::string id, Environment* envIterator) {		// kai tous environment pointers tous epistrefei ws values 
 	 while (envIterator->HasProperty("$previous")) {
 		if (envIterator->HasProperty(id)) {
 			return envIterator;
@@ -130,7 +141,7 @@ Environment* interpreter::LookupLocal(std::string id, Environment* envIterator =
 }
 
 
- static void LookupLocal_help(std::string id,  Environment*& envIterator) {		// kai tous environment pointers tous epistrefei ws values 
+ static void LocalLookUpForNormal(std::string id,  Environment*& envIterator) {		// kai tous environment pointers tous epistrefei ws values 
 	 while (envIterator->HasProperty("$previous")) {
 		 if (envIterator->HasProperty(id)) {
 			 return;		// return envIterator;
@@ -138,19 +149,16 @@ Environment* interpreter::LookupLocal(std::string id, Environment* envIterator =
 		 envIterator = envIterator->GetValue("$previous").GetObjectValue();
 	 }
 	 assert(envIterator->HasProperty("$outer"));
-	 if (envIterator->HasProperty(id)) {					// for the last environment node, which has an $outer pointer (not a $previous)
-		 return;			// return envIterator;
-	 }
 	 // return envIterator;
  }
 
 
- Environment* interpreter::LookupNormal(std::string id) {
+ Environment* interpreter::NormalLookUp(std::string id) {
 	Environment* envIterator = EnvironmentHolder::getInstance()->GetCurrentEnv();
 	while (true) {
 		if (envIterator->HasProperty("$outer") && envIterator->GetValue("$outer").GetObjectValue() == nullptr)
 			break;
-		LookupLocal_help(id, envIterator);
+		LocalLookUpForNormal(id, envIterator);
 		//envIterator = LookupLocal_help(id, envIterator);
 		if (envIterator->HasProperty(id)) {
 			return envIterator;
@@ -159,6 +167,6 @@ Environment* interpreter::LookupLocal(std::string id, Environment* envIterator =
 	return nullptr;
 }
 
- Environment* LookupGlobal(std::string id, Environment* envIterator = EnvironmentHolder::getInstance()->GetGlobalEnv()) {
-	 return LookupLocal(id, envIterator);
+ Environment* interpreter::GlobalLookUp(std::string id, Environment* envIterator ) {
+	 return LocalLookUp(id, envIterator);
  }
