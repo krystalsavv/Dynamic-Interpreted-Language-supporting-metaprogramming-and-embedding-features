@@ -1,7 +1,10 @@
 #include "utilities/Value.h"
 #include "utilities/Object.h"
+#include <cassert>
 
 using namespace interpreter;
+
+Value undefined(Undefined());
 
 Value::Value(bool value) {
 	variant = value;
@@ -20,6 +23,10 @@ Value::Value(const char * value) {
 }
 
 Value::Value(Object* value) {
+	variant = value;
+}
+
+Value::Value(Undefined& value) {
 	variant = value;
 }
 
@@ -62,6 +69,10 @@ bool Value::isObject() const {
 	return std::holds_alternative<Object*>(variant);
 }
 
+bool Value::isUndefined() const {
+	return std::holds_alternative<Undefined>(variant);
+}
+
 
 bool Value::toBool() const {
 	if (this->isNumber()) {
@@ -85,6 +96,10 @@ bool Value::toBool() const {
 	else if (this->isBool()) {
 		return this->GetBoolValue();
 	}
+	else if (isUndefined()) {
+		//error
+		assert(false);
+	}
 	// TODO: libfunc
 }
 
@@ -103,6 +118,10 @@ std::string Value::toString() const {
 		return GetStringValue();
 	else if (isObject())
 		return GetObjectValue()->toString();
+	else {
+		assert(isUndefined());
+		return "undefined";
+	}
 }
 
 /****************************overloads***********************************/
