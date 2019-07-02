@@ -59,7 +59,7 @@ namespace interpreter {
 		//lvalue
 		Value EvaluateIdent(ASTnode* node);
 		Value EvaluateLocalIdent(ASTnode* node);
-		Value EvaluateScopeIdent(ASTnode* node);
+		Value EvaluateGlobalIdent(ASTnode* node);
 
 		//member
 		Value EvaluateLvalueIdent(ASTnode* node);

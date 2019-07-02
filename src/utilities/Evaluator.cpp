@@ -28,9 +28,9 @@ std::map<std::string, Value(Evaluator::*)(ASTnode*)> Evaluator::IntializeDispatc
 	//table["pre_decrement"] = &Evaluator::EvaluatePreDecrement;
 	//table["post_decrement"] = &Evaluator::EvaluatePostDecrement;
 	table["parentheses_funcdef"] = &Evaluator::EvaluateParenthesisFuncdef;
-	//table["var"] = &Evaluator::EvaluateIdent;
+	//table["lvalueVar"] = &Evaluator::EvaluateIdent;
 	//table["localVar"] = &Evaluator::EvaluateLocalIdent;
-	//table["scopeVar"] = &Evaluator::EvaluateScopeIdent;
+	//table["globalVar"] = &Evaluator::EvaluateGlobalIdent;
 	//table["member_lvalueVar"] = &Evaluator::EvaluateLvalueIdent;
 	//table["member_lvalueBrackets"] = &Evaluator::EvaluateLvalueBrackets;
 	//table["member_callVar"] = &Evaluator::EvaluateCallIdent;
@@ -268,6 +268,43 @@ Value Evaluator::EvaluateParenthesisFuncdef(ASTnode* node) {
 	return Evaluate(node->GetValue("funcdef").GetObjectValue()); 
 }
 
+//lvalue
+Value Evaluator::EvaluateIdent(ASTnode* node) {
+	//return the environment that includes id
+	//Value block = EnvironmentHolder::getInstance()->LookupNormal(node->GetValue("ID").GetStringValue());
+	//if(var)
+		//check for access
+		//return block;
+	//else {
+		//EnvironmentHolder::getInstance()->GetCurrentEnv()->Set(node->GetValue("ID").GetStringValue(),Value());
+		//return EnvironmentHolder::getInstance()->GetCurrentEnv();
+	//}
+		
+	return Value();
+}
+
+Value Evaluator::EvaluateLocalIdent(ASTnode* node) {
+	//Value block = EnvironmentHolder::getInstance()->LookupLocal(node->GetValue("ID").GetStringValue());
+	//if( block )
+		//return block;
+	//else if( !var && (!CollisionLibFunc() || GlobalScope() ) ){
+		//EnvironmentHolder::getInstance()->GetCurrentEnv()->Set(node->GetValue("ID").GetStringValue(),Value());
+		//return EnvironmentHolder::getInstance()->GetCurrentEnv();
+	//}
+	//else
+		//error collision with lib func
+	return Value();
+}
+
+Value Evaluator::EvaluateGlobalIdent(ASTnode* node) {
+	//Value block = EnvironmentHolder::getInstance()->LookupGlobal(node->GetValue("ID").GetStringValue());
+	//if (block)
+		//return block;
+	//else
+		//error no symbol found (no insertion)
+	return Value();
+}
+
 //normcall
 Value Evaluator::EvaluateNormCall(ASTnode* node) {
 	//Create a function Env
@@ -436,18 +473,17 @@ Value Evaluator::EvaluateBlock(ASTnode* node) {
 
 Value interpreter::Evaluator::EvaluateFuncdef(ASTnode* node)
 {
+	//Value var = EnvironmentHolder::getInstance()->LookupLocal(node->GetValue("ID").GetStringValue());
+	//if(var || CollisionLibFunc())
+		//error collision or symbol is found
 	InsertFunctionDefinition(node->GetValue("ID").GetStringValue(),node);
-	BlockEnvironment* block = SliceEnvironment(EnvironmentHolder::getInstance()->GetCurrentEnv());
-	EnvironmentHolder::getInstance()->SetCurrentEnv(block);
-
+	
 	return nil;
 }
 
 Value interpreter::Evaluator::EvaluateAnonymousFuncdef(ASTnode* node)
 {
 	InsertFunctionDefinition(Object::GenerateAnonymousName(), node);
-	BlockEnvironment* block = SliceEnvironment(EnvironmentHolder::getInstance()->GetCurrentEnv());
-	EnvironmentHolder::getInstance()->SetCurrentEnv(block);
 
 	return nil;
 }
@@ -482,6 +518,7 @@ Value Evaluator::EvaluateOptionalParam(ASTnode* node) {
 
 //idlist
 Value Evaluator::EvaluateIdlist(ASTnode* node) {
+	// TODO: Extra error checking ensuring that all default arguments are at the end of the parameter list after any required parameters 
 	Object* idList = new Object();
 	double numOfParams = node->GetValue("numOfParams").GetNumberValue();
 	for (int i = 0; i < numOfParams; i++) {

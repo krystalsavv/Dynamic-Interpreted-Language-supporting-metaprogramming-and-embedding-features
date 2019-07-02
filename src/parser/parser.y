@@ -305,7 +305,7 @@ primary : lvalue
 lvalue : IDENT	
 			{
 				std::cout << ("ID\n");
-				$$ = new ASTnode("type", "var");
+				$$ = new ASTnode("type", "lvalueVar");
 				$$->Set("ID", *$1);
 				delete($1); 
 			}
@@ -319,7 +319,7 @@ lvalue : IDENT
 	| SCOPE IDENT	
 			{
 				std::cout << ("::ID\n");
-				$$ = new ASTnode("type", "scopeVar");		
+				$$ = new ASTnode("type", "globalVar");		
 				$$->Set("ID", *$2);
 				delete($2); 
 			}
@@ -426,7 +426,7 @@ methodcall : DOUBLE_DOT IDENT LEFT_PARENTHESIS
 			{
 				std::cout << ("..ident(argList)\n");
 				$$ = new ASTnode("type", "methodcall");
-				$$->Set("ID", $2); 
+				$$->Set("ID", *$2); 
 				$$->Set("argList", $5); 
 				
 			}
@@ -627,14 +627,14 @@ formal: IDENT
 		{
 			std::cout << ("id list\n");
 			$$ = new ASTnode("type", "param");
-			$$->Set("ID", $1);
+			$$->Set("ID", *$1);
 		}
 	
 	| IDENT ASSIGN expr
 		{
 			std::cout << ("id =  expr\n");
 			$$ = new ASTnode("type", "optionalParam");
-			$$->Set("ID", $1);
+			$$->Set("ID", *$1);
 			$$->Set("expr", $3);
 		}
 	;
