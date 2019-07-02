@@ -6,11 +6,16 @@
 #include <cassert>
 #include <iostream> 
 
-#define variant_t std::variant<bool, double, std::string, Object*> 
+#define variant_t std::variant<bool, double, std::string, Object*, Undefined> 
 
 namespace interpreter {
 
 	class Object;
+
+	struct Undefined
+	{
+		Undefined() = default;
+	};
 
 	class Value
 	{
@@ -23,6 +28,7 @@ namespace interpreter {
 		Value(std::string value);
 		Value(const char* value);
 		Value(Object* value);
+		Value(Undefined& value);
 		Value(const Value& value);
 
 		const bool& GetBoolValue() const;
@@ -37,6 +43,7 @@ namespace interpreter {
 		bool isNumber()const;
 		bool isString() const;
 		bool isObject() const;
+		bool isUndefined() const;
 
 		void Set(const Value& value);
 
@@ -75,6 +82,8 @@ namespace interpreter {
 
 		friend std::ostream& operator<< (std::ostream& out, const Value& value);
 	};
+
+	extern Value undefined;// = Undefined();
 }
 
 using namespace interpreter;

@@ -43,4 +43,10 @@ namespace interpreter {
 	BlockEnvironment* SliceEnvironment(Environment* previous);
 	void InsertFunctionDefinition(std::string id, ASTnode* node);
 	
+
+	void InsertFunctionDefinition(std::string id, ASTnode* node);
+	void InsertLvalue(std::string id, const Value& value);
+	Environment* LookupLocal(std::string id, Environment* envIterator);
+	Environment* LookupNormal(std::string id);
+	Environment* LookupGlobal(std::string id, Environment* envIterator);
 }

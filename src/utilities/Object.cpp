@@ -13,7 +13,7 @@ Object::Object(const Value& key, const Value& value) {
 }
 
 const Value& Object::GetValue(const Value& key) const {
-	auto value = symbols.find(key); 
+	auto value = symbols.find(key);
 	if (value != symbols.end())
 		return value->second;
 	else {

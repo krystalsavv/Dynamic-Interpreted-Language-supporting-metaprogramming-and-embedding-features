@@ -55,6 +55,7 @@ void  EnvironmentHolder::DecrementNestedBlock() {
 
 void interpreter::InitGlobalEnvironment() {
 	BlockEnvironment* blockEnv = new BlockEnvironment();
+	blockEnv->Set("$outer", (Object*)nullptr);
 	EnvironmentHolder::getInstance()->SetCurrentEnv(blockEnv);
 	EnvironmentHolder::getInstance()->SetGlobalEnv(blockEnv);
 	// TODO: Insert/add libfunctions in current scope
@@ -74,17 +75,17 @@ void interpreter::CreateBlockEnvironment() {
 }
 
 void interpreter::LeaveBlockEnvironment() {
-	Environment* envPointer = EnvironmentHolder::getInstance()->GetCurrentEnv();
-	while (envPointer->HasProperty("$previous")) {
-		envPointer = envPointer->GetValue("$previous").GetObjectValue();
+	Environment* envIterator = EnvironmentHolder::getInstance()->GetCurrentEnv();
+	while (envIterator->HasProperty("$previous")) {
+		envIterator = envIterator->GetValue("$previous").GetObjectValue();
 	}
 
 	Environment* nextEnv;
-	if (envPointer->GetValue("$sliced").GetBoolValue()){
-		nextEnv = SliceEnvironment(envPointer->GetValue("$outer").GetObjectValue());
+	if (envIterator->GetValue("$sliced").GetBoolValue()){
+		nextEnv = SliceEnvironment(envIterator->GetValue("$outer").GetObjectValue());
 	}
 	else {
-		nextEnv = envPointer->GetValue("$outer").GetObjectValue();
+		nextEnv = envIterator->GetValue("$outer").GetObjectValue();
 	}
 	EnvironmentHolder::getInstance()->SetCurrentEnv(nextEnv);
 
@@ -99,11 +100,63 @@ BlockEnvironment* interpreter::SliceEnvironment(Environment* previous) {
 	//EnvironmentHolder::getInstance()->SetGlobalEnv(blockEnv);
 }
 
+
 void interpreter::InsertFunctionDefinition(std::string id, ASTnode* node) {
+	// TODO: lookup (if already exists ERROR)
 	EnvironmentHolder::getInstance()->GetCurrentEnv()->Set(id, node);
 	node->Set("$closure", EnvironmentHolder::getInstance()->GetCurrentEnv());
 	node->Set("$global", EnvironmentHolder::getInstance()->GetGlobalEnv());
 }
 
+void interpreter::InsertLvalue(std::string id, const Value& value) {
+	// TODO: lookuo maybe here
+	EnvironmentHolder::getInstance()->GetCurrentEnv()->Set(id, value);
+}
+
+Environment* interpreter::LookupLocal(std::string id, Environment* envIterator = EnvironmentHolder::getInstance()->GetCurrentEnv()) {		// kai tous environment pointers tous epistrefei ws values 
+	 while (envIterator->HasProperty("$previous")) {
+		if (envIterator->HasProperty(id)) {
+			return envIterator;
+		}
+		envIterator = envIterator->GetValue("$previous").GetObjectValue();
+	}
+	assert(envIterator->HasProperty("$outer"));
+	if (envIterator->HasProperty(id)) {					// for the last environment node, which has an $outer pointer (not a $previous)
+		return envIterator;
+	}
+	return nullptr;
+}
 
 
+ static void LookupLocal_help(std::string id,  Environment*& envIterator) {		// kai tous environment pointers tous epistrefei ws values 
+	 while (envIterator->HasProperty("$previous")) {
+		 if (envIterator->HasProperty(id)) {
+			 return;		// return envIterator;
+		 }
+		 envIterator = envIterator->GetValue("$previous").GetObjectValue();
+	 }
+	 assert(envIterator->HasProperty("$outer"));
+	 if (envIterator->HasProperty(id)) {					// for the last environment node, which has an $outer pointer (not a $previous)
+		 return;			// return envIterator;
+	 }
+	 // return envIterator;
+ }
+
+
+ Environment* interpreter::LookupNormal(std::string id) {
+	Environment* envIterator = EnvironmentHolder::getInstance()->GetCurrentEnv();
+	while (true) {
+		if (envIterator->HasProperty("$outer") && envIterator->GetValue("$outer").GetObjectValue() == nullptr)
+			break;
+		LookupLocal_help(id, envIterator);
+		//envIterator = LookupLocal_help(id, envIterator);
+		if (envIterator->HasProperty(id)) {
+			return envIterator;
+		}
+	}
+	return nullptr;
+}
+
+ Environment* LookupGlobal(std::string id, Environment* envIterator = EnvironmentHolder::getInstance()->GetGlobalEnv()) {
+	 return LookupLocal(id, envIterator);
+ }
