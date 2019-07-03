@@ -28,9 +28,9 @@ std::map<std::string, std::optional<Value>(Evaluator::*)(ASTnode*)> Evaluator::I
 	//table["pre_decrement"] = &Evaluator::EvaluatePreDecrement;
 	//table["post_decrement"] = &Evaluator::EvaluatePostDecrement;
 	table["parentheses_funcdef"] = &Evaluator::EvaluateParenthesisFuncdef;
-	//table["var"] = &Evaluator::EvaluateIdent;
-	//table["localVar"] = &Evaluator::EvaluateLocalIdent;
-	//table["globalVar"] = &Evaluator::EvaluateGlobalIdent;
+	table["var"] = &Evaluator::EvaluateIdent;
+	table["localVar"] = &Evaluator::EvaluateLocalIdent;
+	table["globalVar"] = &Evaluator::EvaluateGlobalIdent;
 	//table["member_lvalueVar"] = &Evaluator::EvaluateLvalueIdent;
 	//table["member_lvalueBrackets"] = &Evaluator::EvaluateLvalueBrackets;
 	//table["member_callVar"] = &Evaluator::EvaluateCallIdent;
@@ -43,7 +43,7 @@ std::map<std::string, std::optional<Value>(Evaluator::*)(ASTnode*)> Evaluator::I
 	//table["namedParam"] = &Evaluator::EvaluateArg;
 	table["argList"] = &Evaluator::EvaluateArglist;
 	table["emptyArgList"] = &Evaluator::EvaluateEmptyArglist;
-	//table["assignexpr"] = &Evaluator::EvaluateAssignExpr;
+	table["assignexpr"] = &Evaluator::EvaluateAssignExpr;
 	table["ifstmt"] = &Evaluator::EvaluateIfStmt;
 	table["if_elsestmt"] = &Evaluator::EvaluateIfElseStmt;
 	table["whilestmt"] = &Evaluator::EvaluateWhileStmt;
@@ -101,6 +101,9 @@ std::optional<Value> Evaluator::EvaluateProgram(ASTnode* node) {
 		catch (ContinueException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
 		catch (ReturnException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
 		catch (ReturnValueException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
+		catch (RuntimeErrorException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
+		catch (SyntaxErrorException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
+		
 	}
 	return std::nullopt;
 }
@@ -270,34 +273,23 @@ std::optional<Value> Evaluator::EvaluateParenthesisFuncdef(ASTnode* node) {
 
 //lvalue
 std::optional<Value> Evaluator::EvaluateIdent(ASTnode* node) {
-	//return the environment that includes id
-	Environment* env = NormalLookUp(node->GetValue("ID")->GetStringValue());
-	if(env != nullptr)
-		return env;
-	else 
-		InsertLvalue(node->GetValue("ID")->GetStringValue(), Value());
-	return EnvironmentHolder::getInstance()->GetCurrentEnv();
+	return *LvalueVarActions(node->GetValue("ID")->GetStringValue());
 }
 
 std::optional<Value> Evaluator::EvaluateLocalIdent(ASTnode* node) {
-	Environment* env = LocalLookUp(node->GetValue("ID")->GetStringValue());
-	if ((env != nullptr && !hasCollisionWithLibFunc(node->GetValue("ID")->GetStringValue())) ||
-		(env != nullptr && hasCollisionWithLibFunc(node->GetValue("ID")->GetStringValue()) && EnvironmentHolder::getInstance()->isGlobalScope()))
-		return env;
-	else if (env != nullptr && hasCollisionWithLibFunc(node->GetValue("ID")->GetStringValue()))
-		assert(false);
-	else {
-		InsertLvalue(node->GetValue("ID")->GetStringValue(),Value());
-		return EnvironmentHolder::getInstance()->GetCurrentEnv();
-	}
+	Value* value = LvalueLocalVarActions(node->GetValue("ID")->GetStringValue());
+	if (value == nullptr){
+		throw SyntaxErrorException();
+	}	
+	return *value;
 }
 
 std::optional<Value> Evaluator::EvaluateGlobalIdent(ASTnode* node) {
-	Environment* env = GlobalLookUp(node->GetValue("ID")->GetStringValue());
-	if (env != nullptr)
-		return env;
-	else
-		assert(false);
+	Value* value = LvalueGlobalVarActions(node->GetValue("ID")->GetStringValue());
+	if (value == nullptr) {
+		throw RuntimeErrorException();
+	}
+	return *value;
 }
 
 //normcall
@@ -329,6 +321,27 @@ std::optional<Value> Evaluator::EvaluateArglist(ASTnode* node) {
 
 std::optional<Value> Evaluator::EvaluateEmptyArglist(ASTnode* node) {
 	return new Object();
+}
+
+std::optional<Value> interpreter::Evaluator::EvaluateAssignExpr(ASTnode* node)
+{
+	//save env before evaluation of rvalue
+	Environment* savedEnvironment = EnvironmentHolder::getInstance()->GetCurrentEnv();
+
+	//evaluate rvalue first
+	Value expr =  *Evaluate(node->GetValue("expr")->GetObjectValue());
+
+	//save currentEnv and look/insert lvalue in saved env
+	Environment* current = EnvironmentHolder::getInstance()->GetCurrentEnv();
+	EnvironmentHolder::getInstance()->SetCurrentEnv(savedEnvironment);
+
+	//evaluate lvalue then (Evaluation of lvalue returned &)
+	Value lvalue = *Evaluate(node->GetValue("lvalue")->GetObjectValue());
+
+	//go back to the last env
+	EnvironmentHolder::getInstance()->SetCurrentEnv(current);
+
+	return lvalue = expr;
 }
 
 // stmt
@@ -468,11 +481,11 @@ std::optional<Value> Evaluator::EvaluateBlock(ASTnode* node) {
 
 std::optional<Value> interpreter::Evaluator::EvaluateFuncdef(ASTnode* node)
 {
-	Environment* env = LocalLookUp(node->GetValue("ID")->GetStringValue());
-	if (env != nullptr || hasCollisionWithLibFunc(node->GetValue("ID")->GetStringValue()))
-		assert(false);
-	InsertFunctionDefinition(node->GetValue("ID")->GetStringValue(),node);
-	return EnvironmentHolder::getInstance()->GetCurrentEnv();
+	Value* value = LvalueFuncDefActions(node->GetValue("ID")->GetStringValue(),node);
+	if (value == nullptr) {
+		throw SyntaxErrorException();
+	}
+	return *value;
 }
 
 std::optional<Value> interpreter::Evaluator::EvaluateAnonymousFuncdef(ASTnode* node)

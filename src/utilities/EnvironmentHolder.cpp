@@ -11,7 +11,8 @@ EnvironmentHolder* EnvironmentHolder::getInstance() {
 }
 
 void EnvironmentHolder::SetCurrentEnv(Environment* env) {
-	currentEnv->DecreaseReferenceCounter();
+	if(currentEnv != nullptr )
+		currentEnv->DecreaseReferenceCounter();
 	env->IncreaseReferenceCounter();
 	currentEnv = env;
 }
@@ -22,7 +23,8 @@ Environment* EnvironmentHolder::GetCurrentEnv() {
 
 
 void EnvironmentHolder::SetGlobalEnv(Environment* env) {
-	globalEnv->DecreaseReferenceCounter();
+	if(globalEnv != nullptr)
+		globalEnv->DecreaseReferenceCounter();
 	env->IncreaseReferenceCounter();
 	globalEnv = env;
 }
@@ -114,13 +116,14 @@ BlockEnvironment* interpreter::SliceEnvironment(Environment* previous) {
 }
 
 
-void interpreter::InsertFunctionDefinition(std::string id, ASTnode* node) {
-	// TODO: lookup (if already exists ERROR)
+Value* interpreter::InsertFunctionDefinition(std::string id, ASTnode* node) {
 	EnvironmentHolder::getInstance()->GetCurrentEnv()->Set(id, node);
+	Value* value = EnvironmentHolder::getInstance()->GetCurrentEnv()->GetValue(id);
 	node->Set("$closure", EnvironmentHolder::getInstance()->GetCurrentEnv());
 	node->Set("$global", EnvironmentHolder::getInstance()->GetGlobalEnv());
 	BlockEnvironment* block = SliceEnvironment(EnvironmentHolder::getInstance()->GetCurrentEnv());
 	EnvironmentHolder::getInstance()->SetCurrentEnv(block);
+	return value;
 }
 
 Value* interpreter::InsertLvalue(std::string id, const Value& value) {
@@ -170,3 +173,39 @@ Value* interpreter::LocalLookUp(std::string id, Environment* envIterator) {		// 
  Value* interpreter::GlobalLookUp(std::string id, Environment* envIterator ) {
 	 return LocalLookUp(id, envIterator);
  }
+
+ Value* interpreter::LvalueVarActions(std::string id)
+ {
+	Value* value = NormalLookUp(id);
+	if (value != nullptr)
+		return value;
+	else
+	return InsertLvalue(id, Value());
+ }
+
+ Value* interpreter::LvalueLocalVarActions(std::string id) {
+	 Value* value = LocalLookUp(id);
+	 if ((value != nullptr && !hasCollisionWithLibFunc(id)) ||
+		 (value != nullptr && hasCollisionWithLibFunc(id) && EnvironmentHolder::getInstance()->isGlobalScope()))
+		 return value;
+	 else if (value != nullptr && hasCollisionWithLibFunc(id))
+		 return nullptr;
+	 else {
+		 return InsertLvalue(id, Value());
+	 }
+ }
+
+ Value* interpreter::LvalueGlobalVarActions(std::string id) {
+	 Value* value = GlobalLookUp(id);
+	 if (value != nullptr)
+		 return value;
+	 else
+		 return nullptr;
+}
+
+Value* interpreter::LvalueFuncDefActions(std::string id, ASTnode* node) {
+	Value* value = LocalLookUp(id);
+	if (value != nullptr || hasCollisionWithLibFunc(id))
+		return nullptr;
+	return InsertFunctionDefinition(id, node);
+}

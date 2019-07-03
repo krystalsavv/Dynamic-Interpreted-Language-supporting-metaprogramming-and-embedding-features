@@ -33,5 +33,21 @@ namespace interpreter {
 			return "A return exception with value";
 		}
 	};
+
+	class RuntimeErrorException : public std::exception
+	{
+	public:
+		const char* what() const noexcept override {
+			return "Runtime error";
+		}
+	};
+
+	class SyntaxErrorException : public std::exception
+	{
+	public:
+		const char* what() const noexcept override {
+			return "Runtime error";
+		}
+	};
 }
 

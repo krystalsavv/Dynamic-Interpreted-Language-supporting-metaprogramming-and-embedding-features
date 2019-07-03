@@ -121,10 +121,12 @@ std::string Value::toString() const {
 		return std::to_string(GetNumberValue());
 	else if (isString())
 		return GetStringValue();
-	else if (isObject())
+	else if (isObject() && GetObjectValue() != nullptr)
 		return GetObjectValue()->toString();
+	else if (isObject() && GetObjectValue() == nullptr)
+		return "null";
 	else {
-		assert(isUndefined());
+		//assert(isUndefined());
 		return "undefined";
 	}
 }
