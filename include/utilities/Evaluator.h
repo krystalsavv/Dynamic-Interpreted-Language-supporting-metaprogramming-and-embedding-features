@@ -2,11 +2,11 @@
 
 #include <string>
 #include <map>
+#include <optional>
 #include "utilities/Exceptions.h"
 #include "utilities/Object.h"
 #include "utilities/AST.h"
 #include "utilities/EnvironmentHolder.h"
-
 
 namespace interpreter {
 
@@ -15,121 +15,121 @@ namespace interpreter {
 		static Evaluator* getInstance();
 
 		//generic Evaluate
-		Value Evaluate(ASTnode* node);
+		std::optional<Value> Evaluate(ASTnode* node);
 
 	private:
-		std::map<std::string, Value(Evaluator::*)(ASTnode*)> EvaluateDispatcher;
-		std::map<std::string, Value(Evaluator::*)(ASTnode*)> IntializeDispatcher();
+		std::map<std::string, std::optional<Value>(Evaluator::*)(ASTnode*)> EvaluateDispatcher;
+		std::map<std::string, std::optional<Value>(Evaluator::*)(ASTnode*)> IntializeDispatcher();
 		inline static Evaluator* evaluator = nullptr;
 		Value retVal;
 
 		Evaluator();
 
 		// program
-		Value EvaluateProgram(ASTnode* node);
+		std::optional<Value> EvaluateProgram(ASTnode* node);
 
 		// expr
-		Value EvaluateAddExpr(ASTnode* node);
-		Value EvaluateSubExpr(ASTnode* node);
-		Value EvaluateMulExpr(ASTnode* node);
-		Value EvaluateDivExpr(ASTnode* node);
-		Value EvaluateModExpr(ASTnode* node);
-		Value EvaluateGreaterExpr(ASTnode* node);
-		Value EvaluateGreaterOrEqualExpr(ASTnode* node);
-		Value EvaluateLessExpr(ASTnode* node);
-		Value EvaluateLessOrEqualExpr(ASTnode* node);
-		Value EvaluateEqualExpr(ASTnode* node);
-		Value EvaluateNotEqualExpr(ASTnode* node);
-		Value EvaluateAndExpr(ASTnode* node);
-		Value EvaluateOrExpr(ASTnode* node);
+		std::optional<Value> EvaluateAddExpr(ASTnode* node);
+		std::optional<Value> EvaluateSubExpr(ASTnode* node);
+		std::optional<Value> EvaluateMulExpr(ASTnode* node);
+		std::optional<Value> EvaluateDivExpr(ASTnode* node);
+		std::optional<Value> EvaluateModExpr(ASTnode* node);
+		std::optional<Value> EvaluateGreaterExpr(ASTnode* node);
+		std::optional<Value> EvaluateGreaterOrEqualExpr(ASTnode* node);
+		std::optional<Value> EvaluateLessExpr(ASTnode* node);
+		std::optional<Value> EvaluateLessOrEqualExpr(ASTnode* node);
+		std::optional<Value> EvaluateEqualExpr(ASTnode* node);
+		std::optional<Value> EvaluateNotEqualExpr(ASTnode* node);
+		std::optional<Value> EvaluateAndExpr(ASTnode* node);
+		std::optional<Value> EvaluateOrExpr(ASTnode* node);
 
 
 		// term
-		Value EvaluateParenthesis(ASTnode* node);
-		Value EvaluateUminus(ASTnode* node);
-		Value EvaluateNot(ASTnode* node);
-		//Value EvaluatePreIncrement(ASTnode* node);
-		//Value EvaluatePostIncrement(ASTnode* node);
-		//Value EvaluatePreDecrement(ASTnode* node);
-		//Value EvaluatePostDecrement(ASTnode* node);
+		std::optional<Value> EvaluateParenthesis(ASTnode* node);
+		std::optional<Value> EvaluateUminus(ASTnode* node);
+		std::optional<Value> EvaluateNot(ASTnode* node);
+		//std::optional<Value> EvaluatePreIncrement(ASTnode* node);
+		//std::optional<Value> EvaluatePostIncrement(ASTnode* node);
+		//std::optional<Value> EvaluatePreDecrement(ASTnode* node);
+		//std::optional<Value> EvaluatePostDecrement(ASTnode* node);
 
 		// primary
-		Value EvaluateParenthesisFuncdef(ASTnode* node);
+		std::optional<Value> EvaluateParenthesisFuncdef(ASTnode* node);
 
 		//lvalue
-		Value EvaluateIdent(ASTnode* node);
-		Value EvaluateLocalIdent(ASTnode* node);
-		Value EvaluateGlobalIdent(ASTnode* node);
+		std::optional<Value> EvaluateIdent(ASTnode* node);
+		std::optional<Value> EvaluateLocalIdent(ASTnode* node);
+		std::optional<Value> EvaluateGlobalIdent(ASTnode* node);
 
 		//member
-		Value EvaluateLvalueIdent(ASTnode* node);
-		Value EvaluateLvalueBrackets(ASTnode* node);
-		Value EvaluateCallIdent(ASTnode* node);
-		Value EvaluateCallBrackets(ASTnode* node);
+		std::optional<Value> EvaluateLvalueIdent(ASTnode* node);
+		std::optional<Value> EvaluateLvalueBrackets(ASTnode* node);
+		std::optional<Value> EvaluateCallIdent(ASTnode* node);
+		std::optional<Value> EvaluateCallBrackets(ASTnode* node);
 
 		//call
-		Value EvaluateMultiCall(ASTnode* node);
-		Value EvaluateLvalueCallSuffix(ASTnode* node);
-		Value EvaluateFuncdefCall(ASTnode* node);
+		std::optional<Value> EvaluateMultiCall(ASTnode* node);
+		std::optional<Value> EvaluateLvalueCallSuffix(ASTnode* node);
+		std::optional<Value> EvaluateFuncdefCall(ASTnode* node);
 
-		Value EvaluateNormCall(ASTnode* node);
-		Value EvaluateMethodCall(ASTnode* node);
+		std::optional<Value> EvaluateNormCall(ASTnode* node);
+		std::optional<Value> EvaluateMethodCall(ASTnode* node);
 
 		//arg
-		Value EvaluateArg(ASTnode* node);
+		std::optional<Value> EvaluateArg(ASTnode* node);
 
 		//arglist
-		Value EvaluateArglist(ASTnode* node);
-		Value EvaluateEmptyArglist(ASTnode* node);
+		std::optional<Value> EvaluateArglist(ASTnode* node);
+		std::optional<Value> EvaluateEmptyArglist(ASTnode* node);
 
 		// assignment
-		Value EvaluateAssignExpr(ASTnode* node);
+		std::optional<Value> EvaluateAssignExpr(ASTnode* node);
 
 		//stmt
-		Value EvaluateIfStmt(ASTnode* node);
-		Value EvaluateIfElseStmt(ASTnode* node);
-		Value EvaluateWhileStmt(ASTnode* node);
-		Value EvaluateForStmt(ASTnode* node);
-		Value EvaluateReturnStmt(ASTnode* node);
-		Value EvaluateReturnValueStmt(ASTnode* node);
-		Value EvaluateBreak(ASTnode* node);
-		Value EvaluateContinue(ASTnode* node);
-		Value EvaluateSemicolon(ASTnode* node);
+		std::optional<Value> EvaluateIfStmt(ASTnode* node);
+		std::optional<Value> EvaluateIfElseStmt(ASTnode* node);
+		std::optional<Value> EvaluateWhileStmt(ASTnode* node);
+		std::optional<Value> EvaluateForStmt(ASTnode* node);
+		std::optional<Value> EvaluateReturnStmt(ASTnode* node);
+		std::optional<Value> EvaluateReturnValueStmt(ASTnode* node);
+		std::optional<Value> EvaluateBreak(ASTnode* node);
+		std::optional<Value> EvaluateContinue(ASTnode* node);
+		std::optional<Value> EvaluateSemicolon(ASTnode* node);
 
 		//elist
-		Value EvaluateElist(ASTnode* node);
-		Value EvaluateEmptyElist(ASTnode* node);
+		std::optional<Value> EvaluateElist(ASTnode* node);
+		std::optional<Value> EvaluateEmptyElist(ASTnode* node);
 
 		//indexed
-		Value EvaluateIndexed(ASTnode* node);
+		std::optional<Value> EvaluateIndexed(ASTnode* node);
 
 		//indexedElem
-		Value EvaluateIndexedElem(ASTnode* node);
+		std::optional<Value> EvaluateIndexedElem(ASTnode* node);
 
 		//object
-		Value EvaluateElistObjectdef(ASTnode* node);
-		Value EvaluateIndexedObjectdef(ASTnode* node);
+		std::optional<Value> EvaluateElistObjectdef(ASTnode* node);
+		std::optional<Value> EvaluateIndexedObjectdef(ASTnode* node);
 
 		//block
-		Value EvaluateBlock(ASTnode* node);
+		std::optional<Value> EvaluateBlock(ASTnode* node);
 
 		//funcdef
-		Value EvaluateFuncdef(ASTnode* node);
-		Value EvaluateAnonymousFuncdef(ASTnode* node);
+		std::optional<Value> EvaluateFuncdef(ASTnode* node);
+		std::optional<Value> EvaluateAnonymousFuncdef(ASTnode* node);
 
 		// const
-		Value EvaluateNumberConst(ASTnode* node);
-		Value EvaluateStringConst(ASTnode* node);
-		Value EvaluateBoolConst(ASTnode* node);
-		Value EvaluateNIL(ASTnode* node);
+		std::optional<Value> EvaluateNumberConst(ASTnode* node);
+		std::optional<Value> EvaluateStringConst(ASTnode* node);
+		std::optional<Value> EvaluateBoolConst(ASTnode* node);
+		std::optional<Value> EvaluateNIL(ASTnode* node);
 
 		//formal
-		Value EvaluateParam(ASTnode* node);
-		Value EvaluateOptionalParam(ASTnode* node);
+		std::optional<Value> EvaluateParam(ASTnode* node);
+		std::optional<Value> EvaluateOptionalParam(ASTnode* node);
 
 		//idlist
-		Value EvaluateIdlist(ASTnode* node);
-		Value EvaluateEmptyIdlist(ASTnode* node);
+		std::optional<Value> EvaluateIdlist(ASTnode* node);
+		std::optional<Value> EvaluateEmptyIdlist(ASTnode* node);
 
 	};
 
