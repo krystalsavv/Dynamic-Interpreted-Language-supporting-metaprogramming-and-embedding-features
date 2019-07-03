@@ -305,7 +305,7 @@ primary : lvalue
 lvalue : IDENT	
 			{
 				std::cout << ("ID\n");
-				$$ = new ASTnode("type", "lvalueVar");
+				$$ = new ASTnode("type", "var");
 				$$->Set("ID", *$1);
 				delete($1); 
 			}

@@ -22,7 +22,7 @@ namespace interpreter {
 		variant_t variant;
 
 	public:
-		Value() = default;
+		Value();
 		Value(bool value);
 		Value(double value);
 		Value(std::string value);

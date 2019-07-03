@@ -6,6 +6,11 @@ using namespace interpreter;
 
 Value undefined(Undefined());
 
+Value::Value()
+{
+	variant = Undefined();
+}
+
 Value::Value(bool value) {
 	variant = value;
 }

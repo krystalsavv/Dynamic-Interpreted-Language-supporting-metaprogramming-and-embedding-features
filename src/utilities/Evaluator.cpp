@@ -28,7 +28,7 @@ std::map<std::string, Value(Evaluator::*)(ASTnode*)> Evaluator::IntializeDispatc
 	//table["pre_decrement"] = &Evaluator::EvaluatePreDecrement;
 	//table["post_decrement"] = &Evaluator::EvaluatePostDecrement;
 	table["parentheses_funcdef"] = &Evaluator::EvaluateParenthesisFuncdef;
-	//table["lvalueVar"] = &Evaluator::EvaluateIdent;
+	//table["var"] = &Evaluator::EvaluateIdent;
 	//table["localVar"] = &Evaluator::EvaluateLocalIdent;
 	//table["globalVar"] = &Evaluator::EvaluateGlobalIdent;
 	//table["member_lvalueVar"] = &Evaluator::EvaluateLvalueIdent;
