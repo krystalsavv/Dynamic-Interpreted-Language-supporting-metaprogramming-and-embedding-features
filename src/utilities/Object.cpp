@@ -12,10 +12,10 @@ Object::Object(const Value& key, const Value& value) {
 	symbols[key] = value;
 }
 
-const Value& Object::GetValue(const Value& key) const {
+Value* Object::GetValue(const Value& key) {
 	auto value = symbols.find(key);
 	if (value != symbols.end())
-		return value->second;
+		return &(value->second);
 	else {
 		assert(false);
 	}		

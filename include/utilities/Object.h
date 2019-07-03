@@ -18,7 +18,7 @@ namespace interpreter {
 		Object() = default;
 		Object(const Value& key, const Value& value);
 
-		const Value& GetValue(const Value& key) const;
+		Value* GetValue(const Value& key);
 		void Set(const Value& key, const Value& value);
 
 		bool HasProperty(const Value& key) const;
