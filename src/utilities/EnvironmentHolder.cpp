@@ -161,11 +161,18 @@ Value* interpreter::LocalLookUp(std::string id, Environment* envIterator) {		// 
 
  Value* interpreter::NormalLookUp(std::string id) {
 	Environment* envIterator = EnvironmentHolder::getInstance()->GetCurrentEnv();
-	while (!(envIterator->HasProperty("$outer") && envIterator->GetValue("$outer")->GetObjectValue() == nullptr)){
+	if (envIterator->HasProperty("$previous")) {
+		envIterator = LocalLookUpForNormal(id, envIterator);
+		Value* value = envIterator->GetValue(id);
+		if (value != nullptr)
+			return value;
+	}
+	while (envIterator->HasProperty("$outer") && envIterator->GetValue("$outer")->GetObjectValue() != nullptr){
 		envIterator = LocalLookUpForNormal(id, envIterator);
 		Value* value = envIterator->GetValue(id);
 		if(value != nullptr)
 			return value;
+		envIterator = envIterator->GetValue("$outer")->GetObjectValue();
 	}
 	return nullptr;
 }
