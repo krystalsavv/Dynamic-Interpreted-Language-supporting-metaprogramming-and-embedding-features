@@ -83,7 +83,7 @@ namespace interpreter {
 		friend std::ostream& operator<< (std::ostream& out, const Value& value);
 	};
 
-	extern Value undefined;// = Undefined();
+	extern Value undefined;
 }
 
 using namespace interpreter;

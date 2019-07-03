@@ -16,9 +16,8 @@ Value* Object::GetValue(const Value& key) {
 	auto value = symbols.find(key);
 	if (value != symbols.end())
 		return &(value->second);
-	else {
-		assert(false);
-	}		
+	else
+		return nullptr;	
 }
 
 void Object::Set(const Value& key, const Value& value) {

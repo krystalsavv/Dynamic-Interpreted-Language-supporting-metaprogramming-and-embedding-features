@@ -43,12 +43,10 @@ namespace interpreter {
 	void CreateBlockEnvironment();
 	void LeaveBlockEnvironment(); 
 	BlockEnvironment* SliceEnvironment(Environment* previous);
-	void InsertFunctionDefinition(std::string id, ASTnode* node);
-	
 
 	void InsertFunctionDefinition(std::string id, ASTnode* node);
-	void InsertLvalue(std::string id, const Value& value);
-	Environment* LocalLookUp(std::string id, Environment* envIterator = EnvironmentHolder::getInstance()->GetCurrentEnv());
-	Environment* NormalLookUp(std::string id);
-	Environment* GlobalLookUp(std::string id, Environment* envIterator = EnvironmentHolder::getInstance()->GetGlobalEnv());
+	Value* InsertLvalue(std::string id, const Value& value);
+	Value* LocalLookUp(std::string id, Environment* envIterator = EnvironmentHolder::getInstance()->GetCurrentEnv());
+	Value* NormalLookUp(std::string id);
+	Value* GlobalLookUp(std::string id, Environment* envIterator = EnvironmentHolder::getInstance()->GetGlobalEnv());
 }

@@ -2,6 +2,8 @@
 
 using namespace interpreter;
 
+#define CURRENT_ENV 
+
 EnvironmentHolder* EnvironmentHolder::getInstance() {
 	if (!envHolder)
 		envHolder = new EnvironmentHolder();
@@ -121,52 +123,50 @@ void interpreter::InsertFunctionDefinition(std::string id, ASTnode* node) {
 	EnvironmentHolder::getInstance()->SetCurrentEnv(block);
 }
 
-void interpreter::InsertLvalue(std::string id, const Value& value) {
+Value* interpreter::InsertLvalue(std::string id, const Value& value) {
 	// TODO: lookuo maybe here
 	EnvironmentHolder::getInstance()->GetCurrentEnv()->Set(id, value);
+	return EnvironmentHolder::getInstance()->GetCurrentEnv()->GetValue(id);
 }
 
-Environment* interpreter::LocalLookUp(std::string id, Environment* envIterator) {		// kai tous environment pointers tous epistrefei ws values 
+Value* interpreter::LocalLookUp(std::string id, Environment* envIterator) {		// kai tous environment pointers tous epistrefei ws values 
 	 while (envIterator->HasProperty("$previous")) {
-		if (envIterator->HasProperty(id)) {
-			return envIterator;
-		}
+		 Value* value = envIterator->GetValue(id);
+		 if (value != nullptr)
+			return value;
 		envIterator = envIterator->GetValue("$previous")->GetObjectValue();
 	}
 	assert(envIterator->HasProperty("$outer"));
-	if (envIterator->HasProperty(id)) {					// for the last environment node, which has an $outer pointer (not a $previous)
-		return envIterator;
-	}
+	Value* value = envIterator->GetValue(id);
+	if (value != nullptr) 	// for the last environment node, which has an $outer pointer (not a $previous)
+		return value;
 	return nullptr;
 }
 
 
- static void LocalLookUpForNormal(std::string id,  Environment*& envIterator) {		// kai tous environment pointers tous epistrefei ws values 
+ static Environment* LocalLookUpForNormal(std::string id,  Environment* envIterator) {		// kai tous environment pointers tous epistrefei ws values 
 	 while (envIterator->HasProperty("$previous")) {
 		 if (envIterator->HasProperty(id)) {
-			 return;		// return envIterator;
+			 return envIterator;
 		 }
 		 envIterator = envIterator->GetValue("$previous")->GetObjectValue();
 	 }
 	 assert(envIterator->HasProperty("$outer"));
-	 // return envIterator;
+	 return envIterator;
  }
 
 
- Environment* interpreter::NormalLookUp(std::string id) {
+ Value* interpreter::NormalLookUp(std::string id) {
 	Environment* envIterator = EnvironmentHolder::getInstance()->GetCurrentEnv();
-	while (true) {
-		if (envIterator->HasProperty("$outer") && envIterator->GetValue("$outer")->GetObjectValue() == nullptr)
-			break;
-		LocalLookUpForNormal(id, envIterator);
-		//envIterator = LookupLocal_help(id, envIterator);
-		if (envIterator->HasProperty(id)) {
-			return envIterator;
-		}
+	while (!(envIterator->HasProperty("$outer") && envIterator->GetValue("$outer")->GetObjectValue() == nullptr)){
+		envIterator = LocalLookUpForNormal(id, envIterator);
+		Value* value = envIterator->GetValue(id);
+		if(value != nullptr)
+			return value;
 	}
 	return nullptr;
 }
 
- Environment* interpreter::GlobalLookUp(std::string id, Environment* envIterator ) {
+ Value* interpreter::GlobalLookUp(std::string id, Environment* envIterator ) {
 	 return LocalLookUp(id, envIterator);
  }
