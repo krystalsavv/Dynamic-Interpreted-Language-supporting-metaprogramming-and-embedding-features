@@ -87,16 +87,16 @@ Evaluator* Evaluator::getInstance() {
 }
 
 Value Evaluator::Evaluate(ASTnode* node) {
-	return (this->*EvaluateDispatcher[node->GetValue("type").GetStringValue()])(node);
+	return (this->*EvaluateDispatcher[node->GetValue("type")->GetStringValue()])(node);
 }
 
 Value Evaluator::EvaluateProgram(ASTnode* node) {
 	InitGlobalEnvironment();
 
 	Value tmp;
-	double numOfStmt = node->GetValue("numOfStmt").GetNumberValue();
+	double numOfStmt = node->GetValue("numOfStmt")->GetNumberValue();
 	for (int i = 0; i < numOfStmt; i++) {
-		try { tmp = Evaluate(node->GetValue(std::to_string(i)).GetObjectValue()); }
+		try { tmp = Evaluate(node->GetValue(std::to_string(i))->GetObjectValue()); }
 		catch (const std::exception& e) { 
 			std::cout << std::endl << e.what() << std::endl;  
 			exit(0); 
@@ -107,95 +107,95 @@ Value Evaluator::EvaluateProgram(ASTnode* node) {
 
 // expr
 Value Evaluator::EvaluateAddExpr(ASTnode* node) {
-	Value left = Evaluate(node->GetValue("left").GetObjectValue());
-	Value right = Evaluate(node->GetValue("right").GetObjectValue());
+	Value left = Evaluate(node->GetValue("left")->GetObjectValue());
+	Value right = Evaluate(node->GetValue("right")->GetObjectValue());
 	return left + right;
 }
 
 Value Evaluator::EvaluateSubExpr(ASTnode* node) {
-	Value left = Evaluate(node->GetValue("left").GetObjectValue());
-	Value right = Evaluate(node->GetValue("right").GetObjectValue());
+	Value left = Evaluate(node->GetValue("left")->GetObjectValue());
+	Value right = Evaluate(node->GetValue("right")->GetObjectValue());
 	return left - right;
 }
 
 Value Evaluator::EvaluateMulExpr(ASTnode* node) {
-	Value left = Evaluate(node->GetValue("left").GetObjectValue());
-	Value right = Evaluate(node->GetValue("right").GetObjectValue());
+	Value left = Evaluate(node->GetValue("left")->GetObjectValue());
+	Value right = Evaluate(node->GetValue("right")->GetObjectValue());
 	return left * right;
 }
 
 Value Evaluator::EvaluateDivExpr(ASTnode* node) {
-	Value left = Evaluate(node->GetValue("left").GetObjectValue());
-	Value right = Evaluate(node->GetValue("right").GetObjectValue());
+	Value left = Evaluate(node->GetValue("left")->GetObjectValue());
+	Value right = Evaluate(node->GetValue("right")->GetObjectValue());
 	return left / right;
 }
 
 Value Evaluator::EvaluateModExpr(ASTnode* node) {
-	Value left = Evaluate(node->GetValue("left").GetObjectValue());
-	Value right = Evaluate(node->GetValue("right").GetObjectValue());
+	Value left = Evaluate(node->GetValue("left")->GetObjectValue());
+	Value right = Evaluate(node->GetValue("right")->GetObjectValue());
 	return left % right;
 }
 
 Value Evaluator::EvaluateGreaterExpr(ASTnode* node) {
-	Value left = Evaluate(node->GetValue("left").GetObjectValue());
-	Value right = Evaluate(node->GetValue("right").GetObjectValue());
+	Value left = Evaluate(node->GetValue("left")->GetObjectValue());
+	Value right = Evaluate(node->GetValue("right")->GetObjectValue());
 	return left > right;
 }
 
 Value Evaluator::EvaluateGreaterOrEqualExpr(ASTnode* node) {
-	Value left = Evaluate(node->GetValue("left").GetObjectValue());
-	Value right = Evaluate(node->GetValue("right").GetObjectValue());
+	Value left = Evaluate(node->GetValue("left")->GetObjectValue());
+	Value right = Evaluate(node->GetValue("right")->GetObjectValue());
 	return left >= right;
 }
 
 Value Evaluator::EvaluateLessExpr(ASTnode* node) {
-	Value left = Evaluate(node->GetValue("left").GetObjectValue());
-	Value right = Evaluate(node->GetValue("right").GetObjectValue());
+	Value left = Evaluate(node->GetValue("left")->GetObjectValue());
+	Value right = Evaluate(node->GetValue("right")->GetObjectValue());
 	return left < right;
 }
 
 Value Evaluator::EvaluateLessOrEqualExpr(ASTnode* node) {
-	Value left = Evaluate(node->GetValue("left").GetObjectValue());
-	Value right = Evaluate(node->GetValue("right").GetObjectValue());
+	Value left = Evaluate(node->GetValue("left")->GetObjectValue());
+	Value right = Evaluate(node->GetValue("right")->GetObjectValue());
 	return left <= right;
 }
 
 Value Evaluator::EvaluateEqualExpr(ASTnode* node) {						// TODO: na elenxoume to object 
-	Value left = Evaluate(node->GetValue("left").GetObjectValue());
-	Value right = Evaluate(node->GetValue("right").GetObjectValue());
+	Value left = Evaluate(node->GetValue("left")->GetObjectValue());
+	Value right = Evaluate(node->GetValue("right")->GetObjectValue());
 	return left == right;
 }
 
 Value Evaluator::EvaluateNotEqualExpr(ASTnode* node) {					// TODO: na elenxoume to object 
-	Value left = Evaluate(node->GetValue("left").GetObjectValue());
-	Value right = Evaluate(node->GetValue("right").GetObjectValue());
+	Value left = Evaluate(node->GetValue("left")->GetObjectValue());
+	Value right = Evaluate(node->GetValue("right")->GetObjectValue());
 	return left != right;
 }
 
 Value Evaluator::EvaluateAndExpr(ASTnode* node) {
-	Value left = Evaluate(node->GetValue("left").GetObjectValue());
-	Value right = Evaluate(node->GetValue("right").GetObjectValue());
+	Value left = Evaluate(node->GetValue("left")->GetObjectValue());
+	Value right = Evaluate(node->GetValue("right")->GetObjectValue());
 	return left && right;
 }
 
 Value Evaluator::EvaluateOrExpr(ASTnode* node) {
-	Value left = Evaluate(node->GetValue("left").GetObjectValue());
-	Value right = Evaluate(node->GetValue("right").GetObjectValue());
+	Value left = Evaluate(node->GetValue("left")->GetObjectValue());
+	Value right = Evaluate(node->GetValue("right")->GetObjectValue());
 	return left || right;
 }
 
 
 // term
 Value Evaluator::EvaluateParenthesis(ASTnode* node) {
-	return Evaluate(node->GetValue("expr").GetObjectValue());
+	return Evaluate(node->GetValue("expr")->GetObjectValue());
 }
 
 Value Evaluator::EvaluateUminus(ASTnode* node) {
-	return Evaluate(node->GetValue("expr").GetObjectValue()) * Value(-1.0);
+	return Evaluate(node->GetValue("expr")->GetObjectValue()) * Value(-1.0);
 }
 
 Value Evaluator::EvaluateNot(ASTnode* node) {
-	return !Evaluate(node->GetValue("expr").GetObjectValue());
+	return !Evaluate(node->GetValue("expr")->GetObjectValue());
 }
 
 /*
@@ -265,35 +265,35 @@ Value Evaluator::EvaluatePostDecrement(ASTnode* node) {
 
 // primary
 Value Evaluator::EvaluateParenthesisFuncdef(ASTnode* node) {
-	return Evaluate(node->GetValue("funcdef").GetObjectValue()); 
+	return Evaluate(node->GetValue("funcdef")->GetObjectValue()); 
 }
 
 //lvalue
 Value Evaluator::EvaluateIdent(ASTnode* node) {
 	//return the environment that includes id
-	Environment* env = NormalLookUp(node->GetValue("ID").GetStringValue());
+	Environment* env = NormalLookUp(node->GetValue("ID")->GetStringValue());
 	if(env != nullptr)
 		return env;
 	else 
-		InsertLvalue(node->GetValue("ID").GetStringValue(), Value());
+		InsertLvalue(node->GetValue("ID")->GetStringValue(), Value());
 	return EnvironmentHolder::getInstance()->GetCurrentEnv();
 }
 
 Value Evaluator::EvaluateLocalIdent(ASTnode* node) {
-	Environment* env = LocalLookUp(node->GetValue("ID").GetStringValue());
-	if ((env != nullptr && !hasCollisionWithLibFunc(node->GetValue("ID").GetStringValue())) ||
-		(env != nullptr && hasCollisionWithLibFunc(node->GetValue("ID").GetStringValue()) && EnvironmentHolder::getInstance()->isGlobalScope()))
+	Environment* env = LocalLookUp(node->GetValue("ID")->GetStringValue());
+	if ((env != nullptr && !hasCollisionWithLibFunc(node->GetValue("ID")->GetStringValue())) ||
+		(env != nullptr && hasCollisionWithLibFunc(node->GetValue("ID")->GetStringValue()) && EnvironmentHolder::getInstance()->isGlobalScope()))
 		return env;
-	else if (env != nullptr && hasCollisionWithLibFunc(node->GetValue("ID").GetStringValue()))
+	else if (env != nullptr && hasCollisionWithLibFunc(node->GetValue("ID")->GetStringValue()))
 		assert(false);
 	else {
-		InsertLvalue(node->GetValue("ID").GetStringValue(),Value());
+		InsertLvalue(node->GetValue("ID")->GetStringValue(),Value());
 		return EnvironmentHolder::getInstance()->GetCurrentEnv();
 	}
 }
 
 Value Evaluator::EvaluateGlobalIdent(ASTnode* node) {
-	Environment* env = GlobalLookUp(node->GetValue("ID").GetStringValue());
+	Environment* env = GlobalLookUp(node->GetValue("ID")->GetStringValue());
 	if (env != nullptr)
 		return env;
 	else
@@ -305,7 +305,7 @@ Value Evaluator::EvaluateNormCall(ASTnode* node) {
 	//Create a function Env
 
 	//Evaluate the arguments and put them into an arguments table
-	Value argsTable = Evaluate(node->GetValue("argList").GetObjectValue());
+	Value argsTable = Evaluate(node->GetValue("argList")->GetObjectValue());
 
 	//Invoke the target function (its value should be a function address)
 
@@ -320,9 +320,9 @@ Value Evaluator::EvaluateArg(ASTnode* node) {
 //arglist
 Value Evaluator::EvaluateArglist(ASTnode* node) {
 	Object* argList = new Object();
-	double numofArgs = node->GetValue("numOfArgs").GetNumberValue();
+	double numofArgs = node->GetValue("numOfArgs")->GetNumberValue();
 	for (int i = 0; i < numofArgs; i++) {
-		argList->Set(std::to_string(i), Evaluate(node->GetValue(std::to_string(i)).GetObjectValue()));
+		argList->Set(std::to_string(i), Evaluate(node->GetValue(std::to_string(i))->GetObjectValue()));
 	}
 	return argList;
 }
@@ -334,8 +334,8 @@ Value Evaluator::EvaluateEmptyArglist(ASTnode* node) {
 // stmt
 Value Evaluator::EvaluateIfStmt(ASTnode* node) {
 	Value tmp;
-	if (Evaluate(node->GetValue("condition").GetObjectValue()).toBool()) {
-		try { tmp = Evaluate(node->GetValue("stmt").GetObjectValue()); }
+	if (Evaluate(node->GetValue("condition")->GetObjectValue()).toBool()) {
+		try { tmp = Evaluate(node->GetValue("stmt")->GetObjectValue()); }
 		catch (BreakException& ) { throw; }
 		catch (ContinueException& ) { throw; }
 		catch (ReturnException& ) { throw; }
@@ -348,8 +348,8 @@ Value Evaluator::EvaluateIfStmt(ASTnode* node) {
 Value Evaluator::EvaluateIfElseStmt(ASTnode* node) {
 	Value tmp;
 	try {
-		if (!Evaluate(node->GetValue("ifstmt").GetObjectValue()).toBool()) {
-			tmp = Evaluate(node->GetValue("elsestmt").GetObjectValue());
+		if (!Evaluate(node->GetValue("ifstmt")->GetObjectValue()).toBool()) {
+			tmp = Evaluate(node->GetValue("elsestmt")->GetObjectValue());
 		}
 		return nil;
 	}
@@ -361,8 +361,8 @@ Value Evaluator::EvaluateIfElseStmt(ASTnode* node) {
 
 Value Evaluator::EvaluateWhileStmt(ASTnode* node) {
 	Value tmp;
-	while (Evaluate(node->GetValue("condition").GetObjectValue()).toBool()) {
-		try { tmp = Evaluate(node->GetValue("stmt").GetObjectValue()); }
+	while (Evaluate(node->GetValue("condition")->GetObjectValue()).toBool()) {
+		try { tmp = Evaluate(node->GetValue("stmt")->GetObjectValue()); }
 		catch (BreakException& ) { break; }
 		catch (ContinueException& ) { continue; }
 		catch (ReturnException& ) { throw; }
@@ -373,10 +373,10 @@ Value Evaluator::EvaluateWhileStmt(ASTnode* node) {
 
 Value Evaluator::EvaluateForStmt(ASTnode* node) {
 	Value tmp;
-	for (tmp = Evaluate(node->GetValue("init_elist").GetObjectValue());
-		Evaluate(node->GetValue("condition").GetObjectValue()).toBool();
-		tmp = Evaluate(node->GetValue("elist").GetObjectValue())) {
-		try { tmp = Evaluate(node->GetValue("stmt").GetObjectValue()); }
+	for (tmp = Evaluate(node->GetValue("init_elist")->GetObjectValue());
+		Evaluate(node->GetValue("condition")->GetObjectValue()).toBool();
+		tmp = Evaluate(node->GetValue("elist")->GetObjectValue())) {
+		try { tmp = Evaluate(node->GetValue("stmt")->GetObjectValue()); }
 		catch (BreakException& ) { break; }
 		catch (ContinueException& ) { continue; }
 		catch (ReturnException& ) { throw; }
@@ -390,7 +390,7 @@ Value Evaluator::EvaluateReturnStmt(ASTnode* node) {
 }
 
 Value Evaluator::EvaluateReturnValueStmt(ASTnode* node) {
-	retVal = Evaluate(node->GetValue("expr").GetObjectValue());
+	retVal = Evaluate(node->GetValue("expr")->GetObjectValue());
 	throw ReturnValueException();
 }
 
@@ -411,9 +411,9 @@ Value Evaluator::EvaluateSemicolon(ASTnode* node) { return nil; };
 //elist
 Value Evaluator::EvaluateElist(ASTnode* node) {
 	Object* elistMap = new Object();
-	double numOfExprs = node->GetValue("numOfExprs").GetNumberValue();
+	double numOfExprs = node->GetValue("numOfExprs")->GetNumberValue();
 	for (int i = 0; i < numOfExprs; i++) {
-		elistMap->Set(std::to_string(i), Evaluate(node->GetValue(std::to_string(i)).GetObjectValue()));
+		elistMap->Set(std::to_string(i), Evaluate(node->GetValue(std::to_string(i))->GetObjectValue()));
 	}
 	return elistMap;
 }
@@ -425,9 +425,9 @@ Value Evaluator::EvaluateEmptyElist(ASTnode* node) {
 //indexed
 Value Evaluator::EvaluateIndexed(ASTnode* node) {
 	Object* indexedMap = new Object();
-	double numOfElems = node->GetValue("numOfElems").GetNumberValue();
+	double numOfElems = node->GetValue("numOfElems")->GetNumberValue();
 	for (int i = 0; i < numOfElems; i++) {
-		indexedMap->Set(std::to_string(i), Evaluate(node->GetValue(std::to_string(i)).GetObjectValue()));
+		indexedMap->Set(std::to_string(i), Evaluate(node->GetValue(std::to_string(i))->GetObjectValue()));
 	}
 	return indexedMap;
 }
@@ -435,8 +435,8 @@ Value Evaluator::EvaluateIndexed(ASTnode* node) {
 //indexedElem
 Value Evaluator::EvaluateIndexedElem(ASTnode* node) {
 	Object* newObject = new Object();
-	Value key = Evaluate(node->GetValue("keyExpr").GetObjectValue());
-	Value value = Evaluate(node->GetValue("valueExpr").GetObjectValue());
+	Value key = Evaluate(node->GetValue("keyExpr")->GetObjectValue());
+	Value value = Evaluate(node->GetValue("valueExpr")->GetObjectValue());
 	newObject->Set(key, value);
 	return newObject;
 }
@@ -444,11 +444,11 @@ Value Evaluator::EvaluateIndexedElem(ASTnode* node) {
 
 //object
 Value Evaluator::EvaluateElistObjectdef(ASTnode* node) {
-	return Evaluate(node->GetValue("elist").GetObjectValue());
+	return Evaluate(node->GetValue("elist")->GetObjectValue());
 }
 
 Value Evaluator::EvaluateIndexedObjectdef(ASTnode* node) {
-	return Evaluate(node->GetValue("indexed").GetObjectValue());
+	return Evaluate(node->GetValue("indexed")->GetObjectValue());
 }
 
 
@@ -457,9 +457,9 @@ Value Evaluator::EvaluateBlock(ASTnode* node) {
 	CreateBlockEnvironment();
 
 	Value tmp;
-	double numOfStmt = node->GetValue("numOfStmt").GetNumberValue();
+	double numOfStmt = node->GetValue("numOfStmt")->GetNumberValue();
 	for (int i = 0; i < numOfStmt; i++) {
-		tmp = Evaluate(node->GetValue(std::to_string(i)).GetObjectValue());
+		tmp = Evaluate(node->GetValue(std::to_string(i))->GetObjectValue());
 	}
 
 	LeaveBlockEnvironment();
@@ -468,10 +468,10 @@ Value Evaluator::EvaluateBlock(ASTnode* node) {
 
 Value interpreter::Evaluator::EvaluateFuncdef(ASTnode* node)
 {
-	Environment* env = LocalLookUp(node->GetValue("ID").GetStringValue());
-	if (env != nullptr || hasCollisionWithLibFunc(node->GetValue("ID").GetStringValue()))
+	Environment* env = LocalLookUp(node->GetValue("ID")->GetStringValue());
+	if (env != nullptr || hasCollisionWithLibFunc(node->GetValue("ID")->GetStringValue()))
 		assert(false);
-	InsertFunctionDefinition(node->GetValue("ID").GetStringValue(),node);
+	InsertFunctionDefinition(node->GetValue("ID")->GetStringValue(),node);
 	return EnvironmentHolder::getInstance()->GetCurrentEnv();
 }
 
@@ -484,15 +484,15 @@ Value interpreter::Evaluator::EvaluateAnonymousFuncdef(ASTnode* node)
 
 // const
 Value Evaluator::EvaluateNumberConst(ASTnode* node) {
-	return node->GetValue("value").GetNumberValue();
+	return node->GetValue("value")->GetNumberValue();
 }
 
 Value Evaluator::EvaluateStringConst(ASTnode* node) {
-	return node->GetValue("value").GetStringValue();
+	return node->GetValue("value")->GetStringValue();
 }
 
 Value Evaluator::EvaluateBoolConst(ASTnode* node) {
-	return node->GetValue("value").GetBoolValue();
+	return node->GetValue("value")->GetBoolValue();
 }
 
 Value Evaluator::EvaluateNIL(ASTnode* node) {
@@ -513,9 +513,9 @@ Value Evaluator::EvaluateOptionalParam(ASTnode* node) {
 Value Evaluator::EvaluateIdlist(ASTnode* node) {
 	// TODO: Extra error checking ensuring that all default arguments are at the end of the parameter list after any required parameters 
 	Object* idList = new Object();
-	double numOfParams = node->GetValue("numOfParams").GetNumberValue();
+	double numOfParams = node->GetValue("numOfParams")->GetNumberValue();
 	for (int i = 0; i < numOfParams; i++) {
-		idList->Set(std::to_string(i), Evaluate(node->GetValue(std::to_string(i)).GetObjectValue()));
+		idList->Set(std::to_string(i), Evaluate(node->GetValue(std::to_string(i))->GetObjectValue()));
 	}
 	return idList;
 }

@@ -75,7 +75,7 @@ program : program stmt
 				{ 
 					std::cout << "stmt program" << std::endl;
 					$$ = $1;
-					double numOfStmt = $$->GetValue("numOfStmt").GetNumberValue();
+					double numOfStmt = $$->GetValue("numOfStmt")->GetNumberValue();
 					$$->Set(std::to_string((int)numOfStmt), $2);
 					numOfStmt++;
 					$$->Set("numOfStmt", numOfStmt);
@@ -448,7 +448,7 @@ arg : expr	{
 
 argList : arg 
 			{ 
-				//std::cout << "arg  " << $1->GetValue("ID").GetNumberValue() << std::endl ;
+				//std::cout << "arg  " << $1->GetValue("ID")->GetNumberValue() << std::endl ;
 				$$ = new ASTnode("type", "argList");
 				$$->Set("numOfArgs", 1.0);
 				$$->Set("0", $1);
@@ -457,7 +457,7 @@ argList : arg
 			{
 				//std::cout << "argList, arg "<< $3->GetValue("ID")->GetNumberValue() << std::endl;
 				$$ = $1;
-				double numofArgs = $$->GetValue("numOfArgs").GetNumberValue();
+				double numofArgs = $$->GetValue("numOfArgs")->GetNumberValue();
 				$$->Set(std::to_string((int)numofArgs), $3);
 				numofArgs++;
 				$$->Set("numOfArgs", numofArgs);
@@ -479,7 +479,7 @@ elist :  expr
 			{
 				std::cout << ("elist, expression\n");
 				$$ = $1;
-				double numOfExprs = $$->GetValue("numOfExprs").GetNumberValue();
+				double numOfExprs = $$->GetValue("numOfExprs")->GetNumberValue();
 				$$->Set(std::to_string((int)numOfExprs), $3);
 				numOfExprs++;
 				$$->Set("numOfExprs", numOfExprs);
@@ -515,7 +515,7 @@ indexed : indexedelem
 			{
 				std::cout << ("indexedelem, intexedelem\n");
 				$$ = $1;
-				double numOfElems = $$->GetValue("numOfElems").GetNumberValue();
+				double numOfElems = $$->GetValue("numOfElems")->GetNumberValue();
 				$$->Set(std::to_string((int)numOfElems), $3);
 				numOfElems++;
 				$$->Set("numOfElems", numOfElems);
@@ -534,7 +534,7 @@ indexedelem : LEFT_BRACKET expr COLON expr RIGHT_BRACKET
 tmp_block: tmp_block stmt
 				{
 					$$ = $1;
-					double numOfStmt = $$->GetValue("numOfStmt").GetNumberValue();
+					double numOfStmt = $$->GetValue("numOfStmt")->GetNumberValue();
 					$$->Set(std::to_string((int)numOfStmt), $2);
 					numOfStmt++;
 					$$->Set("numOfStmt", numOfStmt);
@@ -651,7 +651,7 @@ idlist : formal
 			{
 				std::cout << ("idlist, id\n");	
 				$$ = $1;
-				double numOfParams = $$->GetValue("numOfParams").GetNumberValue();
+				double numOfParams = $$->GetValue("numOfParams")->GetNumberValue();
 				$$->Set(std::to_string((int)numOfParams), $3);
 				numOfParams++;
 				$$->Set("numOfParams", numOfParams);

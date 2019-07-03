@@ -88,15 +88,15 @@ void interpreter::CreateBlockEnvironment() {
 void interpreter::LeaveBlockEnvironment() {
 	Environment* envIterator = EnvironmentHolder::getInstance()->GetCurrentEnv();
 	while (envIterator->HasProperty("$previous")) {
-		envIterator = envIterator->GetValue("$previous").GetObjectValue();
+		envIterator = envIterator->GetValue("$previous")->GetObjectValue();
 	}
 
 	Environment* nextEnv;
-	if (envIterator->GetValue("$sliced").GetBoolValue()){
-		nextEnv = SliceEnvironment(envIterator->GetValue("$outer").GetObjectValue());
+	if (envIterator->GetValue("$sliced")->GetBoolValue()){
+		nextEnv = SliceEnvironment(envIterator->GetValue("$outer")->GetObjectValue());
 	}
 	else {
-		nextEnv = envIterator->GetValue("$outer").GetObjectValue();
+		nextEnv = envIterator->GetValue("$outer")->GetObjectValue();
 	}
 	EnvironmentHolder::getInstance()->SetCurrentEnv(nextEnv);
 
@@ -131,7 +131,7 @@ Environment* interpreter::LocalLookUp(std::string id, Environment* envIterator) 
 		if (envIterator->HasProperty(id)) {
 			return envIterator;
 		}
-		envIterator = envIterator->GetValue("$previous").GetObjectValue();
+		envIterator = envIterator->GetValue("$previous")->GetObjectValue();
 	}
 	assert(envIterator->HasProperty("$outer"));
 	if (envIterator->HasProperty(id)) {					// for the last environment node, which has an $outer pointer (not a $previous)
@@ -146,7 +146,7 @@ Environment* interpreter::LocalLookUp(std::string id, Environment* envIterator) 
 		 if (envIterator->HasProperty(id)) {
 			 return;		// return envIterator;
 		 }
-		 envIterator = envIterator->GetValue("$previous").GetObjectValue();
+		 envIterator = envIterator->GetValue("$previous")->GetObjectValue();
 	 }
 	 assert(envIterator->HasProperty("$outer"));
 	 // return envIterator;
@@ -156,7 +156,7 @@ Environment* interpreter::LocalLookUp(std::string id, Environment* envIterator) 
  Environment* interpreter::NormalLookUp(std::string id) {
 	Environment* envIterator = EnvironmentHolder::getInstance()->GetCurrentEnv();
 	while (true) {
-		if (envIterator->HasProperty("$outer") && envIterator->GetValue("$outer").GetObjectValue() == nullptr)
+		if (envIterator->HasProperty("$outer") && envIterator->GetValue("$outer")->GetObjectValue() == nullptr)
 			break;
 		LocalLookUpForNormal(id, envIterator);
 		//envIterator = LookupLocal_help(id, envIterator);
