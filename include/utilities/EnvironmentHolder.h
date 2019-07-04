@@ -13,7 +13,6 @@ namespace interpreter {
 	{
 		inline static EnvironmentHolder* envHolder = nullptr;
 
-		inline static unsigned int nestedBlock = 0;
 		Environment* currentEnv = nullptr;
 		Environment* storedEnv = nullptr;
 		Environment* globalEnv = nullptr;
@@ -29,10 +28,6 @@ namespace interpreter {
 		Environment* GetGlobalEnv();
 		bool isGlobalScope();
 
-		static unsigned int GetNestedBlock();
-		static void IncrementNestedBlock();
-		static void DecrementNestedBlock();
-
 		void PrintEnvironmentChain();
 		void PrintGlobalEnvironment();
 	};
@@ -45,14 +40,14 @@ namespace interpreter {
 	BlockEnvironment* SliceEnvironment(Environment* previous);
 
 	Value* InsertFunctionDefinition(std::string id, ASTnode* node);
-	Value* InsertLvalue(std::string id, const Value& value);
+	Value* InsertLvalue(std::string id, const Value& value, Environment* envIterator = EnvironmentHolder::getInstance()->GetCurrentEnv());
 	Value* LocalLookUp(std::string id, Environment* envIterator = EnvironmentHolder::getInstance()->GetCurrentEnv());
-	Value* NormalLookUp(std::string id);
+	Value* NormalLookUp(std::string id, Environment* envIterator = EnvironmentHolder::getInstance()->GetCurrentEnv());
 	Value* GlobalLookUp(std::string id, Environment* envIterator = EnvironmentHolder::getInstance()->GetGlobalEnv());
 
-	Value* LvalueVarActions(std::string id);
-	Value* LocalVarActions(std::string id);
-	Value* GlobalVarActions(std::string id);
+	Value* LvalueVarActions(std::string id, Environment* envIterator = EnvironmentHolder::getInstance()->GetCurrentEnv());
+	Value* LocalVarActions(std::string id, Environment* envIterator = EnvironmentHolder::getInstance()->GetCurrentEnv());
+	Value* GlobalVarActions(std::string id, Environment* envIterator = EnvironmentHolder::getInstance()->GetGlobalEnv());
 	Value* LvalueFuncDefActions(std::string id, ASTnode* node);
 	Value* RvalueVarActions(std::string id);
 }

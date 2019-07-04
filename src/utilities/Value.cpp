@@ -144,8 +144,7 @@ Value Value::operator+(Value& right) {
 	else if (this->isString() && right.isNumber())
 		val = this->GetStringValue() + std::to_string(right.GetNumberValue());
 	else {
-		// TODO: error in different types
-		assert(false);
+		return Undefined();
 	}
 	return val;
 }

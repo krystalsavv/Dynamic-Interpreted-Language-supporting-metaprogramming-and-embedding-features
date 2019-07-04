@@ -74,8 +74,8 @@ std::map<std::string, std::optional<Value>(Evaluator::*)(ASTnode*)> Evaluator::I
 
 	return table;
 }
-std::map<std::string, std::optional<std::reference_wrapper<Value>>(Evaluator::*)(ASTnode*)> Evaluator::IntializeLvalueDispatcher() {
-	std::map<std::string, std::optional<std::reference_wrapper<Value>>(Evaluator::*)(ASTnode*)> table;
+std::map<std::string, std::optional<std::reference_wrapper<Value>>(Evaluator::*)(ASTnode*, Environment* )> Evaluator::IntializeLvalueDispatcher() {
+	std::map<std::string, std::optional<std::reference_wrapper<Value>>(Evaluator::*)(ASTnode*, Environment* )> table;
 
 	table["var"] = &Evaluator::EvaluateLvalueIdent;
 	table["localVar"] = &Evaluator::EvaluateLvalueLocalIdent;
@@ -99,8 +99,8 @@ std::optional<Value> Evaluator::Evaluate(ASTnode* node) {
 	return (this->*EvaluateDispatcher[node->GetValue("type")->GetStringValue()])(node);
 }
 
-std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalue(ASTnode* node) {
-	return (this->*EvaluateLvalueDispatcher[node->GetValue("type")->GetStringValue()])(node);
+std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalue(ASTnode* node, Environment* env) {
+	return (this->*EvaluateLvalueDispatcher[node->GetValue("type")->GetStringValue()])(node, env);
 }
 
 std::optional<Value> Evaluator::EvaluateProgram(ASTnode* node) {
@@ -285,24 +285,24 @@ std::optional<Value> Evaluator::EvaluateParenthesisFuncdef(ASTnode* node) {
 }
 
 //lvalue
-std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueIdent(ASTnode* node) {
-	Value* value = LvalueVarActions(node->GetValue("ID")->GetStringValue());
+std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueIdent(ASTnode* node, Environment* env) {
+	Value* value = LvalueVarActions(node->GetValue("ID")->GetStringValue(), env);
 	if (value == nullptr) {
 		throw SyntaxErrorException();
 	}
 	return *value;
 }
 
-std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueLocalIdent(ASTnode* node) {
-	Value* value = LocalVarActions(node->GetValue("ID")->GetStringValue());
+std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueLocalIdent(ASTnode* node, Environment* env) {
+	Value* value = LocalVarActions(node->GetValue("ID")->GetStringValue(), env);
 	if (value == nullptr){
 		throw SyntaxErrorException();
 	}	
 	return *value;
 }
 
-std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueGlobalIdent(ASTnode* node) {
-	Value* value = GlobalVarActions(node->GetValue("ID")->GetStringValue());
+std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueGlobalIdent(ASTnode* node, Environment* env) {
+	Value* value = GlobalVarActions(node->GetValue("ID")->GetStringValue(), env);
 	if (value == nullptr) {
 		throw RuntimeErrorException();
 	}
@@ -370,17 +370,21 @@ std::optional<Value> interpreter::Evaluator::EvaluateAssignExpr(ASTnode* node)
 	Value expr =  *Evaluate(node->GetValue("expr")->GetObjectValue());
 
 	//save currentEnv and look/insert lvalue in saved env
-	Environment* current = EnvironmentHolder::getInstance()->GetCurrentEnv();
-	EnvironmentHolder::getInstance()->SetCurrentEnv(savedEnvironment);
+	//Environment* current = EnvironmentHolder::getInstance()->GetCurrentEnv();
+	//EnvironmentHolder::getInstance()->SetCurrentEnv(savedEnvironment);
 
-	//evaluate lvalue then (Evaluation of lvalue returned &)
-	Value& lvalue = *EvaluateLvalue(node->GetValue("lvalue")->GetObjectValue());
+	////evaluate lvalue then (Evaluation of lvalue returned &)
+	//Value& lvalue = *EvaluateLvalue(node->GetValue("lvalue")->GetObjectValue());
 
-	//go back to the last env
-	EnvironmentHolder::getInstance()->SetCurrentEnv(current);
-	std::cout << std::endl << "-----------------------------------------"<< std::endl << lvalue;
+	////go back to the last env
+	//EnvironmentHolder::getInstance()->SetCurrentEnv(current);
+
+	//lvalue = expr;
+	//return lvalue;
+
+	Value& lvalue = *EvaluateLvalue(node->GetValue("lvalue")->GetObjectValue(), savedEnvironment);
+
 	lvalue = expr;
-	std::cout<< std::endl << "-----------------------------------------" << std::endl << lvalue << std::endl;
 	return lvalue;
 }
 

@@ -20,12 +20,12 @@ namespace interpreter {
 		
 	private:
 
-		std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalue(ASTnode* node);
 		std::map<std::string, std::optional<Value>(Evaluator::*)(ASTnode*)> EvaluateDispatcher;
 		std::map<std::string, std::optional<Value>(Evaluator::*)(ASTnode*)> IntializeDispatcher();
-
-		std::map<std::string, std::optional<std::reference_wrapper<Value>>(Evaluator::*)(ASTnode*)> EvaluateLvalueDispatcher;
-		std::map<std::string, std::optional<std::reference_wrapper<Value>>(Evaluator::*)(ASTnode*)> IntializeLvalueDispatcher();
+		
+		std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalue(ASTnode* node, Environment* env = EnvironmentHolder::getInstance()->GetCurrentEnv());
+		std::map<std::string, std::optional<std::reference_wrapper<Value>>(Evaluator::*)(ASTnode*, Environment*)> EvaluateLvalueDispatcher;
+		std::map<std::string, std::optional<std::reference_wrapper<Value>>(Evaluator::*)(ASTnode*, Environment*)> IntializeLvalueDispatcher();
 
 		inline static Evaluator* evaluator = nullptr;
 		Value retVal;
@@ -64,9 +64,9 @@ namespace interpreter {
 		std::optional<Value> EvaluateParenthesisFuncdef(ASTnode* node);
 
 		//lvalue
-		std::optional<std::reference_wrapper<Value>> EvaluateLvalueIdent(ASTnode* node);
-		std::optional<std::reference_wrapper<Value>> EvaluateLvalueLocalIdent(ASTnode* node);
-		std::optional<std::reference_wrapper<Value>> EvaluateLvalueGlobalIdent(ASTnode* node);
+		std::optional<std::reference_wrapper<Value>> EvaluateLvalueIdent(ASTnode* node, Environment* env = EnvironmentHolder::getInstance()->GetCurrentEnv());
+		std::optional<std::reference_wrapper<Value>> EvaluateLvalueLocalIdent(ASTnode* node, Environment* env = EnvironmentHolder::getInstance()->GetCurrentEnv());
+		std::optional<std::reference_wrapper<Value>> EvaluateLvalueGlobalIdent(ASTnode* node, Environment* env = EnvironmentHolder::getInstance()->GetGlobalEnv());
 		
 		//rvalue
 		std::optional<Value> EvaluateIdent(ASTnode* node);
