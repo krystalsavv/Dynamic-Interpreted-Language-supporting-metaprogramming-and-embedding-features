@@ -363,16 +363,12 @@ member : lvalue DOT IDENT
 				}
 	;
 
-call : call LEFT_PARENTHESIS
-				{
-					//CreateFunctionEnvironment();
-				}
-				argList RIGHT_PARENTHESIS 
+call : call LEFT_PARENTHESIS argList RIGHT_PARENTHESIS 
 				{
 					std::cout << ("call(argList)\n");
 					$$ = new ASTnode("type", "multiCall");
 					$$->Set("call", $1);
-					$$->Set("argList", $4);
+					$$->Set("argList", $3);
 				}
 	| lvalue callsuffix
 				{
@@ -380,17 +376,12 @@ call : call LEFT_PARENTHESIS
 					$$ = new ASTnode("type", "lvalueCall");
 					$$->Set("lvalue", $1);
 				}
-	| LEFT_PARENTHESIS funcdef RIGHT_PARENTHESIS LEFT_PARENTHESIS
-				{
-					//CreateFunctionEnvironment();
-				}
-				argList RIGHT_PARENTHESIS
+	| LEFT_PARENTHESIS funcdef RIGHT_PARENTHESIS LEFT_PARENTHESIS argList RIGHT_PARENTHESIS
 				{
 					std::cout << ("(funcdef)(argList)\n");
 					$$ = new ASTnode("type", "funcdefCall");
 					$$->Set("funcdef", $2);
-					$$->Set("argList", $6);
-
+					$$->Set("argList", $5);
 				}
 	;
 
@@ -406,28 +397,20 @@ callsuffix : normcall
 				}
 				;
 
-normcall: LEFT_PARENTHESIS 
-			{
-				//CreateFunctionEnvironment();
-			}
-			argList RIGHT_PARENTHESIS 
+normcall: LEFT_PARENTHESIS argList RIGHT_PARENTHESIS 
 			{
 				std::cout << ("(argList)\n");
 				$$ = new ASTnode("type", "normcall");
-				$$->Set("argList", $3);
+				$$->Set("argList", $2);
 			}
 			;
 
-methodcall : DOUBLE_DOT IDENT LEFT_PARENTHESIS
-			{
-				//CreateFunctionEnvironment();
-			} 
-			argList RIGHT_PARENTHESIS 
+methodcall : DOUBLE_DOT IDENT LEFT_PARENTHESIS argList RIGHT_PARENTHESIS 
 			{
 				std::cout << ("..ident(argList)\n");
 				$$ = new ASTnode("type", "methodcall");
 				$$->Set("ID", *$2); 
-				$$->Set("argList", $5); 
+				$$->Set("argList", $4); 
 				
 			}
 			;
@@ -573,8 +556,6 @@ funcdef : FUNCTION IDENT
 					$$->Set("ID", *$2);
 					$$->Set("idlist", $5);			//prosoxh an vgalw panw action
 					$$->Set("funcbody", $7);
-					//InsertFunctionDefinition(*$2, $$);
-					//SliceEnvironment();
 				}
 		| FUNCTION 
 				{
@@ -586,8 +567,6 @@ funcdef : FUNCTION IDENT
 					$$ = new ASTnode("type", "anonymousFuncdef");
 					$$->Set("idlist", $4);			//prosoxh an vgalw panq action
 					$$->Set("funcbody", $6);
-					//InsertFunctionDefinition("ANONYMOUS_FUNCTION_NAME", $$);			//Generate funcName for anonymous
-					//SliceEnvironment();
 				}
 		; 
 
