@@ -3,6 +3,7 @@
 #include <string>
 #include <map>
 #include <optional>
+#include <functional>
 #include "utilities/Exceptions.h"
 #include "utilities/Object.h"
 #include "utilities/AST.h"
@@ -16,10 +17,16 @@ namespace interpreter {
 
 		//generic Evaluate
 		std::optional<Value> Evaluate(ASTnode* node);
-
+		
 	private:
+
+		std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalue(ASTnode* node);
 		std::map<std::string, std::optional<Value>(Evaluator::*)(ASTnode*)> EvaluateDispatcher;
 		std::map<std::string, std::optional<Value>(Evaluator::*)(ASTnode*)> IntializeDispatcher();
+
+		std::map<std::string, std::optional<std::reference_wrapper<Value>>(Evaluator::*)(ASTnode*)> EvaluateLvalueDispatcher;
+		std::map<std::string, std::optional<std::reference_wrapper<Value>>(Evaluator::*)(ASTnode*)> IntializeLvalueDispatcher();
+
 		inline static Evaluator* evaluator = nullptr;
 		Value retVal;
 
@@ -57,15 +64,20 @@ namespace interpreter {
 		std::optional<Value> EvaluateParenthesisFuncdef(ASTnode* node);
 
 		//lvalue
+		std::optional<std::reference_wrapper<Value>> EvaluateLvalueIdent(ASTnode* node);
+		std::optional<std::reference_wrapper<Value>> EvaluateLvalueLocalIdent(ASTnode* node);
+		std::optional<std::reference_wrapper<Value>> EvaluateLvalueGlobalIdent(ASTnode* node);
+		
+		//rvalue
 		std::optional<Value> EvaluateIdent(ASTnode* node);
 		std::optional<Value> EvaluateLocalIdent(ASTnode* node);
 		std::optional<Value> EvaluateGlobalIdent(ASTnode* node);
 
 		//member
-		std::optional<Value> EvaluateLvalueIdent(ASTnode* node);
-		std::optional<Value> EvaluateLvalueBrackets(ASTnode* node);
-		std::optional<Value> EvaluateCallIdent(ASTnode* node);
-		std::optional<Value> EvaluateCallBrackets(ASTnode* node);
+		std::optional<Value> EvaluateMemberLvalueIdent(ASTnode* node);
+		std::optional<Value> EvaluateMemberLvalueBrackets(ASTnode* node);
+		std::optional<Value> EvaluateMemberCallIdent(ASTnode* node);
+		std::optional<Value> EvaluateMemberCallBrackets(ASTnode* node);
 
 		//call
 		std::optional<Value> EvaluateMultiCall(ASTnode* node);

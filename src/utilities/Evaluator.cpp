@@ -31,13 +31,10 @@ std::map<std::string, std::optional<Value>(Evaluator::*)(ASTnode*)> Evaluator::I
 	table["var"] = &Evaluator::EvaluateIdent;
 	table["localVar"] = &Evaluator::EvaluateLocalIdent;
 	table["globalVar"] = &Evaluator::EvaluateGlobalIdent;
-	//table["var"] = &Evaluator::EvaluateIdent;
-	//table["localVar"] = &Evaluator::EvaluateLocalIdent;
-	//table["globalVar"] = &Evaluator::EvaluateGlobalIdent;
-	//table["member_lvalueVar"] = &Evaluator::EvaluateLvalueIdent;
-	//table["member_lvalueBrackets"] = &Evaluator::EvaluateLvalueBrackets;
-	//table["member_callVar"] = &Evaluator::EvaluateCallIdent;
-	//table["member_callBrackets"] = &Evaluator::EvaluateCallBrackets;
+	//table["member_lvalueVar"] = &Evaluator::EvaluateMemberLvalueIdent;
+	//table["member_lvalueBrackets"] = &Evaluator::EvaluateMemberLvalueBrackets;
+	//table["member_callVar"] = &Evaluator::EvaluateMemberCallIdent;
+	//table["member_callBrackets"] = &Evaluator::EvaluateMemberCallBrackets;
 	//table["multiCall"] = &Evaluator::EvaluateMultiCall;
 	//table["lvalueCall"] = &Evaluator::EvaluateLvalueCallSuffix;
 	//table["funcdefCall"] = &Evaluator::EvaluateFuncdefCall;
@@ -77,10 +74,19 @@ std::map<std::string, std::optional<Value>(Evaluator::*)(ASTnode*)> Evaluator::I
 
 	return table;
 }
+std::map<std::string, std::optional<std::reference_wrapper<Value>>(Evaluator::*)(ASTnode*)> Evaluator::IntializeLvalueDispatcher() {
+	std::map<std::string, std::optional<std::reference_wrapper<Value>>(Evaluator::*)(ASTnode*)> table;
 
+	table["var"] = &Evaluator::EvaluateLvalueIdent;
+	table["localVar"] = &Evaluator::EvaluateLvalueLocalIdent;
+	table["globalVar"] = &Evaluator::EvaluateLvalueGlobalIdent;
+
+	return table;
+}
 
 Evaluator::Evaluator() {
 	EvaluateDispatcher = IntializeDispatcher();
+	EvaluateLvalueDispatcher = IntializeLvalueDispatcher();
 }
 
 Evaluator* Evaluator::getInstance() {
@@ -91,6 +97,10 @@ Evaluator* Evaluator::getInstance() {
 
 std::optional<Value> Evaluator::Evaluate(ASTnode* node) {
 	return (this->*EvaluateDispatcher[node->GetValue("type")->GetStringValue()])(node);
+}
+
+std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalue(ASTnode* node) {
+	return (this->*EvaluateLvalueDispatcher[node->GetValue("type")->GetStringValue()])(node);
 }
 
 std::optional<Value> Evaluator::EvaluateProgram(ASTnode* node) {
@@ -275,7 +285,7 @@ std::optional<Value> Evaluator::EvaluateParenthesisFuncdef(ASTnode* node) {
 }
 
 //lvalue
-std::optional<Value> Evaluator::EvaluateIdent(ASTnode* node) {
+std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueIdent(ASTnode* node) {
 	Value* value = LvalueVarActions(node->GetValue("ID")->GetStringValue());
 	if (value == nullptr) {
 		throw SyntaxErrorException();
@@ -283,16 +293,37 @@ std::optional<Value> Evaluator::EvaluateIdent(ASTnode* node) {
 	return *value;
 }
 
-std::optional<Value> Evaluator::EvaluateLocalIdent(ASTnode* node) {
-	Value* value = LvalueLocalVarActions(node->GetValue("ID")->GetStringValue());
+std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueLocalIdent(ASTnode* node) {
+	Value* value = LocalVarActions(node->GetValue("ID")->GetStringValue());
 	if (value == nullptr){
 		throw SyntaxErrorException();
 	}	
 	return *value;
 }
 
+std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueGlobalIdent(ASTnode* node) {
+	Value* value = GlobalVarActions(node->GetValue("ID")->GetStringValue());
+	if (value == nullptr) {
+		throw RuntimeErrorException();
+	}
+	return *value;
+}
+
+//rvalue
+std::optional<Value> Evaluator::EvaluateIdent(ASTnode* node) {
+	return *RvalueVarActions(node->GetValue("ID")->GetStringValue());
+}
+
+std::optional<Value> Evaluator::EvaluateLocalIdent(ASTnode* node) {
+	Value* value = LocalVarActions(node->GetValue("ID")->GetStringValue());
+	if (value == nullptr) {
+		throw SyntaxErrorException();
+	}
+	return *value;
+}
+
 std::optional<Value> Evaluator::EvaluateGlobalIdent(ASTnode* node) {
-	Value* value = LvalueGlobalVarActions(node->GetValue("ID")->GetStringValue());
+	Value* value = GlobalVarActions(node->GetValue("ID")->GetStringValue());
 	if (value == nullptr) {
 		throw RuntimeErrorException();
 	}
@@ -343,12 +374,14 @@ std::optional<Value> interpreter::Evaluator::EvaluateAssignExpr(ASTnode* node)
 	EnvironmentHolder::getInstance()->SetCurrentEnv(savedEnvironment);
 
 	//evaluate lvalue then (Evaluation of lvalue returned &)
-	Value lvalue = *Evaluate(node->GetValue("lvalue")->GetObjectValue());
+	Value& lvalue = *EvaluateLvalue(node->GetValue("lvalue")->GetObjectValue());
 
 	//go back to the last env
 	EnvironmentHolder::getInstance()->SetCurrentEnv(current);
-
-	return lvalue = expr;
+	std::cout << std::endl << "-----------------------------------------"<< std::endl << lvalue;
+	lvalue = expr;
+	std::cout<< std::endl << "-----------------------------------------" << std::endl << lvalue << std::endl;
+	return lvalue;
 }
 
 // stmt

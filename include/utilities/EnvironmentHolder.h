@@ -51,7 +51,8 @@ namespace interpreter {
 	Value* GlobalLookUp(std::string id, Environment* envIterator = EnvironmentHolder::getInstance()->GetGlobalEnv());
 
 	Value* LvalueVarActions(std::string id);
-	Value* LvalueLocalVarActions(std::string id);
-	Value* LvalueGlobalVarActions(std::string id);
+	Value* LocalVarActions(std::string id);
+	Value* GlobalVarActions(std::string id);
 	Value* LvalueFuncDefActions(std::string id, ASTnode* node);
+	Value* RvalueVarActions(std::string id);
 }
