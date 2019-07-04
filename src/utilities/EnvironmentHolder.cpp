@@ -184,10 +184,12 @@ Value* interpreter::LocalLookUp(std::string id, Environment* envIterator) {		// 
  Value* interpreter::LvalueVarActions(std::string id)
  {
 	Value* value = NormalLookUp(id);
-	if (value != nullptr)
+	if (value != nullptr && !hasCollisionWithLibFunc(id))
 		return value;
+	else if (value == nullptr)
+		return InsertLvalue(id, Value());
 	else
-	return InsertLvalue(id, Value());
+		return nullptr;
  }
 
  Value* interpreter::LvalueLocalVarActions(std::string id) {

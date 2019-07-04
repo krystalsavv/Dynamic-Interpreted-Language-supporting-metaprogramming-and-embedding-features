@@ -31,6 +31,9 @@ std::map<std::string, std::optional<Value>(Evaluator::*)(ASTnode*)> Evaluator::I
 	table["var"] = &Evaluator::EvaluateIdent;
 	table["localVar"] = &Evaluator::EvaluateLocalIdent;
 	table["globalVar"] = &Evaluator::EvaluateGlobalIdent;
+	//table["var"] = &Evaluator::EvaluateIdent;
+	//table["localVar"] = &Evaluator::EvaluateLocalIdent;
+	//table["globalVar"] = &Evaluator::EvaluateGlobalIdent;
 	//table["member_lvalueVar"] = &Evaluator::EvaluateLvalueIdent;
 	//table["member_lvalueBrackets"] = &Evaluator::EvaluateLvalueBrackets;
 	//table["member_callVar"] = &Evaluator::EvaluateCallIdent;
@@ -273,7 +276,11 @@ std::optional<Value> Evaluator::EvaluateParenthesisFuncdef(ASTnode* node) {
 
 //lvalue
 std::optional<Value> Evaluator::EvaluateIdent(ASTnode* node) {
-	return *LvalueVarActions(node->GetValue("ID")->GetStringValue());
+	Value* value = LvalueVarActions(node->GetValue("ID")->GetStringValue());
+	if (value == nullptr) {
+		throw SyntaxErrorException();
+	}
+	return *value;
 }
 
 std::optional<Value> Evaluator::EvaluateLocalIdent(ASTnode* node) {
