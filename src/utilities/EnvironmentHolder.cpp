@@ -161,18 +161,17 @@ Value* interpreter::LocalLookUp(std::string id, Environment* envIterator) {		// 
 
  Value* interpreter::NormalLookUp(std::string id) {
 	Environment* envIterator = EnvironmentHolder::getInstance()->GetCurrentEnv();
-	if (envIterator->HasProperty("$previous")) {
-		envIterator = LocalLookUpForNormal(id, envIterator);
-		Value* value = envIterator->GetValue(id);
-		if (value != nullptr)
-			return value;
-	}
-	while (envIterator->HasProperty("$outer") && envIterator->GetValue("$outer")->GetObjectValue() != nullptr){
+	while (envIterator!=nullptr){
+		
 		envIterator = LocalLookUpForNormal(id, envIterator);
 		Value* value = envIterator->GetValue(id);
 		if(value != nullptr)
 			return value;
+		/*if (envIterator->HasProperty("$outer") && envIterator->GetValue("$outer")->GetObjectValue() == nullptr) {
+			break;
+		}*/
 		envIterator = envIterator->GetValue("$outer")->GetObjectValue();
+
 	}
 	return nullptr;
 }
@@ -204,12 +203,8 @@ Value* interpreter::LocalLookUp(std::string id, Environment* envIterator) {		// 
 	 }
  }
 
- Value* interpreter::GlobalVarActions(std::string id) {
-	 Value* value = GlobalLookUp(id);
-	 if (value != nullptr)
-		 return value;
-	 else
-		 return nullptr;
+Value* interpreter::GlobalVarActions(std::string id) {
+	return GlobalLookUp(id);
 }
 
 Value* interpreter::LvalueFuncDefActions(std::string id, ASTnode* node) {
