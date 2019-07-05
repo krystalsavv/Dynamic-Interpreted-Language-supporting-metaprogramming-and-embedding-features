@@ -98,7 +98,6 @@ BlockEnvironment* interpreter::SliceEnvironment(Environment* previous) {
 	return blockEnv; 
 }
 
-
 Value* interpreter::InsertFunctionDefinition(std::string id, ASTnode* node) {
 	EnvironmentHolder::getInstance()->GetCurrentEnv()->Set(id, node);
 	Value* value = EnvironmentHolder::getInstance()->GetCurrentEnv()->GetValue(id);
@@ -132,7 +131,6 @@ Value* interpreter::LocalLookUp(std::string id, Environment* envIterator) {		// 
 	return nullptr;
 }
 
-
  static Environment* LocalLookUpForNormal(std::string id,  Environment* envIterator) {		// kai tous environment pointers tous epistrefei ws values 
 	 while (envIterator->HasProperty("$previous")) {
 		 if (envIterator->HasProperty(id)) {
@@ -143,7 +141,6 @@ Value* interpreter::LocalLookUp(std::string id, Environment* envIterator) {		// 
 	 assert(envIterator->HasProperty("$outer"));
 	 return envIterator;
  }
-
 
  Value* interpreter::NormalLookUp(std::string id, Environment* envIterator) {
 	while (envIterator!=nullptr){
@@ -162,25 +159,25 @@ Value* interpreter::LocalLookUp(std::string id, Environment* envIterator) {		// 
 	 return LocalLookUp(id, envIterator);
  }
 
- Value* interpreter::LvalueVarActions(std::string id, Environment* envIterator)
+ Value* interpreter::LvalueVarActions(std::string id, bool insertFlag, Environment* envIterator)
  {
 	Value* value = NormalLookUp(id, envIterator);
 	if (value != nullptr && !hasCollisionWithLibFunc(id))
 			return value;
-	else if (value == nullptr)
+	else if (value == nullptr && insertFlag)
 		return InsertLvalue(id, Value(), envIterator);
 	else
 		return nullptr;
  }
 
- Value* interpreter::LocalVarActions(std::string id, Environment* envIterator) {
+ Value* interpreter::LocalVarActions(std::string id, bool insertFlag, Environment* envIterator) {
 	 Value* value = LocalLookUp(id, envIterator);
 	 if ((value != nullptr && !hasCollisionWithLibFunc(id)) ||
 		 (value != nullptr && hasCollisionWithLibFunc(id) && EnvironmentHolder::getInstance()->isGlobalScope()))
 		 return value;
-	 else if (value != nullptr && hasCollisionWithLibFunc(id))
+	 else if ((value != nullptr && hasCollisionWithLibFunc(id)) || !insertFlag)
 		 return nullptr;
-	 else {
+	 else if(insertFlag) {
 		 return InsertLvalue(id, Value(), envIterator);
 	 }
  }

@@ -23,10 +23,10 @@ std::map<std::string, std::optional<Value>(Evaluator::*)(ASTnode*)> Evaluator::I
 	table["parentheses"] = &Evaluator::EvaluateParenthesis; 
 	table["uminus"] = &Evaluator::EvaluateUminus;
 	table["not"] = &Evaluator::EvaluateNot;
-	//table["pre_increment"] = &Evaluator::EvaluatePreIncrement;
-	//table["post_incremen"] = &Evaluator::EvaluatePostIncrement;
-	//table["pre_decrement"] = &Evaluator::EvaluatePreDecrement;
-	//table["post_decrement"] = &Evaluator::EvaluatePostDecrement;
+	table["pre_increment"] = &Evaluator::EvaluatePreIncrement;
+	table["post_incremen"] = &Evaluator::EvaluatePostIncrement;
+	table["pre_decrement"] = &Evaluator::EvaluatePreDecrement;
+	table["post_decrement"] = &Evaluator::EvaluatePostDecrement;
 	table["parentheses_funcdef"] = &Evaluator::EvaluateParenthesisFuncdef;
 	table["var"] = &Evaluator::EvaluateIdent;
 	table["localVar"] = &Evaluator::EvaluateLocalIdent;
@@ -74,8 +74,8 @@ std::map<std::string, std::optional<Value>(Evaluator::*)(ASTnode*)> Evaluator::I
 
 	return table;
 }
-std::map<std::string, std::optional<std::reference_wrapper<Value>>(Evaluator::*)(ASTnode*, Environment* )> Evaluator::IntializeLvalueDispatcher() {
-	std::map<std::string, std::optional<std::reference_wrapper<Value>>(Evaluator::*)(ASTnode*, Environment* )> table;
+std::map<std::string, std::optional<std::reference_wrapper<Value>>(Evaluator::*)(ASTnode*, bool, Environment*)> Evaluator::IntializeLvalueDispatcher() {
+	std::map<std::string, std::optional<std::reference_wrapper<Value>>(Evaluator::*)(ASTnode*, bool, Environment*)> table;
 
 	table["var"] = &Evaluator::EvaluateLvalueIdent;
 	table["localVar"] = &Evaluator::EvaluateLvalueLocalIdent;
@@ -99,8 +99,8 @@ std::optional<Value> Evaluator::Evaluate(ASTnode* node) {
 	return (this->*EvaluateDispatcher[node->GetValue("type")->GetStringValue()])(node);
 }
 
-std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalue(ASTnode* node, Environment* env) {
-	return (this->*EvaluateLvalueDispatcher[node->GetValue("type")->GetStringValue()])(node, env);
+std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalue(ASTnode* node, bool insertFalg, Environment* env) {
+	return (this->*EvaluateLvalueDispatcher[node->GetValue("type")->GetStringValue()])(node,insertFalg, env);
 }
 
 std::optional<Value> Evaluator::EvaluateProgram(ASTnode* node) {
@@ -214,70 +214,27 @@ std::optional<Value> Evaluator::EvaluateNot(ASTnode* node) {
 	return !(*Evaluate(node->GetValue("expr")->GetObjectValue()));
 }
 
-/*
-Value Evaluator::EvaluatePreIncrement(ASTnode* node) {				// TODO
-	ASTnode* lvalueNode = node->GetValue("lvalue").GetObjectValue();
-	
-	ASTnode * num = new ASTnode("type", "numConst");
-	num->Set("value", 1.0);
-	ASTnode* add = new ASTnode("type", "ADD");
-	add->Set("left", lvalueNode);
-	add->Set("right", num);
-	ASTnode* assign = new ASTnode("type", "assignexpr");
-	assign->Set("lvalue", lvalueNode);
-	assign->Set("expr", add);
 
-	return Evaluate(add);
+std::optional<Value> Evaluator::EvaluatePreIncrement(ASTnode* node) {
+	Value& lvalue = *EvaluateLvalue(node->GetValue("lvalue")->GetObjectValue(),false);
+	return ++lvalue;
 }
 
-Value Evaluator::EvaluatePostIncrement(ASTnode* node) {
-	Value old = Evaluate(node->GetValue("lvalue").GetObjectValue());
-	
-	// TODO: na allaksei kai na kanoume oti kanei h assign sto environment kai allazei thn timh to komvoy kai oxi ASTnodes
-	ASTnode* num = new ASTnode("type", "numConst");
-	num->Set("value", 1.0);
-	ASTnode* add = new ASTnode("type", "ADD"); 
-	add->Set("left", old);
-	add->Set("right", num);
-	ASTnode* assign = new ASTnode("type", "assignexpr");
-	assign->Set("lvalue", old);
-	assign->Set("expr", add);
-	Evaluate(add);
-	
-	return old;
+std::optional<Value> Evaluator::EvaluatePostIncrement(ASTnode* node) {
+	Value& lvalue = *EvaluateLvalue(node->GetValue("lvalue")->GetObjectValue(), false);
+	return lvalue++;
 }
 
-Value Evaluator::EvaluatePreDecrement(ASTnode* node) {				// TODO
-	ASTnode* lvalueNode = node->GetValue("lvalue").GetObjectValue();
-	ASTnode* num = new ASTnode("type", "numConst");
-	num->Set("value", 1.0);
-	ASTnode* sub = new ASTnode("type", "SUB");
-	sub->Set("left", lvalueNode);
-	sub->Set("right", num);
-	ASTnode* assign = new ASTnode("type", "assignexpr");
-	assign->Set("lvalue", lvalueNode);
-	assign->Set("expr", sub);
-
-	return Evaluate(sub);
+std::optional<Value> Evaluator::EvaluatePreDecrement(ASTnode* node) {	
+	Value& lvalue = *EvaluateLvalue(node->GetValue("lvalue")->GetObjectValue(), false);
+	return --lvalue;
 }
 
-Value Evaluator::EvaluatePostDecrement(ASTnode* node) {
-	Value old = Evaluate(node->GetValue("lvalue").GetObjectValue());
-
-	// TODO: na allaksei kai na kanoume oti kanei h assign sto environment kai allazei thn timh to komvoy kai oxi ASTnodes
-	ASTnode* num = new ASTnode("type", "numConst");
-	num->Set("value", 1.0);
-	ASTnode* sub = new ASTnode("type", "SUB");
-	sub->Set("left", old);
-	sub->Set("right", num);
-	ASTnode* assign = new ASTnode("type", "assignexpr");
-	assign->Set("lvalue", old);
-	assign->Set("expr", sub);
-	Evaluate(sub);
-
-	return old;
+std::optional<Value> Evaluator::EvaluatePostDecrement(ASTnode* node) {
+	Value& lvalue = *EvaluateLvalue(node->GetValue("lvalue")->GetObjectValue(), false);
+	return lvalue--;
 }
-*/
+
 
 // primary
 std::optional<Value> Evaluator::EvaluateParenthesisFuncdef(ASTnode* node) {
@@ -285,23 +242,29 @@ std::optional<Value> Evaluator::EvaluateParenthesisFuncdef(ASTnode* node) {
 }
 
 //lvalue
-std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueIdent(ASTnode* node, Environment* env) {
-	Value* value = LvalueVarActions(node->GetValue("ID")->GetStringValue(), env);
-	if (value == nullptr) {
+std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueIdent(ASTnode* node, bool insertFalg, Environment* env) {
+	Value* value = LvalueVarActions(node->GetValue("ID")->GetStringValue(),insertFalg, env);
+	if (value == nullptr && !insertFalg) {
 		throw SyntaxErrorException();
+	}
+	else if (value == nullptr && insertFalg) {
+		throw RuntimeErrorException();
 	}
 	return *value;
 }
 
-std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueLocalIdent(ASTnode* node, Environment* env) {
-	Value* value = LocalVarActions(node->GetValue("ID")->GetStringValue(), env);
-	if (value == nullptr){
+std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueLocalIdent(ASTnode* node, bool insertFalg, Environment* env) {
+	Value* value = LocalVarActions(node->GetValue("ID")->GetStringValue(), insertFalg, env);
+	if (value == nullptr && !insertFalg) {
 		throw SyntaxErrorException();
-	}	
+	}
+	else if (value == nullptr && insertFalg) {
+		throw RuntimeErrorException();
+	}
 	return *value;
 }
 
-std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueGlobalIdent(ASTnode* node, Environment* env) {
+std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueGlobalIdent(ASTnode* node, bool insertFalg, Environment* env) {
 	Value* value = GlobalVarActions(node->GetValue("ID")->GetStringValue(), env);
 	if (value == nullptr) {
 		throw RuntimeErrorException();
@@ -363,27 +326,9 @@ std::optional<Value> Evaluator::EvaluateEmptyArglist(ASTnode* node) {
 
 std::optional<Value> interpreter::Evaluator::EvaluateAssignExpr(ASTnode* node)
 {
-	//save env before evaluation of rvalue
 	Environment* savedEnvironment = EnvironmentHolder::getInstance()->GetCurrentEnv();
-
-	//evaluate rvalue first
 	Value expr =  *Evaluate(node->GetValue("expr")->GetObjectValue());
-
-	//save currentEnv and look/insert lvalue in saved env
-	//Environment* current = EnvironmentHolder::getInstance()->GetCurrentEnv();
-	//EnvironmentHolder::getInstance()->SetCurrentEnv(savedEnvironment);
-
-	////evaluate lvalue then (Evaluation of lvalue returned &)
-	//Value& lvalue = *EvaluateLvalue(node->GetValue("lvalue")->GetObjectValue());
-
-	////go back to the last env
-	//EnvironmentHolder::getInstance()->SetCurrentEnv(current);
-
-	//lvalue = expr;
-	//return lvalue;
-
 	Value& lvalue = *EvaluateLvalue(node->GetValue("lvalue")->GetObjectValue(), savedEnvironment);
-
 	lvalue = expr;
 	return lvalue;
 }

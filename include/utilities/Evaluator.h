@@ -23,9 +23,9 @@ namespace interpreter {
 		std::map<std::string, std::optional<Value>(Evaluator::*)(ASTnode*)> EvaluateDispatcher;
 		std::map<std::string, std::optional<Value>(Evaluator::*)(ASTnode*)> IntializeDispatcher();
 		
-		std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalue(ASTnode* node, Environment* env = EnvironmentHolder::getInstance()->GetCurrentEnv());
-		std::map<std::string, std::optional<std::reference_wrapper<Value>>(Evaluator::*)(ASTnode*, Environment*)> EvaluateLvalueDispatcher;
-		std::map<std::string, std::optional<std::reference_wrapper<Value>>(Evaluator::*)(ASTnode*, Environment*)> IntializeLvalueDispatcher();
+		std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalue(ASTnode* node, bool insertFalg = true, Environment* env = EnvironmentHolder::getInstance()->GetCurrentEnv());
+		std::map<std::string, std::optional<std::reference_wrapper<Value>>(Evaluator::*)(ASTnode*, bool, Environment*)> EvaluateLvalueDispatcher;
+		std::map<std::string, std::optional<std::reference_wrapper<Value>>(Evaluator::*)(ASTnode*, bool, Environment*)> IntializeLvalueDispatcher();
 
 		inline static Evaluator* evaluator = nullptr;
 		Value retVal;
@@ -55,18 +55,18 @@ namespace interpreter {
 		std::optional<Value> EvaluateParenthesis(ASTnode* node);
 		std::optional<Value> EvaluateUminus(ASTnode* node);
 		std::optional<Value> EvaluateNot(ASTnode* node);
-		//std::optional<Value> EvaluatePreIncrement(ASTnode* node);
-		//std::optional<Value> EvaluatePostIncrement(ASTnode* node);
-		//std::optional<Value> EvaluatePreDecrement(ASTnode* node);
-		//std::optional<Value> EvaluatePostDecrement(ASTnode* node);
+		std::optional<Value> EvaluatePreIncrement(ASTnode* node);
+		std::optional<Value> EvaluatePostIncrement(ASTnode* node);
+		std::optional<Value> EvaluatePreDecrement(ASTnode* node);
+		std::optional<Value> EvaluatePostDecrement(ASTnode* node);
 
 		// primary
 		std::optional<Value> EvaluateParenthesisFuncdef(ASTnode* node);
 
 		//lvalue
-		std::optional<std::reference_wrapper<Value>> EvaluateLvalueIdent(ASTnode* node, Environment* env = EnvironmentHolder::getInstance()->GetCurrentEnv());
-		std::optional<std::reference_wrapper<Value>> EvaluateLvalueLocalIdent(ASTnode* node, Environment* env = EnvironmentHolder::getInstance()->GetCurrentEnv());
-		std::optional<std::reference_wrapper<Value>> EvaluateLvalueGlobalIdent(ASTnode* node, Environment* env = EnvironmentHolder::getInstance()->GetGlobalEnv());
+		std::optional<std::reference_wrapper<Value>> EvaluateLvalueIdent(ASTnode* node, bool insertFalg = true, Environment* env = EnvironmentHolder::getInstance()->GetCurrentEnv());
+		std::optional<std::reference_wrapper<Value>> EvaluateLvalueLocalIdent(ASTnode* node, bool insertFalg = true, Environment* env = EnvironmentHolder::getInstance()->GetCurrentEnv());
+		std::optional<std::reference_wrapper<Value>> EvaluateLvalueGlobalIdent(ASTnode* node, bool insertFalg = true, Environment* env = EnvironmentHolder::getInstance()->GetGlobalEnv());
 		
 		//rvalue
 		std::optional<Value> EvaluateIdent(ASTnode* node);

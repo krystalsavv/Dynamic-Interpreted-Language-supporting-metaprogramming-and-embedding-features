@@ -45,8 +45,8 @@ namespace interpreter {
 	Value* NormalLookUp(std::string id, Environment* envIterator = EnvironmentHolder::getInstance()->GetCurrentEnv());
 	Value* GlobalLookUp(std::string id, Environment* envIterator = EnvironmentHolder::getInstance()->GetGlobalEnv());
 
-	Value* LvalueVarActions(std::string id, Environment* envIterator = EnvironmentHolder::getInstance()->GetCurrentEnv());
-	Value* LocalVarActions(std::string id, Environment* envIterator = EnvironmentHolder::getInstance()->GetCurrentEnv());
+	Value* LvalueVarActions(std::string id, bool insertFlag = true, Environment* envIterator = EnvironmentHolder::getInstance()->GetCurrentEnv());
+	Value* LocalVarActions(std::string id, bool insertFalg = true, Environment* envIterator = EnvironmentHolder::getInstance()->GetCurrentEnv());
 	Value* GlobalVarActions(std::string id, Environment* envIterator = EnvironmentHolder::getInstance()->GetGlobalEnv());
 	Value* LvalueFuncDefActions(std::string id, ASTnode* node);
 	Value* RvalueVarActions(std::string id);

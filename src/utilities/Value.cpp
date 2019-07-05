@@ -159,6 +159,7 @@ Value Value::operator-(Value& right) {
 	return val;
 }
 
+
 Value Value::operator*(Value& right) {
 	Value val;
 	if (this->isNumber() && right.isNumber())
