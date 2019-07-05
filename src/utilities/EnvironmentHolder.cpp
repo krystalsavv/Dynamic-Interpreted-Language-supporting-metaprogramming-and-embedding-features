@@ -48,12 +48,21 @@ bool EnvironmentHolder::isGlobalScope() {
 
 // -----------
 
+void insertLibFunctions() {
+	Environment* curr = EnvironmentHolder::getInstance()->GetCurrentEnv(); 
+	curr->Set("print", new ASTnode("type", "print"));
+	curr->Set("typeof", new ASTnode("type", "typeof")); 
+	curr->Set("object_keys", new ASTnode("type", "object_keys"));
+	curr->Set("object_size", new ASTnode("type", "object_size"));
+	curr->Set("eval", new ASTnode("type", "eval"));
+}
+
 void interpreter::InitGlobalEnvironment() {
 	BlockEnvironment* blockEnv = new BlockEnvironment();
 	blockEnv->Set("$outer", (Object*)nullptr);
 	EnvironmentHolder::getInstance()->SetCurrentEnv(blockEnv);
 	EnvironmentHolder::getInstance()->SetGlobalEnv(blockEnv);
-	// TODO: Insert/add libfunctions in current scope
+	insertLibFunctions();
 }
 
 bool interpreter::hasCollisionWithLibFunc(std::string str)
@@ -172,14 +181,24 @@ Value* interpreter::LocalLookUp(std::string id, Environment* envIterator) {		// 
 
  Value* interpreter::LocalVarActions(std::string id, bool insertFlag, Environment* envIterator) {
 	 Value* value = LocalLookUp(id, envIterator);
-	 if ((value != nullptr && !hasCollisionWithLibFunc(id)) ||
-		 (value != nullptr && hasCollisionWithLibFunc(id) && EnvironmentHolder::getInstance()->isGlobalScope()))
-		 return value;
-	 else if ((value != nullptr && hasCollisionWithLibFunc(id)) || !insertFlag)
+	 if ((hasCollisionWithLibFunc(id) && !EnvironmentHolder::getInstance()->isGlobalScope())) {		
 		 return nullptr;
-	 else if(insertFlag) {
-		 return InsertLvalue(id, Value(), envIterator);
 	 }
+	 else if (value != nullptr) {
+		 return value;
+	 }
+	 else {
+		 if (insertFlag) {
+			 return InsertLvalue(id, Value(), envIterator);
+		 }
+		 else {
+			 return nullptr;
+		 }
+	 }
+		 
+		
+
+
  }
 
 Value* interpreter::GlobalVarActions(std::string id, Environment* envIterator) {

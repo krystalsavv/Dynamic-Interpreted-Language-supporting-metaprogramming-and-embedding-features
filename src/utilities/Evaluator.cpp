@@ -70,7 +70,11 @@ std::map<std::string, std::optional<Value>(Evaluator::*)(ASTnode*)> Evaluator::I
 	//table["optionalParam"] = &Evaluator::EvaluateOptionalParam;
 	table["idlist"] = &Evaluator::EvaluateIdlist;
 	table["emptyIdlist"] = &Evaluator::EvaluateEmptyIdlist;
-
+	table["print"] = &Evaluator::EvaluatePrint;
+	table["typeof"] = &Evaluator::EvaluateTypeof;
+	table["object_keys"] = &Evaluator::EvaluateObject_keys;
+	table["object_size"] = &Evaluator::EvaluateObject_size;
+	table["eval"] = &Evaluator::EvaluateEval;
 
 	return table;
 }
@@ -245,10 +249,10 @@ std::optional<Value> Evaluator::EvaluateParenthesisFuncdef(ASTnode* node) {
 std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueIdent(ASTnode* node, bool insertFalg, Environment* env) {
 	Value* value = LvalueVarActions(node->GetValue("ID")->GetStringValue(),insertFalg, env);
 	if (value == nullptr && !insertFalg) {
-		throw SyntaxErrorException("Cannot find var: " + node->GetValue("ID")->GetStringValue());
+		throw RuntimeErrorException("Cannot find variable " + node->GetValue("ID")->GetStringValue());
 	}
 	else if (value == nullptr && insertFalg) {
-		throw RuntimeErrorException();
+		throw SyntaxErrorException("Collision with library function: " + node->GetValue("ID")->GetStringValue());
 	}
 	return *value;
 }
@@ -256,10 +260,10 @@ std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueIdent(ASTn
 std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueLocalIdent(ASTnode* node, bool insertFalg, Environment* env) {
 	Value* value = LocalVarActions(node->GetValue("ID")->GetStringValue(), insertFalg, env);
 	if (value == nullptr && !insertFalg) {
-		throw SyntaxErrorException("Cannot find local var: " + node->GetValue("ID")->GetStringValue());
+		throw RuntimeErrorException("Cannot find local variable " + node->GetValue("ID")->GetStringValue());
 	}
 	else if (value == nullptr && insertFalg) {
-		throw RuntimeErrorException();
+		throw SyntaxErrorException("Collision with library function: " + node->GetValue("ID")->GetStringValue());
 	}
 	return *value;
 }
@@ -524,4 +528,25 @@ std::optional<Value> Evaluator::EvaluateIdlist(ASTnode* node) {
 
 std::optional<Value> Evaluator::EvaluateEmptyIdlist(ASTnode* node) {
 	return new Object();
+}
+
+
+std::optional<Value> Evaluator::EvaluatePrint(ASTnode* node) {
+	return std::nullopt;
+}
+
+std::optional<Value> Evaluator::EvaluateTypeof(ASTnode* node) {
+	return std::nullopt;
+}
+
+std::optional<Value> Evaluator::EvaluateObject_keys(ASTnode* node) {
+	return std::nullopt;
+}
+
+std::optional<Value> Evaluator::EvaluateObject_size(ASTnode* node) {
+	return std::nullopt;
+}
+
+std::optional<Value> Evaluator::EvaluateEval(ASTnode* node) {
+	return std::nullopt;
 }

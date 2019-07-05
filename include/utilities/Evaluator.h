@@ -143,6 +143,14 @@ namespace interpreter {
 		std::optional<Value> EvaluateIdlist(ASTnode* node);
 		std::optional<Value> EvaluateEmptyIdlist(ASTnode* node);
 
+		//libFunctions
+		std::optional<Value> EvaluatePrint(ASTnode* node);
+		std::optional<Value> EvaluateTypeof(ASTnode* node);
+		std::optional<Value> EvaluateObject_keys(ASTnode* node);
+		std::optional<Value> EvaluateObject_size(ASTnode* node);
+		std::optional<Value> EvaluateEval(ASTnode* node);
+
+		
 	};
 
 }
