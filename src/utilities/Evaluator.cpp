@@ -245,7 +245,7 @@ std::optional<Value> Evaluator::EvaluateParenthesisFuncdef(ASTnode* node) {
 std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueIdent(ASTnode* node, bool insertFalg, Environment* env) {
 	Value* value = LvalueVarActions(node->GetValue("ID")->GetStringValue(),insertFalg, env);
 	if (value == nullptr && !insertFalg) {
-		throw SyntaxErrorException();
+		throw SyntaxErrorException("Cannot find var: " + node->GetValue("ID")->GetStringValue());
 	}
 	else if (value == nullptr && insertFalg) {
 		throw RuntimeErrorException();
@@ -256,7 +256,7 @@ std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueIdent(ASTn
 std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueLocalIdent(ASTnode* node, bool insertFalg, Environment* env) {
 	Value* value = LocalVarActions(node->GetValue("ID")->GetStringValue(), insertFalg, env);
 	if (value == nullptr && !insertFalg) {
-		throw SyntaxErrorException();
+		throw SyntaxErrorException("Cannot find local var: " + node->GetValue("ID")->GetStringValue());
 	}
 	else if (value == nullptr && insertFalg) {
 		throw RuntimeErrorException();
