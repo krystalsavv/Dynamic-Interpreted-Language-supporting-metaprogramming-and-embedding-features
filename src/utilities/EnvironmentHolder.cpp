@@ -208,16 +208,18 @@ Value* interpreter::LvalueFuncDefActions(std::string id, ASTnode* node) {
 	return InsertFunctionDefinition(id, node);
 }
 
-Value* interpreter::RvalueVarActions(std::string id)
+Value* interpreter::RvalueVarActions(std::string id, bool insertFlag)
 {
 	Value* value = NormalLookUp(id);
 	if (value != nullptr)
 		return value;
-	else
+	else if (insertFlag)
 		return InsertLvalue(id, Value());
+	else
+		return nullptr;
 }
 
-Value* interpreter::RvalueLocalVarActions(std::string id)
+Value* interpreter::RvalueLocalVarActions(std::string id, bool insertFlag)
 {
 	Value* value = LocalLookUp(id);
 	if (hasCollisionWithLibFunc(id) && !EnvironmentHolder::getInstance()->isGlobalScope()) {
@@ -226,5 +228,8 @@ Value* interpreter::RvalueLocalVarActions(std::string id)
 	else if (value != nullptr) {
 		return value;
 	}
-	return InsertLvalue(id, Value());
+	else if (insertFlag) {
+		return InsertLvalue(id, Value());
+	}
+	return nullptr;
 }
