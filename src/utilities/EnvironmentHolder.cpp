@@ -179,9 +179,9 @@ Value* interpreter::LocalLookUp(std::string id, Environment* envIterator) {		// 
 		return nullptr;
  }
 
- Value* interpreter::LocalVarActions(std::string id, bool insertFlag, Environment* envIterator) {
+ Value* interpreter::LvalueLocalVarActions(std::string id, bool insertFlag, Environment* envIterator) {
 	 Value* value = LocalLookUp(id, envIterator);
-	 if ((hasCollisionWithLibFunc(id) && !EnvironmentHolder::getInstance()->isGlobalScope())) {		
+	 if (hasCollisionWithLibFunc(id)) {		
 		 return nullptr;
 	 }
 	 else if (value != nullptr) {
@@ -195,10 +195,6 @@ Value* interpreter::LocalLookUp(std::string id, Environment* envIterator) {		// 
 			 return nullptr;
 		 }
 	 }
-		 
-		
-
-
  }
 
 Value* interpreter::GlobalVarActions(std::string id, Environment* envIterator) {
@@ -219,4 +215,16 @@ Value* interpreter::RvalueVarActions(std::string id)
 		return value;
 	else
 		return InsertLvalue(id, Value());
+}
+
+Value* interpreter::RvalueLocalVarActions(std::string id)
+{
+	Value* value = LocalLookUp(id);
+	if (hasCollisionWithLibFunc(id) && !EnvironmentHolder::getInstance()->isGlobalScope()) {
+		return nullptr;
+	}
+	else if (value != nullptr) {
+		return value;
+	}
+	return InsertLvalue(id, Value());
 }

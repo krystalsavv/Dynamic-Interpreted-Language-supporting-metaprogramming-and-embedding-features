@@ -258,7 +258,7 @@ std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueIdent(ASTn
 }
 
 std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueLocalIdent(ASTnode* node, bool insertFalg, Environment* env) {
-	Value* value = LocalVarActions(node->GetValue("ID")->GetStringValue(), insertFalg, env);
+	Value* value = LvalueLocalVarActions(node->GetValue("ID")->GetStringValue(), insertFalg, env);
 	if (value == nullptr && !insertFalg) {
 		throw RuntimeErrorException("Cannot find local variable " + node->GetValue("ID")->GetStringValue());
 	}
@@ -282,7 +282,7 @@ std::optional<Value> Evaluator::EvaluateIdent(ASTnode* node) {
 }
 
 std::optional<Value> Evaluator::EvaluateLocalIdent(ASTnode* node) {
-	Value* value = LocalVarActions(node->GetValue("ID")->GetStringValue());
+	Value* value = RvalueLocalVarActions(node->GetValue("ID")->GetStringValue());
 	if (value == nullptr) {
 		throw SyntaxErrorException();
 	}
