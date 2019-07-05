@@ -24,7 +24,7 @@ std::map<std::string, std::optional<Value>(Evaluator::*)(ASTnode*)> Evaluator::I
 	table["uminus"] = &Evaluator::EvaluateUminus;
 	table["not"] = &Evaluator::EvaluateNot;
 	table["pre_increment"] = &Evaluator::EvaluatePreIncrement;
-	table["post_incremen"] = &Evaluator::EvaluatePostIncrement;
+	table["post_increment"] = &Evaluator::EvaluatePostIncrement;
 	table["pre_decrement"] = &Evaluator::EvaluatePreDecrement;
 	table["post_decrement"] = &Evaluator::EvaluatePostDecrement;
 	table["parentheses_funcdef"] = &Evaluator::EvaluateParenthesisFuncdef;
