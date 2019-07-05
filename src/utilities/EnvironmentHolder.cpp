@@ -72,9 +72,30 @@ bool interpreter::hasCollisionWithLibFunc(std::string str)
 	return false;
 }
 
-void interpreter::CreateFunctionEnvironment() {
+void functionCall(std::string funcName) {
+	Environment* oldCurrent = EnvironmentHolder::getInstance()->GetCurrentEnv();
+	Value* funcdefNode = LocalLookUp(funcName);
+	if (funcdefNode == nullptr) {
+		throw RuntimeErrorException("Can not find function definition with name " + funcName);
+	}
+	else if (!(funcdefNode->isObject())) {
+		throw RuntimeErrorException("Variable with name " + funcName + "is not callable");
+	}
+	else {
+		Value* closure = funcdefNode->GetObjectValue()->GetValue("$closure");
+		if (closure != nullptr) {
+			CreateFunctionEnvironment(closure->GetObjectValue());
+		}
+		else {
+			// functor
+		}
+	}
+}
+
+
+void interpreter::CreateFunctionEnvironment(ASTnode* funcClosure) {
 	FunctionEnvironment* funcEnv = new FunctionEnvironment();
-	funcEnv->Set("$outer", EnvironmentHolder::getInstance()->GetCurrentEnv());				// TODO: WRONG (prepei na vazei to func closure kai oxi curr ws outer)
+	funcEnv->Set("$outer", funcClosure);
 	EnvironmentHolder::getInstance()->SetCurrentEnv(funcEnv);
 }
 
@@ -195,10 +216,6 @@ Value* interpreter::LocalLookUp(std::string id, Environment* envIterator) {		// 
 			 return nullptr;
 		 }
 	 }
-		 
-		
-
-
  }
 
 Value* interpreter::GlobalVarActions(std::string id, Environment* envIterator) {

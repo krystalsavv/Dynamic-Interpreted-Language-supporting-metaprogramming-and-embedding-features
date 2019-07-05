@@ -297,9 +297,13 @@ std::optional<Value> Evaluator::EvaluateGlobalIdent(ASTnode* node) {
 	return *value;
 }
 
+
+
+
 //normcall
 std::optional<Value> Evaluator::EvaluateNormCall(ASTnode* node) {
 	//Create a function Env
+	//CreateFunctionEnvironment();
 
 	//Evaluate the arguments and put them into an arguments table
 	Value argsTable = *Evaluate(node->GetValue("argList")->GetObjectValue());

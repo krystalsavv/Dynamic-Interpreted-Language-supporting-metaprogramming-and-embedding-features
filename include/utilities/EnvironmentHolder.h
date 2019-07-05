@@ -1,6 +1,7 @@
 #pragma once
 #include "utilities/Object.h"
 #include "utilities/AST.h"
+#include "utilities/Exceptions.h"
 
 namespace interpreter {
 
@@ -34,7 +35,7 @@ namespace interpreter {
 
 	void InitGlobalEnvironment();
 	bool hasCollisionWithLibFunc(std::string str);
-	void CreateFunctionEnvironment();
+	void CreateFunctionEnvironment(ASTnode* funcClosure);
 	void CreateBlockEnvironment();
 	void LeaveBlockEnvironment(); 
 	BlockEnvironment* SliceEnvironment(Environment* previous);
