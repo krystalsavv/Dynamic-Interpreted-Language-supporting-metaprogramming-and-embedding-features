@@ -31,6 +31,11 @@ bool Object::HasProperty(const Value& key) const {
 		return false;
 }
 
+unsigned int interpreter::Object::size() const
+{
+	return symbols.size();
+}
+
 std::string Object::toString() const {
 	std::string s = "{\n";
 	nestedCounterPrint++;
