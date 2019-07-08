@@ -31,7 +31,7 @@ std::map<std::string, std::optional<Value>(Evaluator::*)(ASTnode*,bool)> Evaluat
 	table["var"] = &Evaluator::EvaluateIdent;
 	table["localVar"] = &Evaluator::EvaluateLocalIdent;
 	table["globalVar"] = &Evaluator::EvaluateGlobalIdent;
-	table["member_lvalueVar"] = &Evaluator::EvaluateMemberIdent;
+	//table["member_lvalueVar"] = &Evaluator::EvaluateMemberIdent;
 	//table["member_lvalueBrackets"] = &Evaluator::EvaluateMemberBrackets;
 	//table["member_callVar"] = &Evaluator::EvaluateMemberCallIdent;
 	//table["member_callBrackets"] = &Evaluator::EvaluateMemberCallBrackets;
@@ -325,17 +325,33 @@ std::optional<Value> Evaluator::EvaluateGlobalIdent(ASTnode* node, bool insertFl
 //
 //}
 //
+
 //rvalue member
-std::optional<Value> Evaluator::EvaluateMemberIdent(ASTnode* node, bool insertFlag){
-	Value rvalue = *Evaluate(node->GetValue("lvalue")->GetObjectValue(), false);
-	std::cout << rvalue;
-	return Value();
-}
-//
-//std::optional<Value> Evaluator::EvaluateMemberBrackets(ASTnode* node, bool insertFlag) {
-//
+//std::optional<Value> Evaluator::EvaluateMemberIdent(ASTnode* node, bool insertFlag) {
+//	Value rvalue = *Evaluate(node->GetValue("lvalue")->GetObjectValue(), false);
+//	if (rvalue.isObject()) {
+//		for (int i = 0; i < rvalue.GetObjectValue()->size(); i++) {
+//			if ( rvalue.GetObjectValue()->GetValue(std::to_string(i))->isObject() 
+//				&& rvalue.GetObjectValue()->GetValue(std::to_string(i))->GetObjectValue()->HasProperty(node->GetValue("ID")->GetStringValue())) {
+//				return *rvalue.GetObjectValue()->GetValue(std::to_string(i))->GetObjectValue()->GetValue(node->GetValue("ID")->GetStringValue());
+//			}	
+//		}
+//	}
+//	return Value(Undefined());
 //}
-//
+
+//std::optional<Value> Evaluator::EvaluateMemberBrackets(ASTnode* node, bool insertFlag) {
+//	std::optional<Value> expr = *Evaluate(node->GetValue("expr")->GetObjectValue(), false);
+//	if (expr == std::nullopt || expr->isUndefined())
+//		throw RuntimeErrorException("Cannot find expression " + expr->toString());
+//	Value rvalue = *Evaluate(node->GetValue("lvalue")->GetObjectValue(), false);
+//	std::cout << "-----------------------------------------------------------" << std::endl << expr->toString() << std::endl << rvalue << std::endl;
+//	if (rvalue.isObject()) {
+//		// TODO: call operator overload []
+//	}
+//	return Value(Undefined());
+//}
+
 //std::optional<Value> Evaluator::EvaluateMemberCallIdent(ASTnode* node, bool insertFlag) {
 //
 //}

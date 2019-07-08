@@ -117,6 +117,7 @@ Value* interpreter::InsertFunctionDefinition(std::string id, ASTnode* node) {
 		EnvironmentHolder::getInstance()->SetGlobalEnv(block);
 	}
 	EnvironmentHolder::getInstance()->SetCurrentEnv(block);
+
 	return value;
 }
 
@@ -203,8 +204,9 @@ Value* interpreter::GlobalVarActions(std::string id, Environment* envIterator) {
 
 Value* interpreter::LvalueFuncDefActions(std::string id, ASTnode* node) {
 	Value* value = LocalLookUp(id);
-	if (value != nullptr || hasCollisionWithLibFunc(id))
+	if (value != nullptr || hasCollisionWithLibFunc(id)) {
 		return nullptr;
+	}
 	return InsertFunctionDefinition(id, node);
 }
 

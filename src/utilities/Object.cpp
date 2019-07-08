@@ -36,13 +36,17 @@ unsigned int interpreter::Object::size() const
 	return symbols.size();
 }
 
-std::string Object::toString() const {
+std::string Object::toString()  {
+	isPrinted = true;
 	std::string s = "{\n";
 	nestedCounterPrint++;
 	int commaCounter = 0;
 	for (auto& [key, value] : symbols) {
 		AddTabs(s);
-		s += key.toString() + " : " + value.toString();
+		if (value.isObject() && value.GetObjectValue() != nullptr && value.GetObjectValue()->isPrinted == true) 
+			s += key.toString() + " : " + "same object as printing";
+		else 
+			s += key.toString() + " : " + value.toString();
 		if (commaCounter++ < symbols.size() - 1)
 			s += ", ";
 		s += "\n";
@@ -50,6 +54,7 @@ std::string Object::toString() const {
 	nestedCounterPrint--;
 	AddTabs(s);
 	s += "}\n";
+	isPrinted = false;
 	return s;
 }
 
@@ -65,7 +70,7 @@ Value  Object::operator!=(Object* obj) {
 	return (this != obj);
 }
 
-std::ostream& interpreter::operator<< (std::ostream& out, const Object& obj) {
+std::ostream& interpreter::operator<< (std::ostream& out, Object& obj) {
 	return out << obj.toString();
 	}
 
