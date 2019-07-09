@@ -20,6 +20,22 @@ Value* Object::GetValue(const Value& key) {
 		return nullptr;	
 }
 
+//Object* Object::GetKeys() {
+//	Object* tmp = new Object();
+//	int i = 0;
+//	for (auto pair : symbols) {
+//		tmp->Set(std::to_string(i),pair.first);
+//		i++;
+//	}
+//	return tmp;
+//}
+
+Value Object::GetKey() {
+	for (auto pair : symbols) {
+		return pair.first;
+	}
+}
+
 void Object::Set(const Value& key, const Value& value) {
 	symbols[key] = value;
 }
@@ -31,13 +47,22 @@ bool Object::HasProperty(const Value& key) const {
 		return false;
 }
 
-std::string Object::toString() const {
+unsigned int interpreter::Object::size() const
+{
+	return symbols.size();
+}
+
+std::string Object::toString()  {
+	isPrinted = true;
 	std::string s = "{\n";
 	nestedCounterPrint++;
 	int commaCounter = 0;
 	for (auto& [key, value] : symbols) {
 		AddTabs(s);
-		s += key.toString() + " : " + value.toString();
+		if (value.isObject() && value.GetObjectValue() != nullptr && value.GetObjectValue()->isPrinted == true) 
+			s += key.toString() + " : " + "same object as printing";
+		else 
+			s += key.toString() + " : " + value.toString();
 		if (commaCounter++ < symbols.size() - 1)
 			s += ", ";
 		s += "\n";
@@ -45,6 +70,7 @@ std::string Object::toString() const {
 	nestedCounterPrint--;
 	AddTabs(s);
 	s += "}\n";
+	isPrinted = false;
 	return s;
 }
 
@@ -60,7 +86,7 @@ Value  Object::operator!=(Object* obj) {
 	return (this != obj);
 }
 
-std::ostream& interpreter::operator<< (std::ostream& out, const Object& obj) {
+std::ostream& interpreter::operator<< (std::ostream& out, Object& obj) {
 	return out << obj.toString();
 	}
 

@@ -13,23 +13,27 @@ namespace interpreter {
 		unsigned int referenceCounter = 0;
 		inline static unsigned int nestedCounterPrint = 0;
 		inline static unsigned int anonymousFuncCounter = 0;
+		bool isPrinted = false;
 		static void AddTabs(std::string& s);
 	public:
 		Object() = default;
 		Object(const Value& key, const Value& value);
 
 		Value* GetValue(const Value& key);
+		//Object* GetKeys();
+		Value GetKey();
 		void Set(const Value& key, const Value& value);
 
 		bool HasProperty(const Value& key) const;
-		std::string toString() const;
+		unsigned int size() const;
+		std::string toString();
 
 		void IncreaseReferenceCounter();
 		void DecreaseReferenceCounter();
 
 		Value operator==(Object* obj);
 		Value operator!=(Object* obj);
-		friend std::ostream& operator<< (std::ostream& out, const Object& obj);
+		friend std::ostream& operator<< (std::ostream& out,  Object& obj);
 
 		static std::string GenerateAnonymousName();
 	};	

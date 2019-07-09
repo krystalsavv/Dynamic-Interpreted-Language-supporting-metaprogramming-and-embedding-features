@@ -102,8 +102,7 @@ bool Value::toBool() const {
 		return this->GetBoolValue();
 	}
 	else if (isUndefined()) {
-		//error
-		assert(false);
+		throw RuntimeErrorException("Undefined to bool");
 	}
 	// TODO: libfunc
 }
@@ -126,7 +125,6 @@ std::string Value::toString() const {
 	else if (isObject() && GetObjectValue() == nullptr)
 		return "null";
 	else {
-		//assert(isUndefined());
 		return "undefined";
 	}
 }
@@ -154,8 +152,7 @@ Value Value::operator-(Value& right) {
 	if (this->isNumber() && right.isNumber())
 		val = this->GetNumberValue() - right.GetNumberValue();
 	else
-		// TODO: error in different types
-		assert(false);
+		throw RuntimeErrorException("Non numeric types in subtraction ");
 	return val;
 }
 
@@ -165,8 +162,7 @@ Value Value::operator*(Value& right) {
 	if (this->isNumber() && right.isNumber())
 		val = this->GetNumberValue() * right.GetNumberValue();
 	else
-		// TODO: error in different types
-		assert(false);
+		throw RuntimeErrorException("Non numeric types in multiplication ");
 	return val;
 }
 
@@ -175,8 +171,7 @@ Value Value::operator/(Value& right) {
 	if (this->isNumber() && right.isNumber())
 		val = this->GetNumberValue() / right.GetNumberValue();
 	else
-		// TODO: error in different types
-		assert(false);
+		throw RuntimeErrorException("Non numeric types in division ");
 	return val;
 }
 
@@ -185,8 +180,7 @@ Value Value::operator%(Value& right) {
 	if (this->isNumber() && right.isNumber())
 		val = (double)((int)this->GetNumberValue() % (int)right.GetNumberValue());
 	else
-		// TODO: error in different types
-		assert(false);
+		throw RuntimeErrorException("Non numeric types in mod ");
 	return val;
 }
 
@@ -196,8 +190,7 @@ Value& Value::operator++() {
 	if (this->isNumber()) 
 		this->Set(this->GetNumberValue() + 1);
 	else
-		// TODO: error in different types
-		assert(false);
+		throw RuntimeErrorException("Non numeric types in prefix increment ");
 	return *this;
 }
 
@@ -209,8 +202,7 @@ Value Value::operator++(int) {
 		this->Set(this->GetNumberValue() + 1);
 	}
 	else
-		// TODO: error in different types
-		assert(false);
+		throw RuntimeErrorException("Non numeric types in postfix increment ");
 	return val;
 }
 
@@ -219,8 +211,7 @@ Value& Value::Value::operator--() {
 	if (this->isNumber()) 
 		this->Set(this->GetNumberValue() - 1);
 	else
-		// TODO: error in different types
-		assert(false);
+		throw RuntimeErrorException("Non numeric types in prefix decrement ");
 	return *this;
 }
 
@@ -232,8 +223,7 @@ Value Value::operator--(int) {
 		this->Set(this->GetNumberValue() - 1);
 	}
 	else
-		// TODO: error in different types
-		assert(false);
+		throw RuntimeErrorException("Non numeric types in postfix decrement ");
 	return val;
 }
 
@@ -242,8 +232,7 @@ Value Value::Value::operator-() {
 	if (this->isNumber())
 		val = -(this->GetNumberValue());
 	else
-		// TODO: error in different types
-		assert(false);
+		throw RuntimeErrorException("Non numeric types in uminus ");
 	return val;
 }
 
@@ -254,8 +243,7 @@ Value Value::operator>(Value& right) {
 	if (this->isNumber() && right.isNumber())
 		val = (this->GetNumberValue() > right.GetNumberValue());
 	else
-		// TODO: error in different types
-		val = false;
+		throw RuntimeErrorException("Non numeric types in operator greater than (>)");
 	return val;
 }
 
@@ -264,8 +252,7 @@ Value Value::operator>=(Value& right) {
 	if (this->isNumber() && right.isNumber())
 		val = (this->GetNumberValue() >= right.GetNumberValue());
 	else
-		// TODO: error in different types
-		val = false;
+		throw RuntimeErrorException("Non numeric types in operator greater than equal (>=)");
 	return val;
 }
 
@@ -274,8 +261,7 @@ Value Value::operator<(Value& right) {
 	if (this->isNumber() && right.isNumber())
 		val = (this->GetNumberValue() < right.GetNumberValue());
 	else
-		// TODO: error in different types
-		val = false;
+		throw RuntimeErrorException("Non numeric types in operator less than (<)");
 	return val;
 }
 
@@ -284,8 +270,7 @@ Value Value::operator<=(Value& right) {
 	if (this->isNumber() && right.isNumber())
 		val = (this->GetNumberValue() <= right.GetNumberValue());
 	else
-		// TODO: error in different types
-		val = false;
+		throw RuntimeErrorException("Non numeric types in operator less than equal (<=)");
 	return val;
 }
 
@@ -298,7 +283,6 @@ Value Value::operator==(Value& right) {
 		val = (this->GetStringValue() == right.GetStringValue());
 	else if (this->isBool() && right.isBool())
 		val = (this->GetBoolValue() == right.GetBoolValue());
-	// TODO: NO OVERLOAD FOR OBJECT, STRANGER THINGS
 	else if (this->isObject() && right.isObject()) {
 		if (this->GetObjectValue() == nullptr || right.GetObjectValue() == nullptr)
 			val = false;
@@ -306,8 +290,7 @@ Value Value::operator==(Value& right) {
 			val = this->GetObjectValue() == right.GetObjectValue();
 	}
 	else
-		// TODO: error in different types
-		val = false;
+		throw RuntimeErrorException("Invalid types in operator equal (==)");
 	return val;
 }
 
@@ -319,56 +302,54 @@ Value Value::operator!=(Value& right) {
 		val = (this->GetStringValue() != right.GetStringValue());
 	else if (this->isBool() && right.isBool())
 		val = (this->GetBoolValue() != right.GetBoolValue());
-	// TODO: NO OVERLOAD FOR OBJECT, STRANGER THINGS
 	else if (this->isObject() && right.isObject()) {
-		if (this->GetObjectValue() == NULL || right.GetObjectValue() == NULL)
+		if (this->GetObjectValue() == nullptr || right.GetObjectValue() == nullptr)
 			val = true;
 		else
 			val = this->GetObjectValue() != right.GetObjectValue();
 	}
 	else
-		// TODO: error in different types
-		val = true;
+		throw RuntimeErrorException("Invalid types in operator not equal (!=)");
 	return val;
 }
 //for consts (unordered map comparison)
 bool Value::operator==(const Value& right) const {
+	bool b;
 	if (this->isNumber() && right.isNumber())
-		return (this->GetNumberValue() == right.GetNumberValue());
+		b = (this->GetNumberValue() == right.GetNumberValue());
 	else if (this->isString() && right.isString())
-		return (this->GetStringValue() == right.GetStringValue());
+		b = (this->GetStringValue() == right.GetStringValue());
 	else if (this->isBool() && right.isBool())
-		return (this->GetBoolValue() == right.GetBoolValue());
-	// TODO: NO OVERLOAD FOR OBJECT, STRANGER THINGS
+		b = (this->GetBoolValue() == right.GetBoolValue());
 	else if (this->isObject() && right.isObject()) {
 		if (this->GetObjectValue() == nullptr || right.GetObjectValue() == nullptr)
-			return false;
+			b = false;
 		else
-			return this->GetObjectValue() == right.GetObjectValue();
+			b = this->GetObjectValue() == right.GetObjectValue();
 	}
 	else
-		// TODO: error in different types
-		return false;
-
+		throw RuntimeErrorException("Invalid types in operator equal (==)");
+	return b;
 }
+
 //for consts (unordered map comparison)
 bool Value::operator!=(const Value& right) const {
+	bool b;
 	if (this->isNumber() && right.isNumber())
-		return (this->GetNumberValue() != right.GetNumberValue());
+		b = (this->GetNumberValue() != right.GetNumberValue());
 	else if (this->isString() && right.isString())
-		return (this->GetStringValue() != right.GetStringValue());
+		b = (this->GetStringValue() != right.GetStringValue());
 	else if (this->isBool() && right.isBool())
-		return (this->GetBoolValue() != right.GetBoolValue());
-	// TODO: NO OVERLOAD FOR OBJECT, STRANGER THINGS
+		b = (this->GetBoolValue() != right.GetBoolValue());
 	else if (this->isObject() && right.isObject()) {
-		if (this->GetObjectValue() == NULL || right.GetObjectValue() == NULL)
-			return true;
+		if (this->GetObjectValue() == nullptr || right.GetObjectValue() == nullptr)
+			b = true;
 		else
-			return this->GetObjectValue() != right.GetObjectValue();
+			b = this->GetObjectValue() != right.GetObjectValue();
 	}
 	else
-		// TODO: error in different types
-		return true;
+		throw RuntimeErrorException("Invalid types in operator not equal (!=)");
+	return b;
 }
 
 //logical
