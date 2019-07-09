@@ -32,7 +32,7 @@ std::map<std::string, std::optional<Value>(Evaluator::*)(ASTnode*,bool)> Evaluat
 	table["localVar"] = &Evaluator::EvaluateLocalIdent;
 	table["globalVar"] = &Evaluator::EvaluateGlobalIdent;
 	table["member_lvalueVar"] = &Evaluator::EvaluateMemberIdent;
-	//table["member_lvalueBrackets"] = &Evaluator::EvaluateMemberBrackets;
+	table["member_lvalueBrackets"] = &Evaluator::EvaluateMemberBrackets;
 	//table["member_callVar"] = &Evaluator::EvaluateMemberCallIdent;
 	//table["member_callBrackets"] = &Evaluator::EvaluateMemberCallBrackets;
 	//table["multiCall"] = &Evaluator::EvaluateMultiCall;
@@ -358,17 +358,17 @@ std::optional<Value> Evaluator::EvaluateMemberIdent(ASTnode* node, bool insertFl
 	return Value(Undefined());
 }
 
-//std::optional<Value> Evaluator::EvaluateMemberBrackets(ASTnode* node, bool insertFlag) {
-//	std::optional<Value> expr = *Evaluate(node->GetValue("expr")->GetObjectValue(), false);
-//	if (expr == std::nullopt || expr->isUndefined())
-//		throw RuntimeErrorException("Cannot find expression " + expr->toString());
-//	Value rvalue = *Evaluate(node->GetValue("lvalue")->GetObjectValue(), false);
-//	std::cout << "-----------------------------------------------------------" << std::endl << expr->toString() << std::endl << rvalue << std::endl;
-//	if (rvalue.isObject()) {
-//		// TODO: call operator overload []
-//	}
-//	return Value(Undefined());
-//}
+std::optional<Value> Evaluator::EvaluateMemberBrackets(ASTnode* node, bool insertFlag) {
+	//Value expr = *Evaluate(node->GetValue("expr")->GetObjectValue(), false);
+	//Value rvalue = *Evaluate(node->GetValue("lvalue")->GetObjectValue(), false);
+	//if (rvalue.isUndefined()) throw RuntimeErrorException("Cannot read symbol " + expr.toString() + " of undefined");
+	//if (rvalue.isObject()) {
+	//	for (int i = 0; i < rvalue.GetObjectValue()->size(); i++) {
+
+	//	}
+	//}
+	return Value();
+}
 
 //std::optional<Value> Evaluator::EvaluateMemberCallIdent(ASTnode* node, bool insertFlag) {
 //
