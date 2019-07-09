@@ -5,6 +5,7 @@
 #include <iostream>
 #include <cassert>
 #include <iostream> 
+#include "utilities/Exceptions.h"
 
 #define variant_t std::variant<bool, double, std::string, Object*, Undefined> 
 
