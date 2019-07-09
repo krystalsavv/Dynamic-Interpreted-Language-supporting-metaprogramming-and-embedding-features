@@ -18,10 +18,10 @@ namespace interpreter {
 	public:
 		Object() = default;
 		Object(const Value& key, const Value& value);
-
+		
+		map_t GetMap();
 		Value* GetValue(const Value& key);
-		//Object* GetKeys();
-		Value GetKey();
+		
 		void Set(const Value& key, const Value& value);
 
 		bool HasProperty(const Value& key) const;

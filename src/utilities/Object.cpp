@@ -12,28 +12,16 @@ Object::Object(const Value& key, const Value& value) {
 	symbols[key] = value;
 }
 
+map_t Object::GetMap() {
+	return symbols;
+}
+
 Value* Object::GetValue(const Value& key) {
 	auto value = symbols.find(key);
 	if (value != symbols.end())
 		return &(value->second);
 	else
 		return nullptr;	
-}
-
-//Object* Object::GetKeys() {
-//	Object* tmp = new Object();
-//	int i = 0;
-//	for (auto pair : symbols) {
-//		tmp->Set(std::to_string(i),pair.first);
-//		i++;
-//	}
-//	return tmp;
-//}
-
-Value Object::GetKey() {
-	for (auto pair : symbols) {
-		return pair.first;
-	}
 }
 
 void Object::Set(const Value& key, const Value& value) {

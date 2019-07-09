@@ -514,7 +514,12 @@ std::optional<Value> Evaluator::EvaluateIndexed(ASTnode* node, bool insertFlag) 
 	Object* indexedMap = new Object();
 	double numOfElems = node->GetValue("numOfElems")->GetNumberValue();
 	for (int i = 0; i < numOfElems; i++) {
-		indexedMap->Set(std::to_string(i), *Evaluate(node->GetValue(std::to_string(i))->GetObjectValue()));
+		Object* obj = (*Evaluate(node->GetValue(std::to_string(i))->GetObjectValue())).GetObjectValue();
+		for (auto kv : obj->GetMap()) {
+			indexedMap->Set(kv.first, kv.second);
+		}
+		//indexedMap->Set(std::to_string(i), *Evaluate(node->GetValue(std::to_string(i))->GetObjectValue()));
+		obj->~Object(); // call destructor to free this object (TODO: decrise reference counter )
 	}
 	return indexedMap;
 }
@@ -647,7 +652,7 @@ std::optional<Value> Evaluator::EvaluateObject_keys(ASTnode* node, bool insertFl
 	Object* argument = node->GetValue("0")->GetObjectValue();
 	for (int i = 0; i < node->size(); i++)
 	{
-		returnKeys->Set(std::to_string(i), argument->GetValue(std::to_string(i))->GetObjectValue()->GetKey());
+		//returnKeys->Set(std::to_string(i), argument->GetValue(std::to_string(i))->GetObjectValue()->GetKey());
 	}
 	return returnKeys;
 }
