@@ -58,10 +58,8 @@ void insertLibFunctions() {
 }
 
 void interpreter::InitGlobalEnvironment() {
-	BlockEnvironment* blockEnv = new BlockEnvironment();
-	blockEnv->Set("$outer", (Object*)nullptr);
-	EnvironmentHolder::getInstance()->SetCurrentEnv(blockEnv);
-	EnvironmentHolder::getInstance()->SetGlobalEnv(blockEnv);
+	CreateBlockEnvironment();
+	EnvironmentHolder::getInstance()->SetGlobalEnv(EnvironmentHolder::getInstance()->GetCurrentEnv());
 	insertLibFunctions();
 }
 
@@ -75,6 +73,7 @@ bool interpreter::hasCollisionWithLibFunc(std::string str)
 void interpreter::CreateFunctionEnvironment() {
 	FunctionEnvironment* funcEnv = new FunctionEnvironment();
 	funcEnv->Set("$outer", EnvironmentHolder::getInstance()->GetCurrentEnv());				// TODO: WRONG (prepei na vazei to func closure kai oxi curr ws outer)
+	funcEnv->Set("$sliced", false);
 	EnvironmentHolder::getInstance()->SetCurrentEnv(funcEnv);
 }
 
@@ -112,6 +111,9 @@ Value* interpreter::InsertFunctionDefinition(std::string id, ASTnode* node) {
 	Value* value = EnvironmentHolder::getInstance()->GetCurrentEnv()->GetValue(id);
 	node->Set("$closure", EnvironmentHolder::getInstance()->GetCurrentEnv());
 	node->Set("$global", EnvironmentHolder::getInstance()->GetGlobalEnv());
+	if (EnvironmentHolder::getInstance()->GetCurrentEnv()->HasProperty("$outer")) {
+		EnvironmentHolder::getInstance()->GetCurrentEnv()->Set("$sliced", true);
+	}
 	BlockEnvironment* block = SliceEnvironment(EnvironmentHolder::getInstance()->GetCurrentEnv());
 	if (EnvironmentHolder::getInstance() -> isGlobalScope()) {
 		EnvironmentHolder::getInstance()->SetGlobalEnv(block);
