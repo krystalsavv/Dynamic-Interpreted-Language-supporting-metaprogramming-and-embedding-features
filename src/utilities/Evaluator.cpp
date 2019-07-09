@@ -595,19 +595,50 @@ std::optional<Value> Evaluator::EvaluateEmptyIdlist(ASTnode* node, bool insertFl
 
 
 std::optional<Value> Evaluator::EvaluatePrint(ASTnode* node, bool insertFlag) {
+	//object of arguments in node ??
+	for (int i = 0; i < node->size(); i++) {
+		std::cout << node->GetValue(std::to_string(i));
+		if (i != node->size() - 1)
+			std::cout << ",";
+	}
 	return std::nullopt;
 }
 
 std::optional<Value> Evaluator::EvaluateTypeof(ASTnode* node, bool insertFlag) {
+	//object of arguments in node ??
+	if (node->size() != 1)
+		throw SyntaxErrorException("Invalid arguments in typeof");
+	if (node->GetValue("0")->isBool())
+		return "boolean";
+	else if (node->GetValue("0")->isNumber())
+		return "number";
+	else if (node->GetValue("0")->isObject())
+		return "object";
+	else if (node->GetValue("0")->isString())
+		return "string";
+	else if (node->GetValue("0")->isUndefined())
+		return "undefined";
 	return std::nullopt;
 }
 
 std::optional<Value> Evaluator::EvaluateObject_keys(ASTnode* node, bool insertFlag) {
-	return std::nullopt;
+	//object of arguments in node ??
+	if (node->size() != 1 || !node->GetValue("0")->isObject())
+		throw SyntaxErrorException("Invalid arguments in object_keys");
+	Object* returnKeys = new Object();
+	Object* argument = node->GetValue("0")->GetObjectValue();
+	for (int i = 0; i < node->size(); i++)
+	{
+		returnKeys->Set(std::to_string(i), argument->GetValue(std::to_string(i))->GetObjectValue()->GetKey());
+	}
+	return returnKeys;
 }
 
 std::optional<Value> Evaluator::EvaluateObject_size(ASTnode* node, bool insertFlag) {
-	return std::nullopt;
+	//object of arguments in node ??
+	if (node->size() != 1 || !node->GetValue("0")->isObject())
+		throw SyntaxErrorException("Invalid arguments in object_size");
+	return (double)node->GetValue("0")->GetObjectValue()->size();
 }
 
 std::optional<Value> Evaluator::EvaluateEval(ASTnode* node, bool insertFlag) {

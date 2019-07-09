@@ -20,6 +20,22 @@ Value* Object::GetValue(const Value& key) {
 		return nullptr;	
 }
 
+//Object* Object::GetKeys() {
+//	Object* tmp = new Object();
+//	int i = 0;
+//	for (auto pair : symbols) {
+//		tmp->Set(std::to_string(i),pair.first);
+//		i++;
+//	}
+//	return tmp;
+//}
+
+Value Object::GetKey() {
+	for (auto pair : symbols) {
+		return pair.first;
+	}
+}
+
 void Object::Set(const Value& key, const Value& value) {
 	symbols[key] = value;
 }

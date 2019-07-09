@@ -20,6 +20,8 @@ namespace interpreter {
 		Object(const Value& key, const Value& value);
 
 		Value* GetValue(const Value& key);
+		//Object* GetKeys();
+		Value GetKey();
 		void Set(const Value& key, const Value& value);
 
 		bool HasProperty(const Value& key) const;
