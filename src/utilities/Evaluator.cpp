@@ -315,17 +315,10 @@ std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueMemberIden
 	Value& rvalue = *EvaluateLvalue(node->GetValue("lvalue")->GetObjectValue(),false);
 	if (rvalue.isUndefined()) throw RuntimeErrorException("Cannot read symbol " + node->GetValue("ID")->GetStringValue() + " of undefined");
 	if (rvalue.isObject()) {
-		for (int i = 0; i < rvalue.GetObjectValue()->size(); i++) {
-			if (rvalue.GetObjectValue()->GetValue(std::to_string(i))->isObject()
-				&& rvalue.GetObjectValue()->GetValue(std::to_string(i))->GetObjectValue()->HasProperty(node->GetValue("ID")->GetStringValue())) {
-				return *rvalue.GetObjectValue()->GetValue(std::to_string(i))->GetObjectValue()->GetValue(node->GetValue("ID")->GetStringValue());
-			}
-		}
-		Object* value = new Object();
-		value->Set(node->GetValue("ID")->GetStringValue(),Undefined());
-		int index = rvalue.GetObjectValue()->size();
-		rvalue.GetObjectValue()->Set(std::to_string(index),value);
-		return *rvalue.GetObjectValue()->GetValue(std::to_string(index))->GetObjectValue()->GetValue(node->GetValue("ID")->GetStringValue());
+		if (rvalue.GetObjectValue()->HasProperty(node->GetValue("ID")->GetStringValue()))
+			return *rvalue.GetObjectValue()->GetValue(node->GetValue("ID")->GetStringValue());
+		rvalue.GetObjectValue()->Set(node->GetValue("ID")->GetStringValue(), Undefined());
+		return *rvalue.GetObjectValue()->GetValue(node->GetValue("ID")->GetStringValue());
 	}
 	throw RuntimeErrorException("Cannot read symbol " + node->GetValue("ID")->GetStringValue() + " of non-object variable");
 }
@@ -348,26 +341,21 @@ std::optional<Value> Evaluator::EvaluateMemberIdent(ASTnode* node, bool insertFl
 	Value rvalue = *Evaluate(node->GetValue("lvalue")->GetObjectValue(), false);
 	if (rvalue.isUndefined()) throw RuntimeErrorException("Cannot read symbol " + node->GetValue("ID")->GetStringValue() +" of undefined");
 	if (rvalue.isObject()) {
-		for (int i = 0; i < rvalue.GetObjectValue()->size(); i++) {
-			if ( rvalue.GetObjectValue()->GetValue(std::to_string(i))->isObject() 
-				&& rvalue.GetObjectValue()->GetValue(std::to_string(i))->GetObjectValue()->HasProperty(node->GetValue("ID")->GetStringValue())) {
-				return *rvalue.GetObjectValue()->GetValue(std::to_string(i))->GetObjectValue()->GetValue(node->GetValue("ID")->GetStringValue());
-			}	
-		}
+		if (rvalue.GetObjectValue()->HasProperty(node->GetValue("ID")->GetStringValue()))
+			return *rvalue.GetObjectValue()->GetValue(node->GetValue("ID")->GetStringValue());
 	}
 	return Value(Undefined());
 }
 
 std::optional<Value> Evaluator::EvaluateMemberBrackets(ASTnode* node, bool insertFlag) {
-	//Value expr = *Evaluate(node->GetValue("expr")->GetObjectValue(), false);
-	//Value rvalue = *Evaluate(node->GetValue("lvalue")->GetObjectValue(), false);
-	//if (rvalue.isUndefined()) throw RuntimeErrorException("Cannot read symbol " + expr.toString() + " of undefined");
-	//if (rvalue.isObject()) {
-	//	for (int i = 0; i < rvalue.GetObjectValue()->size(); i++) {
-
-	//	}
-	//}
-	return Value();
+	Value expr = *Evaluate(node->GetValue("expr")->GetObjectValue(), false);
+	Value rvalue = *Evaluate(node->GetValue("lvalue")->GetObjectValue(), false);
+	if (rvalue.isUndefined()) throw RuntimeErrorException("Cannot read symbol " + expr.toString() + " of undefined");
+	if (rvalue.isObject()) {
+		if (rvalue.GetObjectValue()->HasProperty(expr))
+			return *rvalue.GetObjectValue()->GetValue(expr);
+	}
+	return Value(Undefined());
 }
 
 //std::optional<Value> Evaluator::EvaluateMemberCallIdent(ASTnode* node, bool insertFlag) {
@@ -529,6 +517,7 @@ std::optional<Value> Evaluator::EvaluateIndexedElem(ASTnode* node, bool insertFl
 	Object* newObject = new Object();
 	Value key = *Evaluate(node->GetValue("keyExpr")->GetObjectValue());
 	Value value = *Evaluate(node->GetValue("valueExpr")->GetObjectValue());
+	if (key.isUndefined()) throw RuntimeErrorException("Key of value " + value.toString() + " is undefined");
 	newObject->Set(key, value);
 	return newObject;
 }

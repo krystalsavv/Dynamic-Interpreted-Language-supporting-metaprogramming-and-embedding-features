@@ -290,7 +290,8 @@ Value Value::operator==(Value& right) {
 			val = this->GetObjectValue() == right.GetObjectValue();
 	}
 	else
-		throw RuntimeErrorException("Invalid types in operator equal (==)");
+		//throw RuntimeErrorException("Invalid types in operator equal (==)");
+		val = false;
 	return val;
 }
 
@@ -309,7 +310,8 @@ Value Value::operator!=(Value& right) {
 			val = this->GetObjectValue() != right.GetObjectValue();
 	}
 	else
-		throw RuntimeErrorException("Invalid types in operator not equal (!=)");
+		//throw RuntimeErrorException("Invalid types in operator not equal (!=)");
+		return true;
 	return val;
 }
 //for consts (unordered map comparison)
@@ -328,7 +330,8 @@ bool Value::operator==(const Value& right) const {
 			b = this->GetObjectValue() == right.GetObjectValue();
 	}
 	else
-		throw RuntimeErrorException("Invalid types in operator equal (==)");
+		//throw RuntimeErrorException("Invalid types in operator equal (==)");
+		b = false;
 	return b;
 }
 
@@ -348,7 +351,8 @@ bool Value::operator!=(const Value& right) const {
 			b = this->GetObjectValue() != right.GetObjectValue();
 	}
 	else
-		throw RuntimeErrorException("Invalid types in operator not equal (!=)");
+		//throw RuntimeErrorException("Invalid types in operator not equal (!=)");
+		b = true;
 	return b;
 }
 
