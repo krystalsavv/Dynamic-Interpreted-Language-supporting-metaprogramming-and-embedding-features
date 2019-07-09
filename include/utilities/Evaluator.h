@@ -74,10 +74,10 @@ namespace interpreter {
 		std::optional<Value> EvaluateGlobalIdent(ASTnode* node, bool insertFlag = true);
 
 		//lvalue member
-		std::optional<std::reference_wrapper<Value>> EvaluateLvalueMemberIdent(ASTnode* node);
-		std::optional<std::reference_wrapper<Value>> EvaluateLvalueMemberBrackets(ASTnode* node);
-		std::optional<std::reference_wrapper<Value>> EvaluateLvalueMemberCallIdent(ASTnode* node);
-		std::optional<std::reference_wrapper<Value>> EvaluateLvalueMemberCallBrackets(ASTnode* node);
+		std::optional<std::reference_wrapper<Value>> EvaluateLvalueMemberIdent(ASTnode* node, bool insertFlag = true, Environment* env = EnvironmentHolder::getInstance()->GetCurrentEnv());
+		std::optional<std::reference_wrapper<Value>> EvaluateLvalueMemberBrackets(ASTnode* node, bool insertFlag = true, Environment* env = EnvironmentHolder::getInstance()->GetCurrentEnv());
+		std::optional<std::reference_wrapper<Value>> EvaluateLvalueMemberCallIdent(ASTnode* node, bool insertFlag = true, Environment* env = EnvironmentHolder::getInstance()->GetCurrentEnv());
+		std::optional<std::reference_wrapper<Value>> EvaluateLvalueMemberCallBrackets(ASTnode* node, bool insertFlag = true, Environment* env = EnvironmentHolder::getInstance()->GetCurrentEnv());
 
 		//member
 		std::optional<Value> EvaluateMemberIdent(ASTnode* node, bool insertFlag = true);
