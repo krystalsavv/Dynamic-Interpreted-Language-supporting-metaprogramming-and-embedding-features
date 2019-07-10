@@ -8,11 +8,11 @@ namespace interpreter {
 		std::string message;
 	public:
 
-		BreakException::BreakException(std::string str) {
+		BreakException(std::string str) {
 			message = "Break Exception: " + str + "\n";
 		}
 
-		BreakException::BreakException() {
+		BreakException() {
 			message = "Break Exception\n";
 		}
 
@@ -26,11 +26,11 @@ namespace interpreter {
 		std::string message;
 	public:
 
-		ContinueException::ContinueException(std::string str) {
+		ContinueException(std::string str) {
 			message = "Continue Exception: " + str + "\n";
 		}
 
-		ContinueException::ContinueException() {
+		ContinueException() {
 			message = "Continue Exception\n";
 		}
 
@@ -44,11 +44,11 @@ namespace interpreter {
 		std::string message;
 	public:
 
-		ReturnException::ReturnException(std::string str) {
+		ReturnException(std::string str) {
 			message = "Return Exception: " + str + "\n";
 		}
 
-		ReturnException::ReturnException() {
+		ReturnException() {
 			message = "Return Exception\n";
 		}
 
@@ -62,11 +62,11 @@ namespace interpreter {
 		std::string message;
 	public:
 
-		ReturnValueException::ReturnValueException(std::string str) {
+		ReturnValueException(std::string str) {
 			message = "Return value Exception: " + str + "\n";
 		}
 
-		ReturnValueException:: ReturnValueException() {
+		ReturnValueException() {
 			message = "Return value Exception\n";
 		}
 
@@ -80,11 +80,11 @@ namespace interpreter {
 		std::string message;
 	public:
 
-		RuntimeErrorException::RuntimeErrorException(std::string str) {
+		RuntimeErrorException(std::string str) {
 			message = "Runtime Error: " + str + "\n";
 		}
 
-		RuntimeErrorException::RuntimeErrorException() {
+		RuntimeErrorException() {
 			message = "Runtime Error\n";
 		}
 
@@ -98,11 +98,11 @@ namespace interpreter {
 		std::string message;
 	public:
 
-		SyntaxErrorException::SyntaxErrorException(std::string str) {
+		SyntaxErrorException(std::string str) {
 			message = "Syntax Error: " + str + "\n";
 		}
 
-		SyntaxErrorException::SyntaxErrorException() {
+		SyntaxErrorException() {
 			message = "Syntax Error\n";
 		}
 

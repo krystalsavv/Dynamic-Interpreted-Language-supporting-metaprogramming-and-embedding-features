@@ -23,7 +23,7 @@ namespace interpreter {
 		std::map<std::string, std::optional<Value>(Evaluator::*)(ASTnode*, bool)> EvaluateDispatcher;
 		std::map<std::string, std::optional<Value>(Evaluator::*)(ASTnode*, bool)> IntializeDispatcher();
 		
-		std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalue(ASTnode* node, bool insertFlag = true, Environment* env = EnvironmentHolder::getInstance()->GetCurrentEnv());
+		std::optional<std::reference_wrapper<Value>> EvaluateLvalue(ASTnode* node, bool insertFlag = true, Environment* env = EnvironmentHolder::getInstance()->GetCurrentEnv());
 		std::map<std::string, std::optional<std::reference_wrapper<Value>>(Evaluator::*)(ASTnode*, bool, Environment*)> EvaluateLvalueDispatcher;
 		std::map<std::string, std::optional<std::reference_wrapper<Value>>(Evaluator::*)(ASTnode*, bool, Environment*)> IntializeLvalueDispatcher();
 

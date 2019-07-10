@@ -369,7 +369,7 @@ std::optional<Value> Evaluator::EvaluateMemberIdent(ASTnode* node, bool insertFl
 		if (rvalue.GetObjectValue()->HasProperty(node->GetValue("ID")->GetStringValue()))
 			return *rvalue.GetObjectValue()->GetValue(node->GetValue("ID")->GetStringValue());
 	}
-	return Value(Undefined());
+	return Undefined();
 }
 
 std::optional<Value> Evaluator::EvaluateMemberBrackets(ASTnode* node, bool insertFlag) {
@@ -381,7 +381,7 @@ std::optional<Value> Evaluator::EvaluateMemberBrackets(ASTnode* node, bool inser
 		if (rvalue.GetObjectValue()->HasProperty(expr))
 			return *rvalue.GetObjectValue()->GetValue(expr);
 	}
-	return Value(Undefined());
+	return Undefined();
 }
 
 std::optional<Value> Evaluator::EvaluateMemberCallIdent(ASTnode* node, bool insertFlag) {
@@ -391,7 +391,7 @@ std::optional<Value> Evaluator::EvaluateMemberCallIdent(ASTnode* node, bool inse
 		if (call.GetObjectValue()->HasProperty(node->GetValue("ID")->GetStringValue()))
 			return *call.GetObjectValue()->GetValue(node->GetValue("ID")->GetStringValue());
 	}
-	return Value(Undefined());
+	return Undefined();
 }
 
 std::optional<Value> Evaluator::EvaluateMemberCallBrackets(ASTnode* node, bool insertFlag) {
@@ -403,7 +403,7 @@ std::optional<Value> Evaluator::EvaluateMemberCallBrackets(ASTnode* node, bool i
 		if (call.GetObjectValue()->HasProperty(expr))
 			return *call.GetObjectValue()->GetValue(expr);
 	}
-	return Value(Undefined());
+	return Undefined();
 }
 
 //normcall
