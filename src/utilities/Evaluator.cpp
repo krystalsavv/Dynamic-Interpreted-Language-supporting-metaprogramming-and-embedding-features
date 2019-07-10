@@ -216,7 +216,7 @@ std::optional<Value> Evaluator::EvaluateParenthesis(ASTnode* node, bool insertFl
 }
 
 std::optional<Value> Evaluator::EvaluateUminus(ASTnode* node, bool insertFlag) {
-	return (*Evaluate(node->GetValue("expr")->GetObjectValue()) * Value(-1.0));
+	return -(*Evaluate(node->GetValue("expr")->GetObjectValue()));
 }
 
 std::optional<Value> Evaluator::EvaluateNot(ASTnode* node, bool insertFlag) {
@@ -325,6 +325,7 @@ std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueMemberIden
 std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueMemberBrackets(ASTnode* node, bool insertFlag, Environment* env)
 {
 	Value expr = *Evaluate(node->GetValue("expr")->GetObjectValue(), false);
+	if (expr == nil) throw RuntimeErrorException("Cannot use nil as expression in brackets");
 	Value& lvalue = *EvaluateLvalue(node->GetValue("lvalue")->GetObjectValue(), false);
 	if (lvalue.isUndefined()) throw RuntimeErrorException("Cannot read value " + expr.toString() + " of undefined");
 	if (lvalue.isObject()) {
@@ -348,6 +349,7 @@ std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueMemberCall
 
 std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueMemberCallBrackets(ASTnode* node, bool insertFlag, Environment* env){
 	Value expr = *Evaluate(node->GetValue("expr")->GetObjectValue(), false);
+	if (expr == nil) throw RuntimeErrorException("Cannot use nil as expression in brackets");
 	Value call = *EvaluateLvalue(node->GetValue("call")->GetObjectValue(), false);
 	if (call.isUndefined()) throw RuntimeErrorException("Cannot read value " + expr.toString() + " of undefined");
 	if (call.isObject()) {
@@ -372,6 +374,7 @@ std::optional<Value> Evaluator::EvaluateMemberIdent(ASTnode* node, bool insertFl
 
 std::optional<Value> Evaluator::EvaluateMemberBrackets(ASTnode* node, bool insertFlag) {
 	Value expr = *Evaluate(node->GetValue("expr")->GetObjectValue(), false);
+	if (expr == nil) throw RuntimeErrorException("Cannot use nil as expression in brackets");
 	Value rvalue = *Evaluate(node->GetValue("lvalue")->GetObjectValue(), false);
 	if (rvalue.isUndefined()) throw RuntimeErrorException("Cannot read value " + expr.toString() + " of undefined");
 	if (rvalue.isObject()) {
@@ -393,6 +396,7 @@ std::optional<Value> Evaluator::EvaluateMemberCallIdent(ASTnode* node, bool inse
 
 std::optional<Value> Evaluator::EvaluateMemberCallBrackets(ASTnode* node, bool insertFlag) {
 	Value expr = *Evaluate(node->GetValue("expr")->GetObjectValue(), false);
+	if (expr == nil) throw RuntimeErrorException("Cannot use nil as expression in brackets");
 	Value call = *Evaluate(node->GetValue("call")->GetObjectValue(), false);
 	if (call.isUndefined()) throw RuntimeErrorException("Cannot read value " + expr.toString() + " of undefined");
 	if (call.isObject()) {
@@ -438,6 +442,7 @@ std::optional<Value> interpreter::Evaluator::EvaluateAssignExpr(ASTnode* node, b
 	Environment* savedEnvironment = EnvironmentHolder::getInstance()->GetCurrentEnv();
 	Value expr =  *Evaluate(node->GetValue("expr")->GetObjectValue());
 	Value& lvalue = *EvaluateLvalue(node->GetValue("lvalue")->GetObjectValue(), savedEnvironment);
+	if (lvalue == nil) throw RuntimeErrorException("Cannot be used nil as lvalue");
 	lvalue = expr;
 	return lvalue;
 }
@@ -446,11 +451,7 @@ std::optional<Value> interpreter::Evaluator::EvaluateAssignExpr(ASTnode* node, b
 std::optional<Value> Evaluator::EvaluateIfStmt(ASTnode* node, bool insertFlag) {
 	Value tmp;
 	if (Evaluate(node->GetValue("condition")->GetObjectValue())->toBool()) {
-		try { tmp = *Evaluate(node->GetValue("stmt")->GetObjectValue()); }
-		catch (BreakException& ) { throw; }
-		catch (ContinueException& ) { throw; }
-		catch (ReturnException& ) { throw; }
-		catch (ReturnValueException& ) { throw; }
+		tmp = *Evaluate(node->GetValue("stmt")->GetObjectValue()); 
 		return true;
 	}
 	return false;
@@ -458,16 +459,10 @@ std::optional<Value> Evaluator::EvaluateIfStmt(ASTnode* node, bool insertFlag) {
 
 std::optional<Value> Evaluator::EvaluateIfElseStmt(ASTnode* node, bool insertFlag) {
 	Value tmp;
-	try {
-		if (!Evaluate(node->GetValue("ifstmt")->GetObjectValue())->toBool()) {
-			tmp = *Evaluate(node->GetValue("elsestmt")->GetObjectValue());
-		}
-		return std::nullopt;
+	if (!Evaluate(node->GetValue("ifstmt")->GetObjectValue())->toBool()) {
+		tmp = *Evaluate(node->GetValue("elsestmt")->GetObjectValue());
 	}
-	catch (BreakException& ) { throw; }
-	catch (ContinueException& ) { throw; }
-	catch (ReturnException& ) { throw; }
-	catch (ReturnValueException& ) { throw; }
+	return std::nullopt;
 }
 
 std::optional<Value> Evaluator::EvaluateWhileStmt(ASTnode* node, bool insertFlag) {
@@ -476,8 +471,6 @@ std::optional<Value> Evaluator::EvaluateWhileStmt(ASTnode* node, bool insertFlag
 		try { tmp = *Evaluate(node->GetValue("stmt")->GetObjectValue()); }
 		catch (BreakException& ) { break; }
 		catch (ContinueException& ) { continue; }
-		catch (ReturnException& ) { throw; }
-		catch (ReturnValueException& ) { throw; }
 	}
 	return std::nullopt;
 }
@@ -490,8 +483,6 @@ std::optional<Value> Evaluator::EvaluateForStmt(ASTnode* node, bool insertFlag) 
 		try { tmp = *Evaluate(node->GetValue("stmt")->GetObjectValue()); }
 		catch (BreakException& ) { break; }
 		catch (ContinueException& ) { continue; }
-		catch (ReturnException& ) { throw; }
-		catch (ReturnValueException& ) { throw; }
 	}
 	return std::nullopt;
 }
@@ -611,7 +602,7 @@ std::optional<Value> Evaluator::EvaluateBoolConst(ASTnode* node, bool insertFlag
 }
 
 std::optional<Value> Evaluator::EvaluateNIL(ASTnode* node, bool insertFlag) {
-	return std::nullopt;
+	return (Object*) nullptr;
 }
 
 
