@@ -12,7 +12,7 @@ namespace interpreter {
 		map_t symbols;
 		unsigned int referenceCounter = 0;
 		inline static unsigned int nestedCounterPrint = 0;
-		inline static unsigned int anonymousFuncCounter = 0;
+		inline static unsigned long long int anonymousFuncCounter = 0;
 		bool isPrinted = false;
 		static void AddTabs(std::string& s);
 	public:

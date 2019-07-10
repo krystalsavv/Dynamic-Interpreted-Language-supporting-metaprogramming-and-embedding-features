@@ -33,8 +33,8 @@ std::map<std::string, std::optional<Value>(Evaluator::*)(ASTnode*,bool)> Evaluat
 	table["globalVar"] = &Evaluator::EvaluateGlobalIdent;
 	table["member_lvalueVar"] = &Evaluator::EvaluateMemberIdent;
 	table["member_lvalueBrackets"] = &Evaluator::EvaluateMemberBrackets;
-	//table["member_callVar"] = &Evaluator::EvaluateMemberCallIdent;
-	//table["member_callBrackets"] = &Evaluator::EvaluateMemberCallBrackets;
+	table["member_callVar"] = &Evaluator::EvaluateMemberCallIdent;
+	table["member_callBrackets"] = &Evaluator::EvaluateMemberCallBrackets;
 	//table["multiCall"] = &Evaluator::EvaluateMultiCall;
 	//table["lvalueCall"] = &Evaluator::EvaluateLvalueCallSuffix;
 	//table["funcdefCall"] = &Evaluator::EvaluateFuncdefCall;
@@ -86,9 +86,9 @@ std::map<std::string, std::optional<std::reference_wrapper<Value>>(Evaluator::*)
 	table["localVar"] = &Evaluator::EvaluateLvalueLocalIdent;
 	table["globalVar"] = &Evaluator::EvaluateLvalueGlobalIdent;
 	table["member_lvalueVar"] = &Evaluator::EvaluateLvalueMemberIdent;
-	//table["member_lvalueBrackets"] = &Evaluator::EvaluateLvalueMemberBrackets;
-	//table["member_callVar"] = &Evaluator::EvaluateLvalueMemberCallIdent;
-	//table["member_callBrackets"] = &Evaluator::EvaluateLvalueMemberCallBrackets;
+	table["member_lvalueBrackets"] = &Evaluator::EvaluateLvalueMemberBrackets;
+	table["member_callVar"] = &Evaluator::EvaluateLvalueMemberCallIdent;
+	table["member_callBrackets"] = &Evaluator::EvaluateLvalueMemberCallBrackets;
 
 	return table;
 }
@@ -254,7 +254,7 @@ std::optional<Value> Evaluator::EvaluateParenthesisFuncdef(ASTnode* node, bool i
 std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueIdent(ASTnode* node, bool insertFlag, Environment* env) {
 	Value* value = LvalueVarActions(node->GetValue("ID")->GetStringValue(),insertFlag, env);
 	if (value == nullptr && !insertFlag) {
-		throw RuntimeErrorException("Cannot find variable " + node->GetValue("ID")->GetStringValue());
+		throw RuntimeErrorException("Undefined variable " + node->GetValue("ID")->GetStringValue());
 	}
 	else if (value == nullptr && insertFlag) {
 		throw SyntaxErrorException("Collision with library function: " + node->GetValue("ID")->GetStringValue());
@@ -265,7 +265,7 @@ std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueIdent(ASTn
 std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueLocalIdent(ASTnode* node, bool insertFlag, Environment* env) {
 	Value* value = LvalueLocalVarActions(node->GetValue("ID")->GetStringValue(), insertFlag, env);
 	if (value == nullptr && !insertFlag) {
-		throw RuntimeErrorException("Cannot find local variable " + node->GetValue("ID")->GetStringValue());
+		throw RuntimeErrorException("Undefined local variable " + node->GetValue("ID")->GetStringValue());
 	}
 	else if (value == nullptr && insertFlag) {
 		throw SyntaxErrorException("Collision with library function: " + node->GetValue("ID")->GetStringValue());
@@ -276,7 +276,7 @@ std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueLocalIdent
 std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueGlobalIdent(ASTnode* node, bool insertFlag, Environment* env) {
 	Value* value = GlobalVarActions(node->GetValue("ID")->GetStringValue(), env);
 	if (value == nullptr) {
-		throw RuntimeErrorException();
+		throw RuntimeErrorException("Undefined global variable " + node->GetValue("ID")->GetStringValue());
 	}
 	return *value;
 }
@@ -285,7 +285,7 @@ std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueGlobalIden
 std::optional<Value> Evaluator::EvaluateIdent(ASTnode* node, bool insertFlag) {
 	Value* value = RvalueVarActions(node->GetValue("ID")->GetStringValue(), insertFlag);
 	if (value == nullptr) {
-		throw RuntimeErrorException("Undefined " + node->GetValue("ID")->GetStringValue());
+		throw RuntimeErrorException("Undefined variable " + node->GetValue("ID")->GetStringValue());
 	}
 	return *value;
 }
@@ -304,7 +304,7 @@ std::optional<Value> Evaluator::EvaluateLocalIdent(ASTnode* node, bool insertFla
 std::optional<Value> Evaluator::EvaluateGlobalIdent(ASTnode* node, bool insertFlag) {
 	Value* value = GlobalVarActions(node->GetValue("ID")->GetStringValue());
 	if (value == nullptr) {
-		throw RuntimeErrorException();
+		throw RuntimeErrorException("Undefined global variable " + node->GetValue("ID")->GetStringValue());
 	}
 	return *value;
 }
@@ -312,34 +312,57 @@ std::optional<Value> Evaluator::EvaluateGlobalIdent(ASTnode* node, bool insertFl
 //lvalue member
 std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueMemberIdent(ASTnode* node, bool insertFlag, Environment* env )
 {
-	Value& rvalue = *EvaluateLvalue(node->GetValue("lvalue")->GetObjectValue(),false);
-	if (rvalue.isUndefined()) throw RuntimeErrorException("Cannot read symbol " + node->GetValue("ID")->GetStringValue() + " of undefined");
-	if (rvalue.isObject()) {
-		if (rvalue.GetObjectValue()->HasProperty(node->GetValue("ID")->GetStringValue()))
-			return *rvalue.GetObjectValue()->GetValue(node->GetValue("ID")->GetStringValue());
-		rvalue.GetObjectValue()->Set(node->GetValue("ID")->GetStringValue(), Undefined());
-		return *rvalue.GetObjectValue()->GetValue(node->GetValue("ID")->GetStringValue());
+	Value& lvalue = *EvaluateLvalue(node->GetValue("lvalue")->GetObjectValue(),false);
+	if (lvalue.isUndefined()) throw RuntimeErrorException("Cannot read id " + node->GetValue("ID")->GetStringValue() + " of undefined");
+	if (lvalue.isObject()) {
+		if (!lvalue.GetObjectValue()->HasProperty(node->GetValue("ID")->GetStringValue()))
+			lvalue.GetObjectValue()->Set(node->GetValue("ID")->GetStringValue(), Undefined());
+		return *lvalue.GetObjectValue()->GetValue(node->GetValue("ID")->GetStringValue());
 	}
-	throw RuntimeErrorException("Cannot read symbol " + node->GetValue("ID")->GetStringValue() + " of non-object variable");
+	throw RuntimeErrorException("Cannot read id " + node->GetValue("ID")->GetStringValue() + " of non-object variable");
 }
 
-//std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueMemberBrackets(ASTnode* node) {
-//
-//}
-//
-//std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueMemberCallIdent(ASTnode* node) {
-//
-//}
-//
-//std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueMemberCallBrackets(ASTnode* node) {
-//
-//}
-//
+std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueMemberBrackets(ASTnode* node, bool insertFlag, Environment* env)
+{
+	Value expr = *Evaluate(node->GetValue("expr")->GetObjectValue(), false);
+	Value& lvalue = *EvaluateLvalue(node->GetValue("lvalue")->GetObjectValue(), false);
+	if (lvalue.isUndefined()) throw RuntimeErrorException("Cannot read value " + expr.toString() + " of undefined");
+	if (lvalue.isObject()) {
+		if (!lvalue.GetObjectValue()->HasProperty(expr))
+			lvalue.GetObjectValue()->Set(expr, Undefined());
+		return *lvalue.GetObjectValue()->GetValue(expr);
+	}
+	throw RuntimeErrorException("Cannot read value " + expr.toString() + " of non-object variable");
+}
+
+std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueMemberCallIdent(ASTnode* node, bool insertFlag, Environment* env){
+	Value call = *Evaluate(node->GetValue("call")->GetObjectValue(), false);
+	if (call.isUndefined()) throw RuntimeErrorException("Cannot read id " + node->GetValue("ID")->GetStringValue() + " of undefined");
+	if (call.isObject()) {
+		if (!call.GetObjectValue()->HasProperty(node->GetValue("ID")->GetStringValue()))
+			call.GetObjectValue()->Set(node->GetValue("ID")->GetStringValue(), Undefined());
+		return *call.GetObjectValue()->GetValue(node->GetValue("ID")->GetStringValue());
+	}
+	throw RuntimeErrorException("Cannot read id " + node->GetValue("ID")->GetStringValue() + " of non-object variable");
+}
+
+std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueMemberCallBrackets(ASTnode* node, bool insertFlag, Environment* env){
+	Value expr = *Evaluate(node->GetValue("expr")->GetObjectValue(), false);
+	Value call = *EvaluateLvalue(node->GetValue("call")->GetObjectValue(), false);
+	if (call.isUndefined()) throw RuntimeErrorException("Cannot read value " + expr.toString() + " of undefined");
+	if (call.isObject()) {
+		if (!call.GetObjectValue()->HasProperty(expr))
+			call.GetObjectValue()->Set(expr, Undefined());
+		return *call.GetObjectValue()->GetValue(expr);
+	}
+	throw RuntimeErrorException("Cannot read value " + expr.toString() + " of non-object variable");
+}
+
 
 //rvalue member
 std::optional<Value> Evaluator::EvaluateMemberIdent(ASTnode* node, bool insertFlag) {
 	Value rvalue = *Evaluate(node->GetValue("lvalue")->GetObjectValue(), false);
-	if (rvalue.isUndefined()) throw RuntimeErrorException("Cannot read symbol " + node->GetValue("ID")->GetStringValue() +" of undefined");
+	if (rvalue.isUndefined()) throw RuntimeErrorException("Cannot read id " + node->GetValue("ID")->GetStringValue() +" of undefined");
 	if (rvalue.isObject()) {
 		if (rvalue.GetObjectValue()->HasProperty(node->GetValue("ID")->GetStringValue()))
 			return *rvalue.GetObjectValue()->GetValue(node->GetValue("ID")->GetStringValue());
@@ -350,7 +373,7 @@ std::optional<Value> Evaluator::EvaluateMemberIdent(ASTnode* node, bool insertFl
 std::optional<Value> Evaluator::EvaluateMemberBrackets(ASTnode* node, bool insertFlag) {
 	Value expr = *Evaluate(node->GetValue("expr")->GetObjectValue(), false);
 	Value rvalue = *Evaluate(node->GetValue("lvalue")->GetObjectValue(), false);
-	if (rvalue.isUndefined()) throw RuntimeErrorException("Cannot read symbol " + expr.toString() + " of undefined");
+	if (rvalue.isUndefined()) throw RuntimeErrorException("Cannot read value " + expr.toString() + " of undefined");
 	if (rvalue.isObject()) {
 		if (rvalue.GetObjectValue()->HasProperty(expr))
 			return *rvalue.GetObjectValue()->GetValue(expr);
@@ -358,13 +381,26 @@ std::optional<Value> Evaluator::EvaluateMemberBrackets(ASTnode* node, bool inser
 	return Value(Undefined());
 }
 
-//std::optional<Value> Evaluator::EvaluateMemberCallIdent(ASTnode* node, bool insertFlag) {
-//
-//}
-//
-//std::optional<Value> Evaluator::EvaluateMemberCallBrackets(ASTnode* node, bool insertFlag) {
-//
-//}
+std::optional<Value> Evaluator::EvaluateMemberCallIdent(ASTnode* node, bool insertFlag) {
+	Value call = *Evaluate(node->GetValue("call")->GetObjectValue(), false);
+	if (call.isUndefined()) throw RuntimeErrorException("Cannot read id " + node->GetValue("ID")->GetStringValue() + " of undefined");
+	if (call.isObject()) {
+		if (call.GetObjectValue()->HasProperty(node->GetValue("ID")->GetStringValue()))
+			return *call.GetObjectValue()->GetValue(node->GetValue("ID")->GetStringValue());
+	}
+	return Value(Undefined());
+}
+
+std::optional<Value> Evaluator::EvaluateMemberCallBrackets(ASTnode* node, bool insertFlag) {
+	Value expr = *Evaluate(node->GetValue("expr")->GetObjectValue(), false);
+	Value call = *Evaluate(node->GetValue("call")->GetObjectValue(), false);
+	if (call.isUndefined()) throw RuntimeErrorException("Cannot read value " + expr.toString() + " of undefined");
+	if (call.isObject()) {
+		if (call.GetObjectValue()->HasProperty(expr))
+			return *call.GetObjectValue()->GetValue(expr);
+	}
+	return Value(Undefined());
+}
 
 //normcall
 std::optional<Value> Evaluator::EvaluateNormCall(ASTnode* node, bool insertFlag) {
