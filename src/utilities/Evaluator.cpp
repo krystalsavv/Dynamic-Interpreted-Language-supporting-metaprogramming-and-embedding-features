@@ -664,9 +664,9 @@ std::optional<Value> Evaluator::EvaluateObject_keys(ASTnode* node, bool insertFl
 		throw SyntaxErrorException("Invalid arguments in object_keys");
 	Object* returnKeys = new Object();
 	Object* argument = node->GetValue("0")->GetObjectValue();
-	for (int i = 0; i < node->size(); i++)
+	for (int i = 0; i < argument->size(); i++)
 	{
-		//returnKeys->Set(std::to_string(i), argument->GetValue(std::to_string(i))->GetObjectValue()->GetKey());
+		returnKeys->Set(std::to_string(i), argument->GetValue(std::to_string(i)));
 	}
 	return returnKeys;
 }
