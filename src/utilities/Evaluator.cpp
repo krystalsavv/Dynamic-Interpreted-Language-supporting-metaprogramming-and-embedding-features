@@ -66,8 +66,8 @@ std::map<std::string, std::optional<Value>(Evaluator::*)(ASTnode*,bool)> Evaluat
 	table["stringConst"] = &Evaluator::EvaluateStringConst;
 	table["boolConst"] = &Evaluator::EvaluateBoolConst;
 	table["nil"] = &Evaluator::EvaluateNIL;
-	//table["param"] = &Evaluator::EvaluateParam;
-	//table["optionalParam"] = &Evaluator::EvaluateOptionalParam;
+	table["param"] = &Evaluator::EvaluateParam;
+	table["optionalParam"] = &Evaluator::EvaluateOptionalParam;
 	table["idlist"] = &Evaluator::EvaluateIdlist;
 	table["emptyIdlist"] = &Evaluator::EvaluateEmptyIdlist;
 	table["print"] = &Evaluator::EvaluatePrint;
@@ -428,7 +428,7 @@ std::optional<Value> Evaluator::EvaluateArglist(ASTnode* node, bool insertFlag) 
 	Object* argList = new Object();
 	double numofArgs = node->GetValue("numOfArgs")->GetNumberValue();
 	for (int i = 0; i < numofArgs; i++) {
-		argList->Set(std::to_string(i), *Evaluate(node->GetValue(std::to_string(i))->GetObjectValue()));
+		argList->Set((double)i, *Evaluate(node->GetValue(std::to_string(i))->GetObjectValue()));
 	}
 	return argList;
 }
@@ -608,11 +608,15 @@ std::optional<Value> Evaluator::EvaluateNIL(ASTnode* node, bool insertFlag) {
 
 //formal
 std::optional<Value> Evaluator::EvaluateParam(ASTnode* node, bool insertFlag) {
-	return Value();
+	Object* obj = new Object();
+	obj->Set(node->GetValue("ID")->GetStringValue(),Undefined());
+	return obj;
 }
 
 std::optional<Value> Evaluator::EvaluateOptionalParam(ASTnode* node, bool insertFlag) {
-	return Value();
+	Object* obj = new Object();
+	obj->Set(node->GetValue("ID")->GetStringValue(), *Evaluate(node->GetValue("expr")->GetObjectValue(), false));
+	return obj;
 }
 
 //idlist
@@ -621,7 +625,12 @@ std::optional<Value> Evaluator::EvaluateIdlist(ASTnode* node, bool insertFlag) {
 	Object* idList = new Object();
 	double numOfParams = node->GetValue("numOfParams")->GetNumberValue();
 	for (int i = 0; i < numOfParams; i++) {
-		idList->Set(std::to_string(i), *Evaluate(node->GetValue(std::to_string(i))->GetObjectValue()));
+		//idList->Set((double)i, *Evaluate(node->GetValue(std::to_string(i))->GetObjectValue()));
+		Object* obj = (*Evaluate(node->GetValue(std::to_string(i))->GetObjectValue())).GetObjectValue();
+		for (auto kv : obj->GetMap()) {
+			idList->Set(kv.first, kv.second);
+		}
+		obj->~Object(); // call destructor to free this object (TODO: decrise reference counter )
 	}
 	return idList;
 }
