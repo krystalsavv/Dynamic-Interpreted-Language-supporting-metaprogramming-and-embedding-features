@@ -232,7 +232,7 @@ Value Value::Value::operator-() {
 	if (this->isNumber())
 		val = -(this->GetNumberValue());
 	else
-		throw RuntimeErrorException("Non numeric types in uminus ");
+		throw RuntimeErrorException("Non numeric type in uminus ");
 	return val;
 }
 
@@ -284,13 +284,11 @@ Value Value::operator==(Value& right) {
 	else if (this->isBool() && right.isBool())
 		val = (this->GetBoolValue() == right.GetBoolValue());
 	else if (this->isObject() && right.isObject()) {
-		if (this->GetObjectValue() == nullptr || right.GetObjectValue() == nullptr)
-			val = false;
-		else
-			val = this->GetObjectValue() == right.GetObjectValue();
+		val = this->GetObjectValue() == right.GetObjectValue();
 	}
 	else
-		throw RuntimeErrorException("Invalid types in operator equal (==)");
+		//throw RuntimeErrorException("Invalid types in operator equal (==)");
+		val = false;
 	return val;
 }
 
@@ -303,13 +301,11 @@ Value Value::operator!=(Value& right) {
 	else if (this->isBool() && right.isBool())
 		val = (this->GetBoolValue() != right.GetBoolValue());
 	else if (this->isObject() && right.isObject()) {
-		if (this->GetObjectValue() == nullptr || right.GetObjectValue() == nullptr)
-			val = true;
-		else
-			val = this->GetObjectValue() != right.GetObjectValue();
+		val = this->GetObjectValue() != right.GetObjectValue();
 	}
 	else
-		throw RuntimeErrorException("Invalid types in operator not equal (!=)");
+		//throw RuntimeErrorException("Invalid types in operator not equal (!=)");
+		return true;
 	return val;
 }
 //for consts (unordered map comparison)
@@ -322,13 +318,11 @@ bool Value::operator==(const Value& right) const {
 	else if (this->isBool() && right.isBool())
 		b = (this->GetBoolValue() == right.GetBoolValue());
 	else if (this->isObject() && right.isObject()) {
-		if (this->GetObjectValue() == nullptr || right.GetObjectValue() == nullptr)
-			b = false;
-		else
 			b = this->GetObjectValue() == right.GetObjectValue();
 	}
 	else
-		throw RuntimeErrorException("Invalid types in operator equal (==)");
+		//throw RuntimeErrorException("Invalid types in operator equal (==)");
+		b = false;
 	return b;
 }
 
@@ -342,13 +336,11 @@ bool Value::operator!=(const Value& right) const {
 	else if (this->isBool() && right.isBool())
 		b = (this->GetBoolValue() != right.GetBoolValue());
 	else if (this->isObject() && right.isObject()) {
-		if (this->GetObjectValue() == nullptr || right.GetObjectValue() == nullptr)
-			b = true;
-		else
-			b = this->GetObjectValue() != right.GetObjectValue();
+		b = this->GetObjectValue() != right.GetObjectValue();
 	}
 	else
-		throw RuntimeErrorException("Invalid types in operator not equal (!=)");
+		//throw RuntimeErrorException("Invalid types in operator not equal (!=)");
+		b = true;
 	return b;
 }
 

@@ -12,28 +12,16 @@ Object::Object(const Value& key, const Value& value) {
 	symbols[key] = value;
 }
 
+map_t Object::GetMap() {
+	return symbols;
+}
+
 Value* Object::GetValue(const Value& key) {
 	auto value = symbols.find(key);
 	if (value != symbols.end())
 		return &(value->second);
 	else
 		return nullptr;	
-}
-
-//Object* Object::GetKeys() {
-//	Object* tmp = new Object();
-//	int i = 0;
-//	for (auto pair : symbols) {
-//		tmp->Set(std::to_string(i),pair.first);
-//		i++;
-//	}
-//	return tmp;
-//}
-
-Value Object::GetKey() {
-	for (auto pair : symbols) {
-		return pair.first;
-	}
 }
 
 void Object::Set(const Value& key, const Value& value) {
@@ -92,31 +80,7 @@ std::ostream& interpreter::operator<< (std::ostream& out, Object& obj) {
 
 std::string Object::GenerateAnonymousName()
 {
-	int counter = 0, tmp = anonymousFuncCounter;
-	while (anonymousFuncCounter > 0) {
-		counter++;
-		anonymousFuncCounter = anonymousFuncCounter - anonymousFuncCounter % 10;
-		anonymousFuncCounter = anonymousFuncCounter / 10;
-	}
-	std::string name = "$f";
-	std::string c;
-	while (counter > 0) {
-		int x = tmp % 10;
-		if (x == 0) c = "0";
-		else if (x == 1) c = "1";
-		else if (x == 2) c = "2";
-		else if (x == 3) c = "3";
-		else if (x == 4) c = "4";
-		else if (x == 5) c = "5";
-		else if (x == 6) c = "6";
-		else if (x == 7) c = "7";
-		else if (x == 8) c = "8";
-		else if (x == 9) c = "9";
-		else c = "";
-		tmp = tmp - tmp % 10;
-		tmp = tmp / 10;
-		name += c;
-		counter--;
-	}
+	std::string name = "$f" + std::to_string(anonymousFuncCounter);
+	anonymousFuncCounter++;
 	return name;
 }
