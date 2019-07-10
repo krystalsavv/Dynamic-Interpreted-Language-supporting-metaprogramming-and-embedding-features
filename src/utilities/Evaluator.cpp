@@ -488,7 +488,7 @@ std::optional<Value> Evaluator::EvaluateElist(ASTnode* node, bool insertFlag) {
 	Object* elistMap = new Object();
 	double numOfExprs = node->GetValue("numOfExprs")->GetNumberValue();
 	for (int i = 0; i < numOfExprs; i++) {
-		elistMap->Set(std::to_string(i), *Evaluate(node->GetValue(std::to_string(i))->GetObjectValue()));
+		elistMap->Set((double)i, *Evaluate(node->GetValue(std::to_string(i))->GetObjectValue()));
 	}
 	return elistMap;
 }
@@ -506,7 +506,6 @@ std::optional<Value> Evaluator::EvaluateIndexed(ASTnode* node, bool insertFlag) 
 		for (auto kv : obj->GetMap()) {
 			indexedMap->Set(kv.first, kv.second);
 		}
-		//indexedMap->Set(std::to_string(i), *Evaluate(node->GetValue(std::to_string(i))->GetObjectValue()));
 		obj->~Object(); // call destructor to free this object (TODO: decrise reference counter )
 	}
 	return indexedMap;
@@ -551,15 +550,14 @@ std::optional<Value> interpreter::Evaluator::EvaluateFuncdef(ASTnode* node, bool
 {
 	Value* value = LvalueFuncDefActions(node->GetValue("ID")->GetStringValue(),node);
 	if (value == nullptr) {
-		throw SyntaxErrorException();
+		throw SyntaxErrorException("Function with id " + node->GetValue("ID")->GetStringValue() + " already exists");
 	}
 	return *value;
 }
 
 std::optional<Value> interpreter::Evaluator::EvaluateAnonymousFuncdef(ASTnode* node, bool insertFlag)
 {
-	InsertFunctionDefinition(Object::GenerateAnonymousName(), node);
-	return EnvironmentHolder::getInstance()->GetCurrentEnv();
+	return InsertFunctionDefinition(Object::GenerateAnonymousName(), node);
 }
 
 
