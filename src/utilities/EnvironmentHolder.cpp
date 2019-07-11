@@ -70,17 +70,17 @@ bool interpreter::hasCollisionWithLibFunc(std::string str)
 	return false;
 }
 
-void functionCall(std::string funcName) {
-	Environment* oldCurrent = EnvironmentHolder::getInstance()->GetCurrentEnv();
-	Value* funcdefNode = LocalLookUp(funcName);
+void interpreter::CallerEnvironmentActions(Value& funcdefNode) {
+	/*
+	already checked at the lvalue evaluation
 	if (funcdefNode == nullptr) {
-		throw RuntimeErrorException("Can not find function definition with name " + funcName);
-	}
-	else if (!(funcdefNode->isObject())) {
-		throw RuntimeErrorException("Variable with name " + funcName + "is not callable");
+		throw RuntimeErrorException("Can not find function definition with name " );
+	}*/
+	if (!(funcdefNode.isObject())) {
+		throw RuntimeErrorException("Variable with name " + funcdefNode.GetObjectValue()->GetValue("ID")->GetStringValue() + "is not callable");
 	}
 	else {
-		Value* closure = funcdefNode->GetObjectValue()->GetValue("$closure");
+		Value* closure = funcdefNode.GetObjectValue()->GetValue("$closure");
 		if (closure != nullptr) {
 			CreateFunctionEnvironment(closure->GetObjectValue());
 		}
@@ -93,8 +93,6 @@ void functionCall(std::string funcName) {
 
 void interpreter::CreateFunctionEnvironment(ASTnode* funcClosure) {
 	FunctionEnvironment* funcEnv = new FunctionEnvironment();
-	//funcEnv->Set("$outer", funcClosure);
-	//funcEnv->Set("$outer", EnvironmentHolder::getInstance()->GetCurrentEnv());				// TODO: WRONG (prepei na vazei to func closure kai oxi curr ws outer)
 	funcEnv->Set("$sliced", false);
 	EnvironmentHolder::getInstance()->SetCurrentEnv(funcEnv);
 }

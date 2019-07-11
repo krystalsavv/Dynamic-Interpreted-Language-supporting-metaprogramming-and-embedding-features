@@ -12,6 +12,12 @@ Object::Object(const Value& key, const Value& value) {
 	symbols[key] = value;
 }
 
+
+Object::Object(const Object& obj) {
+	symbols = obj.symbols;
+}
+
+
 map_t Object::GetMap() {
 	return symbols;
 }

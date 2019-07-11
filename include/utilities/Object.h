@@ -18,6 +18,7 @@ namespace interpreter {
 	public:
 		Object() = default;
 		Object(const Value& key, const Value& value);
+		Object(const Object& obj); 
 		
 		map_t GetMap();
 		Value* GetValue(const Value& key);

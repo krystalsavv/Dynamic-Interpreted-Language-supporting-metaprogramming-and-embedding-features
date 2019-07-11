@@ -375,6 +375,7 @@ call : call LEFT_PARENTHESIS argList RIGHT_PARENTHESIS
 					std::cout << ("lvalue callsufix\n");
 					$$ = new ASTnode("type", "lvalueCall");
 					$$->Set("lvalue", $1);
+					$$->Set("argList", $2);
 				}
 	| LEFT_PARENTHESIS funcdef RIGHT_PARENTHESIS LEFT_PARENTHESIS argList RIGHT_PARENTHESIS
 				{
@@ -431,19 +432,37 @@ arg : expr	{
 
 argList : arg 
 			{ 
-				//std::cout << "arg  " << $1->GetValue("ID")->GetNumberValue() << std::endl ;
 				$$ = new ASTnode("type", "argList");
-				$$->Set("numOfArgs", 1.0);
-				$$->Set("0", $1);
+				$$->Set("numOfTotalArgs", 1.0);
+				$$->Set("numOfPositionalArgs", 0.0);
+				$$->Set("PositionalArgs", new Object());
+				$$->Set("NamedArgs", new Object());
+				if($1->GetValue("type")->GetStringValue() == "namedParam") {		
+					$$->GetValue("NamedArgs")->GetObjectValue()->Set(*($1->GetValue("ID")), *($1->GetValue("expr")));
+				}
+				else {	
+					$$->Set("numOfPositionalArgs", 1.0);
+					$$->GetValue("PositionalArgs")->GetObjectValue()->Set(0.0, $1);
+				}
 			}	
 	| argList COMMA arg
 			{
-				//std::cout << "argList, arg "<< $3->GetValue("ID")->GetNumberValue() << std::endl;
 				$$ = $1;
-				double numofArgs = $$->GetValue("numOfArgs")->GetNumberValue();
-				$$->Set(std::to_string((int)numofArgs), $3);
-				numofArgs++;
-				$$->Set("numOfArgs", numofArgs);
+				double numOfTotalArgs = $$->GetValue("numOfTotalArgs")->GetNumberValue();
+				if($3->GetValue("type")->GetStringValue() == "namedParam") {
+					$$->GetValue("NamedArgs")->GetObjectValue()->Set(*($3->GetValue("ID")), *($3->GetValue("expr")));
+				}
+				else {
+					double numOfPositionalArgs = $$->GetValue("numOfPositionalArgs")->GetNumberValue();
+					if(numOfTotalArgs != numOfPositionalArgs) {
+						throw RuntimeErrorException("Positional paramiter after named paramiter"); 
+					}
+					$$->GetValue("PositionalArgs")->GetObjectValue()->Set(numOfPositionalArgs, $3);
+					numOfPositionalArgs++;
+					$$->Set("numOfPositionalArgs", numOfPositionalArgs);
+				}
+				numOfTotalArgs++;
+				$$->Set("numOfTotalArgs", numOfTotalArgs);
 			}
 	|		{
 				std::cout << "empty argList\n";
@@ -554,8 +573,10 @@ funcdef : FUNCTION IDENT
 					std::cout << ("function id(idlist) funcbody\n");
 					$$ = new ASTnode("type", "funcdef");
 					$$->Set("ID", *$2);
-					$$->Set("idlist", $5);			//prosoxh an vgalw panw action
-					$$->Set("funcbody", $7);
+					ASTnode* funcEnter = new ASTnode("type", "funcEnter");
+					funcEnter->Set("idlist", $5);			//prosoxh an vgalw panw action
+					funcEnter->Set("funcbody", $7);
+					$$->Set("funcEnter", funcEnter);
 				}
 		| FUNCTION 
 				{
@@ -565,8 +586,10 @@ funcdef : FUNCTION IDENT
 				{
 					std::cout << ("function (idlist) funcbody\n");
 					$$ = new ASTnode("type", "anonymousFuncdef");
-					$$->Set("idlist", $4);			//prosoxh an vgalw panq action
-					$$->Set("funcbody", $6);
+					ASTnode* funcEnter = new ASTnode("type", "funcEnter");
+					funcEnter->Set("idlist", $4);			//prosoxh an vgalw panq action	
+					funcEnter->Set("funcbody", $6);
+					$$->Set("funcEnter", funcEnter);
 				}
 		; 
 

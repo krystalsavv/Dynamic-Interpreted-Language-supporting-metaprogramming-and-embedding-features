@@ -32,9 +32,9 @@ int main(int argc,char** argv){
 		yyset_in(stdin, scanner);
 	}
 	AST* ast = new AST(); 
-	yyparse(ast, scanner);
+	try { yyparse(ast, scanner); }
+	catch (RuntimeErrorException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
 	yylex_destroy(scanner);
-
 	ast->Print();
 	Evaluator::getInstance()->Evaluate(ast->GetRoot());
 	std::cout << "------------------------------ EnvironmentChain -----------------------------------" << std::endl << std::endl;

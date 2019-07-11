@@ -134,6 +134,7 @@ namespace interpreter {
 		//funcdef
 		std::optional<Value> EvaluateFuncdef(ASTnode* node, bool insertFlag = true);
 		std::optional<Value> EvaluateAnonymousFuncdef(ASTnode* node, bool insertFlag = true);
+		std::optional<Value> EvaluateFuncEnter(ASTnode* node, bool insertFlag = true);
 
 		// const
 		std::optional<Value> EvaluateNumberConst(ASTnode* node, bool insertFlag = true);

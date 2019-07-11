@@ -3,6 +3,8 @@
 
 using namespace interpreter;
 
+static Object* argTable = nullptr;
+
 std::map<std::string, std::optional<Value>(Evaluator::*)(ASTnode*,bool)> Evaluator::IntializeDispatcher() {
 	std::map<std::string, std::optional<Value>(Evaluator::*)(ASTnode*, bool insertFlag)> table;
 
@@ -36,7 +38,7 @@ std::map<std::string, std::optional<Value>(Evaluator::*)(ASTnode*,bool)> Evaluat
 	table["member_callVar"] = &Evaluator::EvaluateMemberCallIdent;
 	table["member_callBrackets"] = &Evaluator::EvaluateMemberCallBrackets;
 	//table["multiCall"] = &Evaluator::EvaluateMultiCall;
-	//table["lvalueCall"] = &Evaluator::EvaluateLvalueCallSuffix;
+	table["lvalueCall"] = &Evaluator::EvaluateLvalueCallSuffix;
 	//table["funcdefCall"] = &Evaluator::EvaluateFuncdefCall;
 	table["normcall"] = &Evaluator::EvaluateNormCall;
 	//table["methodcall"] = &Evaluator::EvaluateMethodCall;
@@ -62,6 +64,7 @@ std::map<std::string, std::optional<Value>(Evaluator::*)(ASTnode*,bool)> Evaluat
 	table["block"] = &Evaluator::EvaluateBlock;
 	table["funcdef"] = &Evaluator::EvaluateFuncdef;
 	table["anonymousFuncdef"] = &Evaluator::EvaluateAnonymousFuncdef;
+	table["funcEnter"] = &Evaluator::EvaluateFuncEnter;
 	table["numConst"] = &Evaluator::EvaluateNumberConst;
 	table["stringConst"] = &Evaluator::EvaluateStringConst;
 	table["boolConst"] = &Evaluator::EvaluateBoolConst;
@@ -408,17 +411,22 @@ std::optional<Value> Evaluator::EvaluateMemberCallBrackets(ASTnode* node, bool i
 }
 
 
+std::optional<Value> Evaluator::EvaluateLvalueCallSuffix(ASTnode* node, bool insertFlag){
+	Environment* oldCurrent = EnvironmentHolder::getInstance()->GetCurrentEnv();
+	// TODO: na tsekarw pio prin gia libfunc (alliws tha petaksei error h evalute ths lvalue)
+	Value funcdef = *Evaluate(node->GetValue("lvalue")->GetObjectValue(), false);
+	CallerEnvironmentActions(funcdef);
+	*Evaluate(node->GetValue("argList")->GetObjectValue(), false);
+	*Evaluate(funcdef.GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
+	return std::nullopt;
+}
+
+
+
 //normcall
 std::optional<Value> Evaluator::EvaluateNormCall(ASTnode* node, bool insertFlag) {
-	//Create a function Env
-	//CreateFunctionEnvironment();
-
-	//Evaluate the arguments and put them into an arguments table
-	Value argsTable = *Evaluate(node->GetValue("argList")->GetObjectValue());
-
-	//Invoke the target function (its value should be a function address)
-
-	return std::nullopt;	// TODO: ??
+	*Evaluate(node->GetValue("argList")->GetObjectValue());
+	return std::nullopt;
 }
 
 //arg
@@ -428,16 +436,26 @@ std::optional<Value> Evaluator::EvaluateArg(ASTnode* node, bool insertFlag) {
 
 //arglist
 std::optional<Value> Evaluator::EvaluateArglist(ASTnode* node, bool insertFlag) {
-	Object* argList = new Object();
-	double numofArgs = node->GetValue("numOfArgs")->GetNumberValue();
-	for (int i = 0; i < numofArgs; i++) {
-		argList->Set(std::to_string(i), *Evaluate(node->GetValue(std::to_string(i))->GetObjectValue()));
+	// free an eixe proigoymeno object an den to kanw otan teleiwsw na to use
+	argTable = new Object(*node);
+	double numOfTotalArgs =  argTable->GetValue("numOfTotalArgs")->GetNumberValue();
+	double numOfPositionalArgs = argTable->GetValue("numOfPositionalArgs")->GetNumberValue();
+	Object* PositionalArgs = argTable->GetValue("PositionalArgs")->GetObjectValue();
+	Object* NamedArgs = argTable->GetValue("NamedArgs")->GetObjectValue();
+	for (double i = 0; i < numOfPositionalArgs; ++i) {
+		PositionalArgs->Set(i, *Evaluate(PositionalArgs->GetValue(i)->GetObjectValue()));
 	}
-	return argList;
+	for (auto kv : NamedArgs->GetMap()) {
+		NamedArgs->Set(kv.first, *Evaluate(kv.second.GetObjectValue()));
+	}
+	return std::nullopt;
 }
 
 std::optional<Value> Evaluator::EvaluateEmptyArglist(ASTnode* node, bool insertFlag) {
-	return new Object();
+	Object* emptyArgList = new Object();
+	emptyArgList->Set("numOfTotalArgs", 0.0);
+	emptyArgList->Set("numOfPositionalArgs", 0.0);
+	return emptyArgList;
 }
 
 std::optional<Value> interpreter::Evaluator::EvaluateAssignExpr(ASTnode* node, bool insertFlag)
@@ -590,6 +608,24 @@ std::optional<Value> interpreter::Evaluator::EvaluateAnonymousFuncdef(ASTnode* n
 	return InsertFunctionDefinition(Object::GenerateAnonymousName(), node);
 }
 
+std::optional<Value> Evaluator::EvaluateFuncEnter(ASTnode* node, bool insertFlag) {
+	Value idList = *Evaluate(node->GetValue("idlist")->GetObjectValue(), false);
+	int count = 0;
+	//argTable po to global
+	double numOfTotalArgs = argTable->GetValue("numOfTotalArgs")->GetNumberValue();
+	double numOfPositionalArgs = argTable->GetValue("numOfPositionalArgs")->GetNumberValue();
+	Object* PositionalArgs = argTable->GetValue("PositionalArgs")->GetObjectValue();
+	Object* NamedArgs = argTable->GetValue("NamedArgs")->GetObjectValue();
+	if (argTable == nullptr)
+		assert(false);
+	//for (double i = 0; i < numOfPositionalArgs; ++i) {
+		// mporei na ta kanw se function sto env kai na kanw call
+	//}
+
+
+	return std::nullopt;
+}
+
 
 // const
 std::optional<Value> Evaluator::EvaluateNumberConst(ASTnode* node, bool insertFlag) {
@@ -621,16 +657,11 @@ std::optional<Value> Evaluator::EvaluateOptionalParam(ASTnode* node, bool insert
 //idlist
 std::optional<Value> Evaluator::EvaluateIdlist(ASTnode* node, bool insertFlag) {
 	// TODO: Extra error checking ensuring that all default arguments are at the end of the parameter list after any required parameters 
-	Object* idList = new Object();
-	double numOfParams = node->GetValue("numOfParams")->GetNumberValue();
-	for (int i = 0; i < numOfParams; i++) {
-		idList->Set(std::to_string(i), *Evaluate(node->GetValue(std::to_string(i))->GetObjectValue()));
-	}
-	return idList;
+	return new Object(*node);
 }
 
 std::optional<Value> Evaluator::EvaluateEmptyIdlist(ASTnode* node, bool insertFlag) {
-	return new Object();
+	return new Object("numOfParams", 0.0);
 }
 
 

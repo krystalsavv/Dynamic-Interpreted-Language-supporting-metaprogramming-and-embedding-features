@@ -53,4 +53,6 @@ namespace interpreter {
 	Value* RvalueVarActions(std::string id, bool insertFlag = true);
 	Value* RvalueLocalVarActions(std::string id, bool insertFlag = true);
 
+	void CallerEnvironmentActions(Value& funcdefNode);
+
 }
