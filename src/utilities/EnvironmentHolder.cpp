@@ -94,7 +94,12 @@ void interpreter::CallerEnvironmentActions(Value& funcdefNode) {
 void interpreter::CreateFunctionEnvironment(ASTnode* funcClosure) {
 	FunctionEnvironment* funcEnv = new FunctionEnvironment();
 	funcEnv->Set("$sliced", false);
+	funcEnv->Set("$outer", funcClosure);
 	EnvironmentHolder::getInstance()->SetCurrentEnv(funcEnv);
+}
+
+void interpreter::LeaveFunctionEnvironment(Environment* oldCurrent) {
+	EnvironmentHolder::getInstance()->SetCurrentEnv(oldCurrent);
 }
 
 void interpreter::CreateBlockEnvironment() {

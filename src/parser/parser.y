@@ -647,14 +647,14 @@ idlist : formal
 			std::cout << ("formal\n");
 			$$ = new ASTnode("type", "idlist");
 			$$->Set("numOfParams", 1.0);
-			$$->Set("0", $1); 
+			$$->Set(0.0, $1); 
 			}
 	| idlist COMMA formal	
 			{
 				std::cout << ("idlist, id\n");	
 				$$ = $1;
 				double numOfParams = $$->GetValue("numOfParams")->GetNumberValue();
-				$$->Set(std::to_string((int)numOfParams), $3);
+				$$->Set(numOfParams, $3);
 				numOfParams++;
 				$$->Set("numOfParams", numOfParams);
 			}

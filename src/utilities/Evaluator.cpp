@@ -65,6 +65,7 @@ std::map<std::string, std::optional<Value>(Evaluator::*)(ASTnode*,bool)> Evaluat
 	table["funcdef"] = &Evaluator::EvaluateFuncdef;
 	table["anonymousFuncdef"] = &Evaluator::EvaluateAnonymousFuncdef;
 	table["funcEnter"] = &Evaluator::EvaluateFuncEnter;
+	table["funcbody"] = &Evaluator::EvaluateFuncBody;
 	table["numConst"] = &Evaluator::EvaluateNumberConst;
 	table["stringConst"] = &Evaluator::EvaluateStringConst;
 	table["boolConst"] = &Evaluator::EvaluateBoolConst;
@@ -413,11 +414,16 @@ std::optional<Value> Evaluator::EvaluateMemberCallBrackets(ASTnode* node, bool i
 
 std::optional<Value> Evaluator::EvaluateLvalueCallSuffix(ASTnode* node, bool insertFlag){
 	Environment* oldCurrent = EnvironmentHolder::getInstance()->GetCurrentEnv();
+
 	// TODO: na tsekarw pio prin gia libfunc (alliws tha petaksei error h evalute ths lvalue)
+
 	Value funcdef = *Evaluate(node->GetValue("lvalue")->GetObjectValue(), false);
 	CallerEnvironmentActions(funcdef);
+
 	*Evaluate(node->GetValue("argList")->GetObjectValue(), false);
 	*Evaluate(funcdef.GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
+
+	LeaveFunctionEnvironment(oldCurrent);
 	return std::nullopt;
 }
 
@@ -608,21 +614,65 @@ std::optional<Value> interpreter::Evaluator::EvaluateAnonymousFuncdef(ASTnode* n
 	return InsertFunctionDefinition(Object::GenerateAnonymousName(), node);
 }
 
+
 std::optional<Value> Evaluator::EvaluateFuncEnter(ASTnode* node, bool insertFlag) {
-	Value idList = *Evaluate(node->GetValue("idlist")->GetObjectValue(), false);
-	int count = 0;
-	//argTable po to global
-	double numOfTotalArgs = argTable->GetValue("numOfTotalArgs")->GetNumberValue();
-	double numOfPositionalArgs = argTable->GetValue("numOfPositionalArgs")->GetNumberValue();
+	Object* idList = (*Evaluate(node->GetValue("idlist")->GetObjectValue(), false)).GetObjectValue();
 	Object* PositionalArgs = argTable->GetValue("PositionalArgs")->GetObjectValue();
 	Object* NamedArgs = argTable->GetValue("NamedArgs")->GetObjectValue();
-	if (argTable == nullptr)
-		assert(false);
-	//for (double i = 0; i < numOfPositionalArgs; ++i) {
-		// mporei na ta kanw se function sto env kai na kanw call
-	//}
+	double numOfParams = idList->GetValue("numOfParams")->GetNumberValue();
+	double numOfTotalArgs = argTable->GetValue("numOfTotalArgs")->GetNumberValue();
+	double numOfPositionalArgs = argTable->GetValue("numOfPositionalArgs")->GetNumberValue();
 
+	if (argTable == nullptr) assert(false);
+	if (numOfTotalArgs > numOfParams) throw RuntimeErrorException("More actual arguments than function paramiters"); 
 
+	Environment* curr = EnvironmentHolder::getInstance()->GetCurrentEnv();
+		for (double i = 0; i < numOfPositionalArgs; ++i) {
+		curr->Set(*(idList->GetValue(i)->GetObjectValue()->GetValue("ID")), *(PositionalArgs->GetValue(i)));	
+	}
+	
+	Object idList_withoutIndex;
+	for (double i = 0; i < numOfParams; ++i) {
+		Object* obj = idList->GetValue(i)->GetObjectValue();
+		if(obj->HasProperty("expr"))
+			idList_withoutIndex.Set(*(obj->GetValue("ID")), *(obj->GetValue("expr")));
+		else
+			idList_withoutIndex.Set(*(obj->GetValue("ID")), (Object*)nullptr);
+	}
+
+	for (auto kv : NamedArgs->GetMap()) {
+		std::string id = kv.first.GetStringValue();
+		if (LocalLookUp(id)) throw RuntimeErrorException("Paramiter " + id + "both positional and named value" );
+		if (!(idList_withoutIndex.HasProperty(id))) throw RuntimeErrorException("Unexpected named parameter " + id);
+		curr->Set(id, kv.second);
+	}
+
+	if (numOfTotalArgs < numOfParams) {
+		for (auto kv : idList_withoutIndex.GetMap()) {
+			std::string id = kv.first.GetStringValue();
+			Object* expr = kv.second.GetObjectValue();
+			if (!LocalLookUp(id)) {
+				if (expr) {
+					curr->Set(id, *Evaluate(expr));
+				}
+				else {
+					throw RuntimeErrorException("Too few arguments in funciton call. Paramiter " + id + " has no value (also not default value is defined)");
+				}
+			}
+		}
+	}
+
+	*Evaluate(node->GetValue("funcbody")->GetObjectValue()); 
+
+	return std::nullopt;
+}
+
+std::optional<Value> Evaluator::EvaluateFuncBody(ASTnode* node, bool insertFlag) {
+	Value tmp;
+	double numOfStmt = node->GetValue("numOfStmt")->GetNumberValue();
+	for (int i = 0; i < numOfStmt; i++) {
+		tmp = *Evaluate(node->GetValue(std::to_string(i))->GetObjectValue());
+	}
 	return std::nullopt;
 }
 

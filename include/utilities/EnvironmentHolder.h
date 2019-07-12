@@ -36,6 +36,7 @@ namespace interpreter {
 	void InitGlobalEnvironment();
 	bool hasCollisionWithLibFunc(std::string str);
 	void CreateFunctionEnvironment(ASTnode* funcClosure);
+	void LeaveFunctionEnvironment(Environment* oldCurr);
 	void CreateBlockEnvironment();
 	void LeaveBlockEnvironment(); 
 	BlockEnvironment* SliceEnvironment(Environment* previous);
