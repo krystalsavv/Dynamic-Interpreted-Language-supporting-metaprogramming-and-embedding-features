@@ -52,4 +52,8 @@ namespace interpreter {
 	Value* RvalueVarActions(std::string id, bool insertFlag = true);
 	Value* RvalueLocalVarActions(std::string id, bool insertFlag = true);
 
+	Value& Object_set(Value& lvalue, std::string id);
+	Value* Object_get(Value& rvalue, std::string id);
+	Value& Object_set_brackets(Value& lvalue, Value& expr);
+	Value* Object_get_brackets(Value& rvalue, Value& expr);
 }

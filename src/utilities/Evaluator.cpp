@@ -315,17 +315,7 @@ std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueMemberIden
 	Value& lvalue = *EvaluateLvalue(node->GetValue("lvalue")->GetObjectValue(),false);
 	if (lvalue.isUndefined()) throw RuntimeErrorException("Cannot read id " + node->GetValue("ID")->GetStringValue() + " of undefined");
 	if (lvalue.isObject()) {
-		if (lvalue.GetObjectValue()->HasProperty("$closure")) {
-			Value* closureVariable = LocalLookUp(node->GetValue("ID")->GetStringValue(), lvalue.GetObjectValue()->GetValue("$closure")->GetObjectValue());
-			if (closureVariable != nullptr)
-				return *closureVariable;
-			throw RuntimeErrorException("No closure variable with id " + node->GetValue("ID")->GetStringValue());
-		}
-		else {
-			if (!lvalue.GetObjectValue()->HasProperty(node->GetValue("ID")->GetStringValue()))
-				lvalue.GetObjectValue()->Set(node->GetValue("ID")->GetStringValue(), Undefined());
-			return *lvalue.GetObjectValue()->GetValue(node->GetValue("ID")->GetStringValue());
-		}
+		return Object_set(lvalue, node->GetValue("ID")->GetStringValue());
 	}
 	throw RuntimeErrorException("Cannot read id " + node->GetValue("ID")->GetStringValue() + " of non-object variable");
 }
@@ -337,9 +327,7 @@ std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueMemberBrac
 	Value& lvalue = *EvaluateLvalue(node->GetValue("lvalue")->GetObjectValue(), false);
 	if (lvalue.isUndefined()) throw RuntimeErrorException("Cannot read value " + expr.toString() + " of undefined");
 	if (lvalue.isObject()) {
-		if (!lvalue.GetObjectValue()->HasProperty(expr))
-			lvalue.GetObjectValue()->Set(expr, Undefined());
-		return *lvalue.GetObjectValue()->GetValue(expr);
+		return Object_set_brackets(lvalue, expr);
 	}
 	throw RuntimeErrorException("Cannot read value " + expr.toString() + " of non-object variable");
 }
@@ -348,17 +336,7 @@ std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueMemberCall
 	Value call = *Evaluate(node->GetValue("call")->GetObjectValue(), false);
 	if (call.isUndefined()) throw RuntimeErrorException("Cannot read id " + node->GetValue("ID")->GetStringValue() + " of undefined");
 	if (call.isObject()) {
-		if (call.GetObjectValue()->HasProperty("$closure")) {
-			Value* closureVariable = LocalLookUp(node->GetValue("ID")->GetStringValue(), call.GetObjectValue()->GetValue("$closure")->GetObjectValue());
-			if (closureVariable != nullptr)
-				return *closureVariable;
-			throw RuntimeErrorException("No closure variable with id " + node->GetValue("ID")->GetStringValue());
-		}
-		else {
-			if (!call.GetObjectValue()->HasProperty(node->GetValue("ID")->GetStringValue()))
-				call.GetObjectValue()->Set(node->GetValue("ID")->GetStringValue(), Undefined());
-			return *call.GetObjectValue()->GetValue(node->GetValue("ID")->GetStringValue());
-		}
+		return Object_set(call, node->GetValue("ID")->GetStringValue());
 	}
 	throw RuntimeErrorException("Cannot read id " + node->GetValue("ID")->GetStringValue() + " of non-object variable");
 }
@@ -369,9 +347,7 @@ std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueMemberCall
 	Value call = *EvaluateLvalue(node->GetValue("call")->GetObjectValue(), false);
 	if (call.isUndefined()) throw RuntimeErrorException("Cannot read value " + expr.toString() + " of undefined");
 	if (call.isObject()) {
-		if (!call.GetObjectValue()->HasProperty(expr))
-			call.GetObjectValue()->Set(expr, Undefined());
-		return *call.GetObjectValue()->GetValue(expr);
+		return Object_set_brackets(call, expr);
 	}
 	throw RuntimeErrorException("Cannot read value " + expr.toString() + " of non-object variable");
 }
@@ -382,15 +358,9 @@ std::optional<Value> Evaluator::EvaluateMemberIdent(ASTnode* node, bool insertFl
 	Value rvalue = *Evaluate(node->GetValue("lvalue")->GetObjectValue(), false);
 	if (rvalue.isUndefined()) throw RuntimeErrorException("Cannot read id " + node->GetValue("ID")->GetStringValue() +" of undefined");
 	if (rvalue.isObject()) {
-		if (rvalue.GetObjectValue()->HasProperty("$closure")) {
-			Value* closureVariable = LocalLookUp(node->GetValue("ID")->GetStringValue(), rvalue.GetObjectValue()->GetValue("$closure")->GetObjectValue());
-			if (closureVariable != nullptr)
-				return *closureVariable;
-		}
-		else {
-			if (rvalue.GetObjectValue()->HasProperty(node->GetValue("ID")->GetStringValue()))
-				return *rvalue.GetObjectValue()->GetValue(node->GetValue("ID")->GetStringValue());
-		}
+		Value* value = Object_get(rvalue, node->GetValue("ID")->GetStringValue());
+		if (value != nullptr)
+			return *value;
 	}
 	return Undefined();
 }
@@ -401,8 +371,9 @@ std::optional<Value> Evaluator::EvaluateMemberBrackets(ASTnode* node, bool inser
 	Value rvalue = *Evaluate(node->GetValue("lvalue")->GetObjectValue(), false);
 	if (rvalue.isUndefined()) throw RuntimeErrorException("Cannot read value " + expr.toString() + " of undefined");
 	if (rvalue.isObject()) {
-		if (rvalue.GetObjectValue()->HasProperty(expr))
-			return *rvalue.GetObjectValue()->GetValue(expr);
+		Value* value = Object_get_brackets(rvalue, expr);
+		if (value != nullptr)
+			return *value;
 	}
 	return Undefined();
 }
@@ -411,15 +382,9 @@ std::optional<Value> Evaluator::EvaluateMemberCallIdent(ASTnode* node, bool inse
 	Value call = *Evaluate(node->GetValue("call")->GetObjectValue(), false);
 	if (call.isUndefined()) throw RuntimeErrorException("Cannot read id " + node->GetValue("ID")->GetStringValue() + " of undefined");
 	if (call.isObject()) {
-		if (call.GetObjectValue()->HasProperty("$closure")) {
-			Value* closureVariable = LocalLookUp(node->GetValue("ID")->GetStringValue(), call.GetObjectValue()->GetValue("$closure")->GetObjectValue());
-			if (closureVariable != nullptr)
-				return *closureVariable;
-		}
-		else {
-			if (call.GetObjectValue()->HasProperty(node->GetValue("ID")->GetStringValue()))
-				return *call.GetObjectValue()->GetValue(node->GetValue("ID")->GetStringValue());
-		}
+		Value* value = Object_get(call, node->GetValue("ID")->GetStringValue());
+		if (value != nullptr)
+			return *value;
 	}
 	return Undefined();
 }
@@ -430,8 +395,9 @@ std::optional<Value> Evaluator::EvaluateMemberCallBrackets(ASTnode* node, bool i
 	Value call = *Evaluate(node->GetValue("call")->GetObjectValue(), false);
 	if (call.isUndefined()) throw RuntimeErrorException("Cannot read value " + expr.toString() + " of undefined");
 	if (call.isObject()) {
-		if (call.GetObjectValue()->HasProperty(expr))
-			return *call.GetObjectValue()->GetValue(expr);
+		Value* value = Object_get_brackets(call, expr);
+		if (value != nullptr)
+			return *value;
 	}
 	return Undefined();
 }
