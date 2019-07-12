@@ -315,9 +315,17 @@ std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueMemberIden
 	Value& lvalue = *EvaluateLvalue(node->GetValue("lvalue")->GetObjectValue(),false);
 	if (lvalue.isUndefined()) throw RuntimeErrorException("Cannot read id " + node->GetValue("ID")->GetStringValue() + " of undefined");
 	if (lvalue.isObject()) {
-		if (!lvalue.GetObjectValue()->HasProperty(node->GetValue("ID")->GetStringValue()))
-			lvalue.GetObjectValue()->Set(node->GetValue("ID")->GetStringValue(), Undefined());
-		return *lvalue.GetObjectValue()->GetValue(node->GetValue("ID")->GetStringValue());
+		if (lvalue.GetObjectValue()->HasProperty("$closure")) {
+			Value* closureVariable = LocalLookUp(node->GetValue("ID")->GetStringValue(), lvalue.GetObjectValue()->GetValue("$closure")->GetObjectValue());
+			if (closureVariable != nullptr)
+				return *closureVariable;
+			throw RuntimeErrorException("No closure variable with id " + node->GetValue("ID")->GetStringValue());
+		}
+		else {
+			if (!lvalue.GetObjectValue()->HasProperty(node->GetValue("ID")->GetStringValue()))
+				lvalue.GetObjectValue()->Set(node->GetValue("ID")->GetStringValue(), Undefined());
+			return *lvalue.GetObjectValue()->GetValue(node->GetValue("ID")->GetStringValue());
+		}
 	}
 	throw RuntimeErrorException("Cannot read id " + node->GetValue("ID")->GetStringValue() + " of non-object variable");
 }
@@ -340,9 +348,17 @@ std::optional<std::reference_wrapper<Value>> Evaluator::EvaluateLvalueMemberCall
 	Value call = *Evaluate(node->GetValue("call")->GetObjectValue(), false);
 	if (call.isUndefined()) throw RuntimeErrorException("Cannot read id " + node->GetValue("ID")->GetStringValue() + " of undefined");
 	if (call.isObject()) {
-		if (!call.GetObjectValue()->HasProperty(node->GetValue("ID")->GetStringValue()))
-			call.GetObjectValue()->Set(node->GetValue("ID")->GetStringValue(), Undefined());
-		return *call.GetObjectValue()->GetValue(node->GetValue("ID")->GetStringValue());
+		if (call.GetObjectValue()->HasProperty("$closure")) {
+			Value* closureVariable = LocalLookUp(node->GetValue("ID")->GetStringValue(), call.GetObjectValue()->GetValue("$closure")->GetObjectValue());
+			if (closureVariable != nullptr)
+				return *closureVariable;
+			throw RuntimeErrorException("No closure variable with id " + node->GetValue("ID")->GetStringValue());
+		}
+		else {
+			if (!call.GetObjectValue()->HasProperty(node->GetValue("ID")->GetStringValue()))
+				call.GetObjectValue()->Set(node->GetValue("ID")->GetStringValue(), Undefined());
+			return *call.GetObjectValue()->GetValue(node->GetValue("ID")->GetStringValue());
+		}
 	}
 	throw RuntimeErrorException("Cannot read id " + node->GetValue("ID")->GetStringValue() + " of non-object variable");
 }
@@ -366,8 +382,15 @@ std::optional<Value> Evaluator::EvaluateMemberIdent(ASTnode* node, bool insertFl
 	Value rvalue = *Evaluate(node->GetValue("lvalue")->GetObjectValue(), false);
 	if (rvalue.isUndefined()) throw RuntimeErrorException("Cannot read id " + node->GetValue("ID")->GetStringValue() +" of undefined");
 	if (rvalue.isObject()) {
-		if (rvalue.GetObjectValue()->HasProperty(node->GetValue("ID")->GetStringValue()))
-			return *rvalue.GetObjectValue()->GetValue(node->GetValue("ID")->GetStringValue());
+		if (rvalue.GetObjectValue()->HasProperty("$closure")) {
+			Value* closureVariable = LocalLookUp(node->GetValue("ID")->GetStringValue(), rvalue.GetObjectValue()->GetValue("$closure")->GetObjectValue());
+			if (closureVariable != nullptr)
+				return *closureVariable;
+		}
+		else {
+			if (rvalue.GetObjectValue()->HasProperty(node->GetValue("ID")->GetStringValue()))
+				return *rvalue.GetObjectValue()->GetValue(node->GetValue("ID")->GetStringValue());
+		}
 	}
 	return Undefined();
 }
@@ -388,8 +411,15 @@ std::optional<Value> Evaluator::EvaluateMemberCallIdent(ASTnode* node, bool inse
 	Value call = *Evaluate(node->GetValue("call")->GetObjectValue(), false);
 	if (call.isUndefined()) throw RuntimeErrorException("Cannot read id " + node->GetValue("ID")->GetStringValue() + " of undefined");
 	if (call.isObject()) {
-		if (call.GetObjectValue()->HasProperty(node->GetValue("ID")->GetStringValue()))
-			return *call.GetObjectValue()->GetValue(node->GetValue("ID")->GetStringValue());
+		if (call.GetObjectValue()->HasProperty("$closure")) {
+			Value* closureVariable = LocalLookUp(node->GetValue("ID")->GetStringValue(), call.GetObjectValue()->GetValue("$closure")->GetObjectValue());
+			if (closureVariable != nullptr)
+				return *closureVariable;
+		}
+		else {
+			if (call.GetObjectValue()->HasProperty(node->GetValue("ID")->GetStringValue()))
+				return *call.GetObjectValue()->GetValue(node->GetValue("ID")->GetStringValue());
+		}
 	}
 	return Undefined();
 }
