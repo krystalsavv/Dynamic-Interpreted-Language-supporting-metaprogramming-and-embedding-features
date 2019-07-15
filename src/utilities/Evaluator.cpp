@@ -42,7 +42,6 @@ std::map<std::string, std::optional<Value>(Evaluator::*)(ASTnode*,bool)> Evaluat
 	//table["funcdefCall"] = &Evaluator::EvaluateFuncdefCall;
 	table["normcall"] = &Evaluator::EvaluateNormCall;
 	//table["methodcall"] = &Evaluator::EvaluateMethodCall;
-	//table["namedParam"] = &Evaluator::EvaluateArg;
 	table["argList"] = &Evaluator::EvaluateArglist;
 	table["emptyArgList"] = &Evaluator::EvaluateEmptyArglist;
 	table["assignexpr"] = &Evaluator::EvaluateAssignExpr;
@@ -417,10 +416,10 @@ std::optional<Value> Evaluator::EvaluateLvalueCallSuffix(ASTnode* node, bool ins
 	CallerEnvironmentActions(funcdef);
 
 	Value tmp = *Evaluate(node->GetValue("argList")->GetObjectValue(), false);
-	tmp = *Evaluate(funcdef.GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
-
+	Value retValue = *Evaluate(funcdef.GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
+	Value maria;
 	LeaveFunctionEnvironment(oldCurrent);
-	return std::nullopt;
+	return retValue;
 }
 
 
@@ -622,34 +621,6 @@ std::optional<Value> Evaluator::EvaluateFuncEnter(ASTnode* node, bool insertFlag
 	if (argTable == nullptr) assert(false);
 	if (numOfTotalArgs > numOfParams) throw RuntimeErrorException("More actual arguments than function paramiters"); 
 
-	/*//AddParamsToEnvironment()
-
-
-	// AddPositionalParamsToEnvironment()
-	Environment* curr = EnvironmentHolder::getInstance()->GetCurrentEnv();
-		for (double i = 0; i < numOfPositionalArgs; ++i) {
-		curr->Set(*(idList->GetValue(i)->GetObjectValue()->GetValue("ID")), *(PositionalArgs->GetValue(i)));	
-	}
-	
-	
-	// AddNamedParamsToEnvironment()
-	Object idList_withoutIndex;
-	for (double i = 0; i < numOfParams; ++i) {
-		Object* obj = idList->GetValue(i)->GetObjectValue();
-		if(obj->HasProperty("expr"))
-			idList_withoutIndex.Set(*(obj->GetValue("ID")), *(obj->GetValue("expr")));
-		else
-			idList_withoutIndex.Set(*(obj->GetValue("ID")), (Object*)nullptr);
-	}
-
-	for (auto kv : NamedArgs->GetMap()) {
-		std::string id = kv.first.GetStringValue();
-		if (LocalLookUp(id)) throw RuntimeErrorException("Paramiter " + id + "both positional and named value" );
-		if (!(idList_withoutIndex.HasProperty(id))) throw RuntimeErrorException("Unexpected named parameter " + id);
-		curr->Set(id, kv.second);
-	}
-	*/
-
 	Object idList_withoutIndex;
 	for (double i = 0; i < numOfParams; ++i) {
 		Object* obj = idList->GetValue(i)->GetObjectValue();
@@ -678,7 +649,12 @@ std::optional<Value> Evaluator::EvaluateFuncEnter(ASTnode* node, bool insertFlag
 		}
 	}
 
-	return *Evaluate(node->GetValue("funcbody")->GetObjectValue());
+	
+	try { *Evaluate(node->GetValue("funcbody")->GetObjectValue()); }
+	catch (ReturnException&) { return Undefined(); }
+	catch (ReturnValueException&) { return retVal; }
+
+	return Undefined();
 }
 
 std::optional<Value> Evaluator::EvaluateFuncBody(ASTnode* node, bool insertFlag) {
