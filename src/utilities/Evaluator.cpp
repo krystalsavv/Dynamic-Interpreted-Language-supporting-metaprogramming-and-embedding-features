@@ -420,8 +420,8 @@ std::optional<Value> Evaluator::EvaluateLvalueCallSuffix(ASTnode* node, bool ins
 	Value funcdef = *Evaluate(node->GetValue("lvalue")->GetObjectValue(), false);
 	CallerEnvironmentActions(funcdef);
 
-	*Evaluate(node->GetValue("argList")->GetObjectValue(), false);
-	*Evaluate(funcdef.GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
+	Value tmp = *Evaluate(node->GetValue("argList")->GetObjectValue(), false);
+	tmp = *Evaluate(funcdef.GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
 
 	LeaveFunctionEnvironment(oldCurrent);
 	return std::nullopt;
@@ -431,7 +431,7 @@ std::optional<Value> Evaluator::EvaluateLvalueCallSuffix(ASTnode* node, bool ins
 
 //normcall
 std::optional<Value> Evaluator::EvaluateNormCall(ASTnode* node, bool insertFlag) {
-	*Evaluate(node->GetValue("argList")->GetObjectValue());
+	Value tmp = *Evaluate(node->GetValue("argList")->GetObjectValue());
 	return std::nullopt;
 }
 
@@ -626,11 +626,17 @@ std::optional<Value> Evaluator::EvaluateFuncEnter(ASTnode* node, bool insertFlag
 	if (argTable == nullptr) assert(false);
 	if (numOfTotalArgs > numOfParams) throw RuntimeErrorException("More actual arguments than function paramiters"); 
 
+	/*//AddParamsToEnvironment()
+
+
+	// AddPositionalParamsToEnvironment()
 	Environment* curr = EnvironmentHolder::getInstance()->GetCurrentEnv();
 		for (double i = 0; i < numOfPositionalArgs; ++i) {
 		curr->Set(*(idList->GetValue(i)->GetObjectValue()->GetValue("ID")), *(PositionalArgs->GetValue(i)));	
 	}
 	
+	
+	// AddNamedParamsToEnvironment()
 	Object idList_withoutIndex;
 	for (double i = 0; i < numOfParams; ++i) {
 		Object* obj = idList->GetValue(i)->GetObjectValue();
@@ -646,13 +652,27 @@ std::optional<Value> Evaluator::EvaluateFuncEnter(ASTnode* node, bool insertFlag
 		if (!(idList_withoutIndex.HasProperty(id))) throw RuntimeErrorException("Unexpected named parameter " + id);
 		curr->Set(id, kv.second);
 	}
+	*/
 
+	Object idList_withoutIndex;
+	for (double i = 0; i < numOfParams; ++i) {
+		Object* obj = idList->GetValue(i)->GetObjectValue();
+		if (obj->HasProperty("expr"))
+			idList_withoutIndex.Set(*(obj->GetValue("ID")), *(obj->GetValue("expr")));
+		else
+			idList_withoutIndex.Set(*(obj->GetValue("ID")), (Object*)nullptr);
+	}
+	AddPositionalParamsToEnvironment(idList, argTable);
+	AddNamedParamsToEnvironment(idList_withoutIndex, argTable);
+
+	// Default Params
 	if (numOfTotalArgs < numOfParams) {
 		for (auto kv : idList_withoutIndex.GetMap()) {
 			std::string id = kv.first.GetStringValue();
 			Object* expr = kv.second.GetObjectValue();
 			if (!LocalLookUp(id)) {
 				if (expr) {
+					Environment* curr = EnvironmentHolder::getInstance()->GetCurrentEnv();
 					curr->Set(id, *Evaluate(expr));
 				}
 				else {
@@ -662,9 +682,7 @@ std::optional<Value> Evaluator::EvaluateFuncEnter(ASTnode* node, bool insertFlag
 		}
 	}
 
-	*Evaluate(node->GetValue("funcbody")->GetObjectValue()); 
-
-	return std::nullopt;
+	return *Evaluate(node->GetValue("funcbody")->GetObjectValue());
 }
 
 std::optional<Value> Evaluator::EvaluateFuncBody(ASTnode* node, bool insertFlag) {
@@ -675,7 +693,6 @@ std::optional<Value> Evaluator::EvaluateFuncBody(ASTnode* node, bool insertFlag)
 	}
 	return std::nullopt;
 }
-
 
 // const
 std::optional<Value> Evaluator::EvaluateNumberConst(ASTnode* node, bool insertFlag) {

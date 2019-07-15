@@ -70,27 +70,6 @@ bool interpreter::hasCollisionWithLibFunc(std::string str)
 	return false;
 }
 
-void interpreter::CallerEnvironmentActions(Value& funcdefNode) {
-	/*
-	already checked at the lvalue evaluation
-	if (funcdefNode == nullptr) {
-		throw RuntimeErrorException("Can not find function definition with name " );
-	}*/
-	if (!(funcdefNode.isObject())) {
-		throw RuntimeErrorException("Variable with name " + funcdefNode.GetObjectValue()->GetValue("ID")->GetStringValue() + "is not callable");
-	}
-	else {
-		Value* closure = funcdefNode.GetObjectValue()->GetValue("$closure");
-		if (closure != nullptr) {
-			CreateFunctionEnvironment(closure->GetObjectValue());
-		}
-		else {
-			// functor
-		}
-	}
-}
-
-
 void interpreter::CreateFunctionEnvironment(ASTnode* funcClosure) {
 	FunctionEnvironment* funcEnv = new FunctionEnvironment();
 	funcEnv->Set("$sliced", false);
@@ -261,4 +240,46 @@ Value* interpreter::RvalueLocalVarActions(std::string id, bool insertFlag)
 		return InsertLvalue(id, Value());
 	}
 	return nullptr;
+}
+
+
+void interpreter::CallerEnvironmentActions(Value& funcdefNode) {
+	/*
+	already checked at the lvalue evaluation
+	if (funcdefNode == nullptr) {
+		throw RuntimeErrorException("Can not find function definition with name " );
+	}*/
+	if (!(funcdefNode.isObject())) {
+		throw RuntimeErrorException("Variable with name " + funcdefNode.GetObjectValue()->GetValue("ID")->GetStringValue() + "is not callable");
+	}
+	else {
+		Value* closure = funcdefNode.GetObjectValue()->GetValue("$closure");
+		if (closure != nullptr) {
+			CreateFunctionEnvironment(closure->GetObjectValue());
+		}
+		else {
+			// functor
+		}
+	}
+}
+
+
+void interpreter::AddPositionalParamsToEnvironment(Object* idList, Object* argTable) {
+	Object* PositionalArgs = argTable->GetValue("PositionalArgs")->GetObjectValue();
+	double numOfPositionalArgs = argTable->GetValue("numOfPositionalArgs")->GetNumberValue();
+	Environment* curr = EnvironmentHolder::getInstance()->GetCurrentEnv();
+	for (double i = 0; i < numOfPositionalArgs; ++i) {
+		curr->Set(*(idList->GetValue(i)->GetObjectValue()->GetValue("ID")), *(PositionalArgs->GetValue(i)));
+	}
+}
+
+void interpreter::AddNamedParamsToEnvironment(Object& idList_withoutIndex, Object* argTable) {
+	Object* NamedArgs = argTable->GetValue("NamedArgs")->GetObjectValue();
+	Environment* curr = EnvironmentHolder::getInstance()->GetCurrentEnv();
+	for (auto kv : NamedArgs->GetMap()) {
+		std::string id = kv.first.GetStringValue();
+		if (LocalLookUp(id)) throw RuntimeErrorException("Paramiter " + id + "both positional and named value");
+		if (!(idList_withoutIndex.HasProperty(id))) throw RuntimeErrorException("Unexpected named parameter " + id);
+		curr->Set(id, kv.second);
+	}
 }

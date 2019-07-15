@@ -41,7 +41,7 @@ bool Object::HasProperty(const Value& key) const {
 		return false;
 }
 
-unsigned int interpreter::Object::size() const
+size_t interpreter::Object::size() const
 {
 	return symbols.size();
 }

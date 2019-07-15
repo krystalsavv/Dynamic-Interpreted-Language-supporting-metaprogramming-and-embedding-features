@@ -26,7 +26,7 @@ namespace interpreter {
 		void Set(const Value& key, const Value& value);
 
 		bool HasProperty(const Value& key) const;
-		unsigned int size() const;
+		size_t size() const;
 		std::string toString();
 
 		void IncreaseReferenceCounter();
