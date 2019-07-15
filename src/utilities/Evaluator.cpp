@@ -601,6 +601,21 @@ std::optional<Value> interpreter::Evaluator::EvaluateFuncdef(ASTnode* node, bool
 	if (value == nullptr) {
 		throw SyntaxErrorException("Function with id " + node->GetValue("ID")->GetStringValue() + " already exists");
 	}
+
+
+	/*Object* idList = node->GetValue("funcEnter")->GetObjectValue()->GetValue("idlist")->GetObjectValue();
+	double numOfParams = idList->GetValue("numOfParams")->GetNumberValue();
+
+	Object idList_withoutIndex;
+	for (double i = 0; i < numOfParams; ++i) {
+		Object* obj = idList->GetValue(i)->GetObjectValue();
+		Value id = *(obj->GetValue("ID"));
+		if (idList_withoutIndex.HasProperty(id)) {
+			throw RuntimeErrorException("More than one formal with name " + id.GetStringValue());
+		}
+		idList_withoutIndex.Set(id, (Object*)nullptr);
+	}*/
+
 	return *value;
 }
 
@@ -624,10 +639,14 @@ std::optional<Value> Evaluator::EvaluateFuncEnter(ASTnode* node, bool insertFlag
 	Object idList_withoutIndex;
 	for (double i = 0; i < numOfParams; ++i) {
 		Object* obj = idList->GetValue(i)->GetObjectValue();
+		Value id = *(obj->GetValue("ID"));
+		if (idList_withoutIndex.HasProperty(id)) {
+			throw RuntimeErrorException("More than one formal with name " + id.GetStringValue());
+		}
 		if (obj->HasProperty("expr"))
-			idList_withoutIndex.Set(*(obj->GetValue("ID")), *(obj->GetValue("expr")));
+			idList_withoutIndex.Set(id, *(obj->GetValue("expr")));
 		else
-			idList_withoutIndex.Set(*(obj->GetValue("ID")), (Object*)nullptr);
+			idList_withoutIndex.Set(id, (Object*)nullptr);
 	}
 	AddPositionalParamsToEnvironment(idList, argTable);
 	AddNamedParamsToEnvironment(idList_withoutIndex, argTable);
