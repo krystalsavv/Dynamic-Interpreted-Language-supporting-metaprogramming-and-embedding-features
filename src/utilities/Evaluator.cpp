@@ -620,7 +620,7 @@ OPValue interpreter::Evaluator::EvaluateFuncdef(ASTnode* node, bool insertFlag)
 
 OPValue interpreter::Evaluator::EvaluateAnonymousFuncdef(ASTnode* node, bool insertFlag)
 {
-	return InsertFunctionDefinition(Object::GenerateAnonymousName(), node);										// HERE RETURN TRUE
+	return *InsertFunctionDefinition(Object::GenerateAnonymousName(), node);										// HERE RETURN TRUE
 }
 
 
