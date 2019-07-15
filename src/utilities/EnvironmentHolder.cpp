@@ -242,7 +242,6 @@ Value* interpreter::RvalueLocalVarActions(std::string id, bool insertFlag)
 	return nullptr;
 }
 
-
 void interpreter::CallerEnvironmentActions(Value& funcdefNode) {
 	/*
 	already checked at the lvalue evaluation
@@ -283,3 +282,45 @@ void interpreter::AddNamedParamsToEnvironment(Object& idList_withoutIndex, Objec
 		curr->Set(id, kv.second);
 	}
 }
+
+
+Value& interpreter::Object_set(Value& lvalue, std::string id) {
+	if (lvalue.GetObjectValue()->HasProperty("$closure")) {
+		Value* closureVariable = LocalLookUp(id, lvalue.GetObjectValue()->GetValue("$closure")->GetObjectValue());
+		if (closureVariable != nullptr)
+			return *closureVariable;
+		throw RuntimeErrorException("No closure variable with id " + id);
+	}
+	else {
+		if (!lvalue.GetObjectValue()->HasProperty(id))
+			lvalue.GetObjectValue()->Set(id, Undefined());
+		return *lvalue.GetObjectValue()->GetValue(id);
+	}
+}
+
+Value* interpreter::Object_get(Value& rvalue, std::string id) {
+	if (rvalue.GetObjectValue()->HasProperty("$closure")) {
+		Value* closureVariable = LocalLookUp(id, rvalue.GetObjectValue()->GetValue("$closure")->GetObjectValue());
+		if (closureVariable != nullptr)
+			return closureVariable;
+	}
+	else {
+		if (rvalue.GetObjectValue()->HasProperty(id))
+			return rvalue.GetObjectValue()->GetValue(id);
+	}
+	return nullptr;
+}
+
+Value& interpreter::Object_set_brackets(Value& lvalue, Value& expr) {
+	if (!lvalue.GetObjectValue()->HasProperty(expr))
+		lvalue.GetObjectValue()->Set(expr, Undefined());
+	return *lvalue.GetObjectValue()->GetValue(expr);
+}
+
+
+Value* interpreter::Object_get_brackets(Value& rvalue, Value& expr) {
+	if (rvalue.GetObjectValue()->HasProperty(expr))
+		return rvalue.GetObjectValue()->GetValue(expr);
+	return nullptr;
+}
+

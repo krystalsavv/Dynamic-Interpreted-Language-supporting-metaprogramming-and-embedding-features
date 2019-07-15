@@ -54,8 +54,14 @@ namespace interpreter {
 	Value* RvalueVarActions(std::string id, bool insertFlag = true);
 	Value* RvalueLocalVarActions(std::string id, bool insertFlag = true);
 
+
 	void CallerEnvironmentActions(Value& funcdefNode);
-	//void AddParamsToEnvironment(Object* idList, Object* argTable);
 	void AddPositionalParamsToEnvironment(Object* idList, Object* argTable);
 	void AddNamedParamsToEnvironment(Object& idList_withoutIndex, Object* argTable);
+
+	Value& Object_set(Value& lvalue, std::string id);
+	Value* Object_get(Value& rvalue, std::string id);
+	Value& Object_set_brackets(Value& lvalue, Value& expr);
+	Value* Object_get_brackets(Value& rvalue, Value& expr);
+
 }

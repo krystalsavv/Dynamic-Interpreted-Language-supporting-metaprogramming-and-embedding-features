@@ -31,7 +31,7 @@ Value::Value(Object* value) {
 	variant = value;
 }
 
-Value::Value(Undefined& value) {
+Value::Value(Undefined value) {
 	variant = value;
 }
 

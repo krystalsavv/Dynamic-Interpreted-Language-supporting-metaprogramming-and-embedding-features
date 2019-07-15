@@ -29,7 +29,7 @@ namespace interpreter {
 		Value(std::string value);
 		Value(const char* value);
 		Value(Object* value);
-		Value(Undefined& value);
+		Value(Undefined value);
 		Value(const Value& value);
 
 		const bool& GetBoolValue() const;
