@@ -30,7 +30,7 @@ namespace interpreter {
 		std::map<std::string, Value& (Evaluator::*)(ASTnode*, bool, Environment*)> IntializeLvalueDispatcher();
 
 		inline static Evaluator* evaluator = nullptr;
-		OPValue retVal;
+		Value retVal;
 
 		Evaluator();
 

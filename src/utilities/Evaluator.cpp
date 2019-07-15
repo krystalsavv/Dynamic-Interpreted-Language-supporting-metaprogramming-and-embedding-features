@@ -418,7 +418,6 @@ OPValue Evaluator::EvaluateLvalueCallSuffix(ASTnode* node, bool insertFlag){
 	OPValue tmp = Evaluate(node->GetValue("argList")->GetObjectValue(), false);
 	OPValue retValue = Evaluate(funcdef->GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
 	LeaveFunctionEnvironment(oldCurrent);
-	if (retValue == std::nullopt) return Undefined();
 	return retValue;
 }
 
@@ -514,7 +513,7 @@ OPValue Evaluator::EvaluateReturnStmt(ASTnode* node, bool insertFlag) {
 }
 
 OPValue Evaluator::EvaluateReturnValueStmt(ASTnode* node, bool insertFlag) {
-	retVal = Evaluate(node->GetValue("expr")->GetObjectValue());
+	retVal = *Evaluate(node->GetValue("expr")->GetObjectValue());
 	throw ReturnValueException();
 }
 
@@ -621,7 +620,7 @@ OPValue interpreter::Evaluator::EvaluateFuncdef(ASTnode* node, bool insertFlag)
 
 OPValue interpreter::Evaluator::EvaluateAnonymousFuncdef(ASTnode* node, bool insertFlag)
 {
-	return InsertFunctionDefinition(Object::GenerateAnonymousName(), node);
+	return InsertFunctionDefinition(Object::GenerateAnonymousName(), node);										// HERE RETURN TRUE
 }
 
 
