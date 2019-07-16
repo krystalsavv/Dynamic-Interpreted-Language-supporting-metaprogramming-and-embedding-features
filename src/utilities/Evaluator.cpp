@@ -512,16 +512,21 @@ OPValue Evaluator::EvaluateArg(ASTnode* node, bool insertFlag) {
 //arglist
 OPValue Evaluator::EvaluateArglist(ASTnode* node, bool insertFlag) {
 	// free an eixe proigoymeno object an den to kanw otan teleiwsw na to use--> OXI EDW 
-	argTable = new Object(*node);
-	double numOfTotalArgs =  argTable->GetValue("numOfTotalArgs")->GetNumberValue();
-	double numOfPositionalArgs = argTable->GetValue("numOfPositionalArgs")->GetNumberValue();
-	Object* PositionalArgs = argTable->GetValue("PositionalArgs")->GetObjectValue();
-	Object* NamedArgs = argTable->GetValue("NamedArgs")->GetObjectValue();
+	argTable = new Object();
+	double numOfTotalArgs =  node->GetValue("numOfTotalArgs")->GetNumberValue();
+	double numOfPositionalArgs = node->GetValue("numOfPositionalArgs")->GetNumberValue();
+	Object* PositionalArgs = node->GetValue("PositionalArgs")->GetObjectValue();
+	Object* NamedArgs = node->GetValue("NamedArgs")->GetObjectValue();
+
+	argTable->Set("numOfTotalArgs", numOfTotalArgs);
+	argTable->Set("numOfPositionalArgs", numOfPositionalArgs);
+	argTable->Set("PositionalArgs", new Object());
+	argTable->Set("NamedArgs", new Object());
 	for (double i = 0; i < numOfPositionalArgs; ++i) {
-		PositionalArgs->Set(i, *Evaluate(PositionalArgs->GetValue(i)->GetObjectValue()));
+		argTable->GetValue("PositionalArgs")->GetObjectValue()->Set(i, *Evaluate(PositionalArgs->GetValue(i)->GetObjectValue()));
 	}
 	for (auto kv : NamedArgs->GetMap()) {
-		NamedArgs->Set(kv.first, *Evaluate(kv.second.GetObjectValue()));
+		argTable->GetValue("NamedArgs")->GetObjectValue()->Set(kv.first, *Evaluate(kv.second.GetObjectValue()));
 	}
 	return std::nullopt;
 }
@@ -533,7 +538,6 @@ OPValue Evaluator::EvaluateEmptyArglist(ASTnode* node, bool insertFlag) {
 	argTable->Set("numOfPositionalArgs", 0.0);
 	argTable->Set("PositionalArgs",  (Object*)nullptr);
 	argTable->Set("NamedArgs", (Object*)nullptr);
-	//argTable = new Object(*node);
 	return std::nullopt;
 	//return emptyArgList;
 }
@@ -812,9 +816,7 @@ OPValue Evaluator::EvaluatePrint(ASTnode* node, bool insertFlag) {
 	double numOfPositionalArgs = argTable->GetValue("numOfPositionalArgs")->GetNumberValue();
 	if (numOfTotalArgs - numOfPositionalArgs != 0) throw SyntaxErrorException("Cannot use named argument in library function print()");
 	for (double i = 0; i < numOfPositionalArgs; ++i) {
-		std::cout << *(PositionalArgs->GetValue(i));
-		if (i != numOfPositionalArgs - 1)
-			std::cout << ",";
+		std::cout << *(PositionalArgs->GetValue(i));	
 	}
 	return Undefined();
 }

@@ -14,6 +14,7 @@ Object::Object(const Value& key, const Value& value) {
 
 
 Object::Object(const Object& obj) {
+	
 	symbols = obj.symbols;
 }
 

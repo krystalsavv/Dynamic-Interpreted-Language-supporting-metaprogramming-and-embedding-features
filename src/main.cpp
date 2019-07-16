@@ -38,9 +38,9 @@ int main(int argc,char** argv){
 	yylex_destroy(scanner);
 	ast->Print();
 	OPValue tmp = Evaluator::getInstance()->Evaluate(ast->GetRoot());
-	std::cout << "------------------------------ EnvironmentChain -----------------------------------" << std::endl << std::endl;
-	EnvironmentHolder::getInstance()->PrintEnvironmentChain();
-	std::cout << "------------------------------ GlobalEnvironment -----------------------------------" << std::endl << std::endl;
-	EnvironmentHolder::getInstance()->PrintGlobalEnvironment();
+	//std::cout << "------------------------------ EnvironmentChain -----------------------------------" << std::endl << std::endl;
+	//EnvironmentHolder::getInstance()->PrintEnvironmentChain();
+	//std::cout << "------------------------------ GlobalEnvironment -----------------------------------" << std::endl << std::endl;
+	//EnvironmentHolder::getInstance()->PrintGlobalEnvironment();
 	return 0;
 }
