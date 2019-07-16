@@ -40,7 +40,7 @@ std::map<std::string,OPValue(Evaluator::*)(ASTnode*,bool)> Evaluator::IntializeD
 	table["multiCall"] = &Evaluator::EvaluateMultiCall;
 	table["lvalueNormCall"] = &Evaluator::EvaluateLvalueNormalCall;
 	table["lvalueMethodCall"] = &Evaluator::EvaluateLvalueMethodCall;
-	//table["funcdefCall"] = &Evaluator::EvaluateFuncdefCall;
+	table["funcdefCall"] = &Evaluator::EvaluateFuncdefCall;
 	table["argList"] = &Evaluator::EvaluateArglist;
 	table["emptyArgList"] = &Evaluator::EvaluateEmptyArglist;
 	table["assignexpr"] = &Evaluator::EvaluateAssignExpr;
@@ -477,6 +477,22 @@ OPValue Evaluator::EvaluateLvalueMethodCall(ASTnode* node, bool insertFlag) {
 	return retValue;
 }
 
+
+OPValue Evaluator::EvaluateFuncdefCall(ASTnode* node, bool insertFlag) {
+	Environment* oldCurrent = EnvironmentHolder::getInstance()->GetCurrentEnv();
+
+	// TODO: na tsekarw pio prin gia libfunc (alliws tha petaksei error h evalute ths lvalue)
+
+	OPValue funcdef = Evaluate(node->GetValue("funcdef")->GetObjectValue(), false);
+	CallerEnvironmentActions(*funcdef);
+
+	OPValue tmp = Evaluate(node->GetValue("argList")->GetObjectValue(), false);
+	OPValue retValue = Evaluate(funcdef->GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
+	LeaveFunctionEnvironment(oldCurrent);
+	return retValue;
+}
+
+
 //arg
 OPValue Evaluator::EvaluateArg(ASTnode* node, bool insertFlag) {
 	return Value();
@@ -651,7 +667,7 @@ OPValue interpreter::Evaluator::EvaluateFuncdef(ASTnode* node, bool insertFlag)
 {
 	Value* value = LvalueFuncDefActions(node->GetValue("ID")->GetStringValue(),node);
 	if (value == nullptr) {
-		throw SyntaxErrorException("Function with id " + node->GetValue("ID")->GetStringValue() + " already exists");
+		throw RuntimeErrorException("Function with id " + node->GetValue("ID")->GetStringValue() + " already exists");
 	}
 
 	// Error checking
