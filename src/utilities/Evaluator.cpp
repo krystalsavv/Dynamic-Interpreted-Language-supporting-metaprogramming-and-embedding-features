@@ -37,7 +37,7 @@ std::map<std::string,OPValue(Evaluator::*)(ASTnode*,bool)> Evaluator::IntializeD
 	table["member_lvalueBrackets"] = &Evaluator::EvaluateMemberBrackets;
 	table["member_callVar"] = &Evaluator::EvaluateMemberCallIdent;
 	table["member_callBrackets"] = &Evaluator::EvaluateMemberCallBrackets;
-	//table["multiCall"] = &Evaluator::EvaluateMultiCall;
+	table["multiCall"] = &Evaluator::EvaluateMultiCall;
 	table["lvalueNormCall"] = &Evaluator::EvaluateLvalueNormalCall;
 	table["lvalueMethodCall"] = &Evaluator::EvaluateLvalueMethodCall;
 	//table["funcdefCall"] = &Evaluator::EvaluateFuncdefCall;
@@ -406,6 +406,23 @@ OPValue Evaluator::EvaluateMemberCallBrackets(ASTnode* node, bool insertFlag) {
 }
 
 
+
+OPValue Evaluator::EvaluateMultiCall(ASTnode* node, bool insertFlag) {
+	Environment* oldCurrent = EnvironmentHolder::getInstance()->GetCurrentEnv();
+
+	OPValue funcdef = Evaluate(node->GetValue("call")->GetObjectValue(), false);
+	if (!(funcdef->isObject() && funcdef->GetObjectValue()->HasProperty("$closure")))
+		throw RuntimeErrorException("Not Callable return value on Multicall");
+
+	CallerEnvironmentActions(*funcdef);
+
+	OPValue tmp = Evaluate(node->GetValue("argList")->GetObjectValue(), false);
+	OPValue retValue = Evaluate(funcdef->GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
+	LeaveFunctionEnvironment(oldCurrent);
+	return retValue;
+}
+
+
 OPValue Evaluator::EvaluateLvalueNormalCall(ASTnode* node, bool insertFlag){
 	Environment* oldCurrent = EnvironmentHolder::getInstance()->GetCurrentEnv();
 
@@ -697,7 +714,7 @@ OPValue Evaluator::EvaluateFuncEnter(ASTnode* node, bool insertFlag) {
 					curr->Set(id, *Evaluate(expr));
 				}
 				else {
-					throw RuntimeErrorException("Too few arguments in funciton call. Paramiter " + id + " has no value (also not default value is defined)");
+					throw RuntimeErrorException("Too few arguments in funciton call. Parameter " + id + " has no value (also not default value is defined)");
 				}
 			}
 		}
