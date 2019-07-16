@@ -452,10 +452,15 @@ OPValue Evaluator::EvaluateArglist(ASTnode* node, bool insertFlag) {
 }
 
 OPValue Evaluator::EvaluateEmptyArglist(ASTnode* node, bool insertFlag) {
-	Object* emptyArgList = new Object();
-	emptyArgList->Set("numOfTotalArgs", 0.0);
-	emptyArgList->Set("numOfPositionalArgs", 0.0);
-	return emptyArgList;
+	// tha prepei na kanoume delete to palio argTable
+	argTable = new Object();
+	argTable->Set("numOfTotalArgs", 0.0);
+	argTable->Set("numOfPositionalArgs", 0.0);
+	argTable->Set("PositionalArgs",  (Object*)nullptr);
+	argTable->Set("NamedArgs", (Object*)nullptr);
+	//argTable = new Object(*node);
+	return std::nullopt;
+	//return emptyArgList;
 }
 
 OPValue interpreter::Evaluator::EvaluateAssignExpr(ASTnode* node, bool insertFlag)
@@ -601,8 +606,8 @@ OPValue interpreter::Evaluator::EvaluateFuncdef(ASTnode* node, bool insertFlag)
 		throw SyntaxErrorException("Function with id " + node->GetValue("ID")->GetStringValue() + " already exists");
 	}
 
-
-	/*Object* idList = node->GetValue("funcEnter")->GetObjectValue()->GetValue("idlist")->GetObjectValue();
+	// Error checking
+	Object* idList = node->GetValue("funcEnter")->GetObjectValue()->GetValue("idlist")->GetObjectValue();
 	double numOfParams = idList->GetValue("numOfParams")->GetNumberValue();
 
 	Object idList_withoutIndex;
@@ -612,15 +617,15 @@ OPValue interpreter::Evaluator::EvaluateFuncdef(ASTnode* node, bool insertFlag)
 		if (idList_withoutIndex.HasProperty(id)) {
 			throw RuntimeErrorException("More than one formal with name " + id.GetStringValue());
 		}
-		idList_withoutIndex.Set(id, (Object*)nullptr);
-	}*/
+		idList_withoutIndex.Set(id, Undefined());
+	}
 
 	return *value;
 }
 
 OPValue interpreter::Evaluator::EvaluateAnonymousFuncdef(ASTnode* node, bool insertFlag)
 {
-	return *InsertFunctionDefinition(Object::GenerateAnonymousName(), node);										// HERE RETURN TRUE
+	return *InsertFunctionDefinition(Object::GenerateAnonymousName(), node);
 }
 
 
@@ -635,20 +640,20 @@ OPValue Evaluator::EvaluateFuncEnter(ASTnode* node, bool insertFlag) {
 	if (argTable == nullptr) assert(false);
 	if (numOfTotalArgs > numOfParams) throw RuntimeErrorException("More actual arguments than function paramiters"); 
 
+
 	Object idList_withoutIndex;
 	for (double i = 0; i < numOfParams; ++i) {
 		Object* obj = idList->GetValue(i)->GetObjectValue();
 		Value id = *(obj->GetValue("ID"));
-		if (idList_withoutIndex.HasProperty(id)) {
-			throw RuntimeErrorException("More than one formal with name " + id.GetStringValue());
-		}
 		if (obj->HasProperty("expr"))
 			idList_withoutIndex.Set(id, *(obj->GetValue("expr")));
 		else
 			idList_withoutIndex.Set(id, (Object*)nullptr);
 	}
-	AddPositionalParamsToEnvironment(idList, argTable);
-	AddNamedParamsToEnvironment(idList_withoutIndex, argTable);
+	if(PositionalArgs)
+		AddPositionalParamsToEnvironment(idList, argTable);
+	if(NamedArgs)
+		AddNamedParamsToEnvironment(idList_withoutIndex, argTable);
 
 	// Default Params
 	if (numOfTotalArgs < numOfParams) {

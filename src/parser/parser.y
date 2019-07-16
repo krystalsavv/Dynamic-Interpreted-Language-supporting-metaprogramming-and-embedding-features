@@ -724,7 +724,9 @@ returnstmt : RETURN SEMICOLON
 %%
 
 int yyerror(AST* ast, yyscan_t scanner, const char *yaccProvidedMessage){
-	std::cout  << yaccProvidedMessage << ": at line " << yyget_lineno(scanner) << " before token : " << yyget_text(scanner) << std::endl;
-	std::cout << "INPUT NOT VALID \n";
+	//std::cout  << yaccProvidedMessage << ": at line " << yyget_lineno(scanner) << " before token : " << yyget_text(scanner) << std::endl;
+	//std::cout << "INPUT NOT VALID \n";
+	std::string yaccProvidedMessage_string = yaccProvidedMessage;
+	throw SyntaxErrorException(yaccProvidedMessage_string +  ": at line "+ std::to_string(yyget_lineno(scanner)) +  " before token : "  + yyget_text(scanner));
 	return 0;
 }
