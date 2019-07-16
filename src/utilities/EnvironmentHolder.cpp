@@ -254,12 +254,12 @@ Value& interpreter::CallerEnvironmentActions(Value& funcdefNode, bool isFunctor)
 	else {
 		Value* closure = funcdefNode.GetObjectValue()->GetValue("$closure");
 		if (closure != nullptr) {
+			if(isFunctor)
+				//Add GetObjectValue()->GetValue("ID")->GetStringValue() as first arg
 			CreateFunctionEnvironment(closure->GetObjectValue());
 			return funcdefNode;
 		}
 		else {
-			if(isFunctor)
-				throw RuntimeErrorException("Functor has an Object as Value");
 			if(!funcdefNode.GetObjectValue()->HasProperty("()"))
 				throw RuntimeErrorException("Object with name " + funcdefNode.GetObjectValue()->GetValue("ID")->GetStringValue() + "is not a functor");
 			return CallerEnvironmentActions(*funcdefNode.GetObjectValue()->GetValue("()"), true);
