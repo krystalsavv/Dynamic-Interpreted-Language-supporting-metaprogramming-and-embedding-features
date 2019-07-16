@@ -427,13 +427,24 @@ OPValue Evaluator::EvaluateLvalueNormalCall(ASTnode* node, bool insertFlag){
 	Environment* oldCurrent = EnvironmentHolder::getInstance()->GetCurrentEnv();
 
 	// TODO: na tsekarw pio prin gia libfunc (alliws tha petaksei error h evalute ths lvalue)
-
+	OPValue retValue;
 	OPValue funcdef = Evaluate(node->GetValue("lvalue")->GetObjectValue(), false);
-	CallerEnvironmentActions(*funcdef);
-
-	OPValue tmp = Evaluate(node->GetValue("argList")->GetObjectValue(), false);
-	OPValue retValue = Evaluate(funcdef->GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
-	LeaveFunctionEnvironment(oldCurrent);
+	if (hasCollisionWithLibFunc(funcdef->GetObjectValue()->GetValue("type")->GetStringValue())) {
+		Object* old_argTable = argTable;
+		OPValue tmp = Evaluate(node->GetValue("argList")->GetObjectValue(), false);
+		retValue = Evaluate(funcdef->GetObjectValue());
+		// delete argTable
+		argTable = old_argTable;
+	}
+	else {
+		CallerEnvironmentActions(*funcdef);
+		Object* old_argTable = argTable;
+		OPValue tmp = Evaluate(node->GetValue("argList")->GetObjectValue(), false);
+		retValue = Evaluate(funcdef->GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
+		// delete argTable
+		argTable = old_argTable;
+		LeaveFunctionEnvironment(oldCurrent);
+	}
 	return retValue;
 }
 
@@ -500,7 +511,7 @@ OPValue Evaluator::EvaluateArg(ASTnode* node, bool insertFlag) {
 
 //arglist
 OPValue Evaluator::EvaluateArglist(ASTnode* node, bool insertFlag) {
-	// free an eixe proigoymeno object an den to kanw otan teleiwsw na to use
+	// free an eixe proigoymeno object an den to kanw otan teleiwsw na to use--> OXI EDW 
 	argTable = new Object(*node);
 	double numOfTotalArgs =  argTable->GetValue("numOfTotalArgs")->GetNumberValue();
 	double numOfPositionalArgs = argTable->GetValue("numOfPositionalArgs")->GetNumberValue();
@@ -516,7 +527,7 @@ OPValue Evaluator::EvaluateArglist(ASTnode* node, bool insertFlag) {
 }
 
 OPValue Evaluator::EvaluateEmptyArglist(ASTnode* node, bool insertFlag) {
-	// tha prepei na kanoume delete to palio argTable
+	// tha prepei na kanoume delete to palio argTable --> OXI EDW
 	argTable = new Object();
 	argTable->Set("numOfTotalArgs", 0.0);
 	argTable->Set("numOfPositionalArgs", 0.0);
@@ -796,50 +807,85 @@ OPValue Evaluator::EvaluateEmptyIdlist(ASTnode* node, bool insertFlag) {
 
 
 OPValue Evaluator::EvaluatePrint(ASTnode* node, bool insertFlag) {
-	//object of arguments in node ??
-	for (int i = 0; i < node->size(); i++) {
-		std::cout << node->GetValue(std::to_string(i));
-		if (i != node->size() - 1)
+	Object* PositionalArgs = argTable->GetValue("PositionalArgs")->GetObjectValue();
+	double numOfTotalArgs = argTable->GetValue("numOfTotalArgs")->GetNumberValue();
+	double numOfPositionalArgs = argTable->GetValue("numOfPositionalArgs")->GetNumberValue();
+	if (numOfTotalArgs - numOfPositionalArgs != 0) throw SyntaxErrorException("Cannot use named argument in library function print()");
+	for (double i = 0; i < numOfPositionalArgs; ++i) {
+		std::cout << *(PositionalArgs->GetValue(i));
+		if (i != numOfPositionalArgs - 1)
 			std::cout << ",";
 	}
-	return std::nullopt;
+	return Undefined();
 }
 
 OPValue Evaluator::EvaluateTypeof(ASTnode* node, bool insertFlag) {
-	//object of arguments in node ??
-	if (node->size() != 1)
-		throw SyntaxErrorException("Invalid arguments in typeof");
-	if (node->GetValue("0")->isBool())
-		return "boolean";
-	else if (node->GetValue("0")->isNumber())
-		return "number";
-	else if (node->GetValue("0")->isObject())
+	Object* PositionalArgs = argTable->GetValue("PositionalArgs")->GetObjectValue();
+	double numOfTotalArgs = argTable->GetValue("numOfTotalArgs")->GetNumberValue();
+	double numOfPositionalArgs = argTable->GetValue("numOfPositionalArgs")->GetNumberValue();
+	if (numOfTotalArgs - numOfPositionalArgs != 0) throw RuntimeErrorException("Cannot use named argument in library function typeof()");
+
+	if (numOfTotalArgs != 1)
+		throw RuntimeErrorException("Size of arguments in library function typeof must be equal to 1");
+
+	Value argument = *(PositionalArgs->GetValue(0.0));
+
+	if (argument.isObject()) {
+		if (argument.GetObjectValue() == nullptr)
+			return "nil";
+		else if (argument.GetObjectValue()->HasProperty("type")
+			&& hasCollisionWithLibFunc(argument.GetObjectValue()->GetValue("type")->GetStringValue()))
+			return "libfunc";
+		else if (argument.GetObjectValue()->HasProperty("$closure"))
+			return "userfunc";
 		return "object";
-	else if (node->GetValue("0")->isString())
+	}
+	else if (argument.isBool())
+		return "boolean";
+	else if (argument.isNumber())
+		return "number";
+	else if (argument.isString())
 		return "string";
-	else if (node->GetValue("0")->isUndefined())
+	else if (argument.isUndefined())
 		return "undefined";
-	return std::nullopt;
 }
 
 OPValue Evaluator::EvaluateObject_keys(ASTnode* node, bool insertFlag) {
-	//object of arguments in node ??
-	if (node->size() != 1 || !node->GetValue("0")->isObject())
-		throw SyntaxErrorException("Invalid arguments in object_keys");
+	Object* PositionalArgs = argTable->GetValue("PositionalArgs")->GetObjectValue();
+	double numOfTotalArgs = argTable->GetValue("numOfTotalArgs")->GetNumberValue();
+	double numOfPositionalArgs = argTable->GetValue("numOfPositionalArgs")->GetNumberValue();
+	if (numOfTotalArgs - numOfPositionalArgs != 0) throw SyntaxErrorException("Cannot use named argument in library function typeof()");
+	Value argument = *(PositionalArgs->GetValue(0.0));
+
+	if (numOfTotalArgs != 1)
+		throw RuntimeErrorException("Size of arguments in library function object_keys must be equal to 1");
+	if (!argument.isObject() || argument.GetObjectValue() == nil || argument.GetObjectValue()->HasProperty("$closure"))
+		throw RuntimeErrorException("Argument of library function object_keys is not object");
+	
 	Object* returnKeys = new Object();
-	Object* argument = node->GetValue("0")->GetObjectValue();
-	for (int i = 0; i < argument->size(); i++)
-	{
-		returnKeys->Set(std::to_string(i), argument->GetValue(std::to_string(i)));
+	double i = 0;
+
+	for (auto kv : argument.GetObjectValue()->GetMap()) {
+		returnKeys->Set(i, kv.first);
+		i++;
 	}
+
 	return returnKeys;
 }
 
 OPValue Evaluator::EvaluateObject_size(ASTnode* node, bool insertFlag) {
-	//object of arguments in node ??
-	if (node->size() != 1 || !node->GetValue("0")->isObject())
-		throw SyntaxErrorException("Invalid arguments in object_size");
-	return (double)node->GetValue("0")->GetObjectValue()->size();
+	Object* PositionalArgs = argTable->GetValue("PositionalArgs")->GetObjectValue();
+	double numOfTotalArgs = argTable->GetValue("numOfTotalArgs")->GetNumberValue();
+	double numOfPositionalArgs = argTable->GetValue("numOfPositionalArgs")->GetNumberValue();
+	if (numOfTotalArgs - numOfPositionalArgs != 0) throw SyntaxErrorException("Cannot use named argument in library function typeof()");
+	Value argument = *(PositionalArgs->GetValue(0.0));
+
+	if (numOfTotalArgs != 1)
+		throw RuntimeErrorException("Size of arguments in library function object_keys must be equal to 1");
+	if (!argument.isObject() || argument.GetObjectValue() == nil || argument.GetObjectValue()->HasProperty("$closure"))
+		throw RuntimeErrorException("Argument of library function object_keys is not object");
+
+	return (double)argument.GetObjectValue()->size();
 }
 
 OPValue Evaluator::EvaluateEval(ASTnode* node, bool insertFlag) {
