@@ -38,10 +38,9 @@ std::map<std::string,OPValue(Evaluator::*)(ASTnode*,bool)> Evaluator::IntializeD
 	table["member_callVar"] = &Evaluator::EvaluateMemberCallIdent;
 	table["member_callBrackets"] = &Evaluator::EvaluateMemberCallBrackets;
 	//table["multiCall"] = &Evaluator::EvaluateMultiCall;
-	table["lvalueCall"] = &Evaluator::EvaluateLvalueCallSuffix;
+	table["lvalueNormCall"] = &Evaluator::EvaluateLvalueNormalCall;
+	table["lvalueMethodCall"] = &Evaluator::EvaluateLvalueMethodCall;
 	//table["funcdefCall"] = &Evaluator::EvaluateFuncdefCall;
-	table["normcall"] = &Evaluator::EvaluateNormCall;
-	//table["methodcall"] = &Evaluator::EvaluateMethodCall;
 	table["argList"] = &Evaluator::EvaluateArglist;
 	table["emptyArgList"] = &Evaluator::EvaluateEmptyArglist;
 	table["assignexpr"] = &Evaluator::EvaluateAssignExpr;
@@ -407,7 +406,7 @@ OPValue Evaluator::EvaluateMemberCallBrackets(ASTnode* node, bool insertFlag) {
 }
 
 
-OPValue Evaluator::EvaluateLvalueCallSuffix(ASTnode* node, bool insertFlag){
+OPValue Evaluator::EvaluateLvalueNormalCall(ASTnode* node, bool insertFlag){
 	Environment* oldCurrent = EnvironmentHolder::getInstance()->GetCurrentEnv();
 
 	// TODO: na tsekarw pio prin gia libfunc (alliws tha petaksei error h evalute ths lvalue)
@@ -415,18 +414,50 @@ OPValue Evaluator::EvaluateLvalueCallSuffix(ASTnode* node, bool insertFlag){
 	OPValue funcdef = Evaluate(node->GetValue("lvalue")->GetObjectValue(), false);
 	CallerEnvironmentActions(*funcdef);
 
-	OPValue tmp = Evaluate(node->GetValue("callsuffix")->GetObjectValue(), false);
+	OPValue tmp = Evaluate(node->GetValue("argList")->GetObjectValue(), false);
 	OPValue retValue = Evaluate(funcdef->GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
 	LeaveFunctionEnvironment(oldCurrent);
 	return retValue;
 }
 
 
+Object* AddLvalueAsFirstArg(Value& lvalue) {
+	Object* PositionalArgs = argTable->GetValue("PositionalArgs")->GetObjectValue();
+	double numOfPositionalArgs = argTable->GetValue("numOfPositionalArgs")->GetNumberValue();
+	double numOfTotalArgs = argTable->GetValue("numOfTotalArgs")->GetNumberValue();
+	Object* newArgTable = new Object(*argTable);
+	for (double i = 0; i < numOfPositionalArgs; ++i) {
+		newArgTable->GetValue("PositionalArgs")->GetObjectValue()->Set(i + 1, *(PositionalArgs->GetValue(i)));
+	}
+	newArgTable->Set("numOfPositionalArgs", numOfPositionalArgs + 1);
+	newArgTable->Set("numOfTotalArgs", numOfTotalArgs + 1);
+	newArgTable->GetValue("PositionalArgs")->GetObjectValue()->Set(0.0, lvalue);
+	return newArgTable;
+}
 
-//normcall
-OPValue Evaluator::EvaluateNormCall(ASTnode* node, bool insertFlag) {
-	OPValue tmp = Evaluate(node->GetValue("argList")->GetObjectValue());
-	return std::nullopt;
+//methodcall
+OPValue Evaluator::EvaluateLvalueMethodCall(ASTnode* node, bool insertFlag) {
+	Environment* oldCurrent = EnvironmentHolder::getInstance()->GetCurrentEnv();
+
+	Object* old_argTable = argTable; 
+	OPValue tmp = Evaluate(node->GetValue("argList")->GetObjectValue(), false);
+	OPValue lvalue = Evaluate(node->GetValue("lvalue")->GetObjectValue());
+	if (!lvalue->isObject() || lvalue->GetObjectValue() == nil || lvalue->GetObjectValue()->HasProperty("$closure")) {
+		throw RuntimeErrorException("Left hand is not an Object in method call");
+	}
+	
+	//TODO: free argTable
+	// tha prepei sthn set na kanw increase tpm ref_counter an to kanw decrease ston destructor
+	argTable = AddLvalueAsFirstArg(*lvalue);
+
+	Value* funcdef = Object_get(*lvalue, node->GetValue("ID")->GetStringValue());
+	CallerEnvironmentActions(*funcdef);
+	
+	OPValue retValue = Evaluate(funcdef->GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
+	//TODO: free argTable
+	argTable = old_argTable;
+	LeaveFunctionEnvironment(oldCurrent);	
+	return retValue;
 }
 
 //arg
@@ -638,7 +669,7 @@ OPValue Evaluator::EvaluateFuncEnter(ASTnode* node, bool insertFlag) {
 	double numOfPositionalArgs = argTable->GetValue("numOfPositionalArgs")->GetNumberValue();
 
 	if (argTable == nullptr) assert(false);
-	if (numOfTotalArgs > numOfParams) throw RuntimeErrorException("More actual arguments than function paramiters"); 
+	if (numOfTotalArgs > numOfParams) throw RuntimeErrorException("More actual arguments than function parameters"); 
 
 
 	Object idList_withoutIndex;
@@ -727,7 +758,7 @@ OPValue Evaluator::EvaluateIdlist(ASTnode* node, bool insertFlag) {
 }
 
 OPValue Evaluator::EvaluateEmptyIdlist(ASTnode* node, bool insertFlag) {
-	return new Object("numOfParams", 0.0);
+	return new Object(*node);
 }
 
 

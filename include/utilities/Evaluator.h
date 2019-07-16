@@ -89,7 +89,8 @@ namespace interpreter {
 
 		//call
 		OPValue EvaluateMultiCall(ASTnode* node, bool insertFlag = true);
-		OPValue EvaluateLvalueCallSuffix(ASTnode* node, bool insertFlag = true);
+		OPValue EvaluateLvalueNormalCall(ASTnode* node, bool insertFlag = true);
+		OPValue EvaluateLvalueMethodCall(ASTnode* node, bool insertFlag = true);
 		OPValue EvaluateFuncdefCall(ASTnode* node, bool insertFlag = true);
 
 		OPValue EvaluateNormCall(ASTnode* node, bool insertFlag = true);

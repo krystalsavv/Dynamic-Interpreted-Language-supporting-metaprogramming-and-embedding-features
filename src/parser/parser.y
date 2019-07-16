@@ -53,7 +53,7 @@
 %type <objectVal> ifstmt whilestmt forstmt returnstmt block funcdef funcbody
 %type <objectVal> assignexpr term
 %type <objectVal> lvalue primary call objectdef const member
-%type <objectVal> elist idlist arg argList formal callsuffix normcall methodcall indexed indexedelem
+%type <objectVal> elist idlist arg argList formal normcall methodcall indexed indexedelem
 %type <objectVal> program
 
 %right ASSIGN
@@ -370,12 +370,19 @@ call : call LEFT_PARENTHESIS argList RIGHT_PARENTHESIS
 					$$->Set("call", $1);
 					$$->Set("argList", $3);
 				}
-	| lvalue callsuffix
+	| lvalue normcall 
 				{
 					std::cout << ("lvalue callsufix\n");
-					$$ = new ASTnode("type", "lvalueCall");
+					$$ = new ASTnode("type", "lvalueNormCall");
 					$$->Set("lvalue", $1);
-					$$->Set("callsuffix", $2);
+					$$->Set("argList", $2);
+				}
+	| lvalue methodcall 
+				{
+					std::cout << ("lvalue callsufix\n");
+					$$ = $2; 
+					$$->Set("type", "lvalueMethodCall");
+					$$->Set("lvalue", $1);
 				}
 	| LEFT_PARENTHESIS funcdef RIGHT_PARENTHESIS LEFT_PARENTHESIS argList RIGHT_PARENTHESIS
 				{
@@ -386,23 +393,13 @@ call : call LEFT_PARENTHESIS argList RIGHT_PARENTHESIS
 				}
 	;
 
-callsuffix : normcall 
-				{
-					std::cout << ("normcall\n");
-					$$ = $1;
-				}
-	| methodcall 
-				{
-					std::cout << ("methodcall\n");
-					$$ = $1; 
-				}
-				;
 
 normcall: LEFT_PARENTHESIS argList RIGHT_PARENTHESIS 
 			{
 				std::cout << ("(argList)\n");
-				$$ = new ASTnode("type", "normcall");
-				$$->Set("argList", $2);
+				//$$ = new ASTnode("type", "normcall");
+				//$$->Set("argList", $2);
+				$$ = $2; 
 			}
 			;
 
@@ -661,6 +658,8 @@ idlist : formal
 	|		{
 				std::cout << ("Empty (idlist)\n");
 				$$ = new ASTnode("type", "emptyIdlist");
+				$$->Set("numOfParams", 0.0);
+
 			}
 			;
 
