@@ -242,7 +242,7 @@ Value* interpreter::RvalueLocalVarActions(std::string id, bool insertFlag)
 	return nullptr;
 }
 
-void interpreter::CallerEnvironmentActions(Value& funcdefNode) {
+Value& interpreter::CallerEnvironmentActions(Value& funcdefNode, bool isFunctor) {
 	/*
 	already checked at the lvalue evaluation
 	if (funcdefNode == nullptr) {
@@ -255,9 +255,14 @@ void interpreter::CallerEnvironmentActions(Value& funcdefNode) {
 		Value* closure = funcdefNode.GetObjectValue()->GetValue("$closure");
 		if (closure != nullptr) {
 			CreateFunctionEnvironment(closure->GetObjectValue());
+			return funcdefNode;
 		}
 		else {
-			// functor
+			if(isFunctor)
+				throw RuntimeErrorException("Functor has an Object as Value");
+			if(!funcdefNode.GetObjectValue()->HasProperty("()"))
+				throw RuntimeErrorException("Object with name " + funcdefNode.GetObjectValue()->GetValue("ID")->GetStringValue() + "is not a functor");
+			return CallerEnvironmentActions(*funcdefNode.GetObjectValue()->GetValue("()"), true);
 		}
 	}
 }

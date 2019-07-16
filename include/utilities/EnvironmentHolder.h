@@ -55,7 +55,7 @@ namespace interpreter {
 	Value* RvalueLocalVarActions(std::string id, bool insertFlag = true);
 
 
-	void CallerEnvironmentActions(Value& funcdefNode);
+	Value& CallerEnvironmentActions(Value& funcdefNode, bool isFunctor = false);
 	void AddPositionalParamsToEnvironment(Object* idList, Object* argTable);
 	void AddNamedParamsToEnvironment(Object& idList_withoutIndex, Object* argTable);
 

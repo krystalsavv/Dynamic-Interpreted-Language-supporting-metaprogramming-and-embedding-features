@@ -414,7 +414,7 @@ OPValue Evaluator::EvaluateMultiCall(ASTnode* node, bool insertFlag) {
 	if (!(funcdef->isObject() && funcdef->GetObjectValue()->HasProperty("$closure")))
 		throw RuntimeErrorException("Not Callable return value on Multicall");
 
-	CallerEnvironmentActions(*funcdef);
+	funcdef = CallerEnvironmentActions(*funcdef);
 
 	OPValue tmp = Evaluate(node->GetValue("argList")->GetObjectValue(), false);
 	OPValue retValue = Evaluate(funcdef->GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
@@ -425,11 +425,9 @@ OPValue Evaluator::EvaluateMultiCall(ASTnode* node, bool insertFlag) {
 
 OPValue Evaluator::EvaluateLvalueNormalCall(ASTnode* node, bool insertFlag){
 	Environment* oldCurrent = EnvironmentHolder::getInstance()->GetCurrentEnv();
-
-	// TODO: na tsekarw pio prin gia libfunc (alliws tha petaksei error h evalute ths lvalue)
 	OPValue retValue;
 	OPValue funcdef = Evaluate(node->GetValue("lvalue")->GetObjectValue(), false);
-	if (hasCollisionWithLibFunc(funcdef->GetObjectValue()->GetValue("type")->GetStringValue())) {
+	if (funcdef->GetObjectValue()->HasProperty("type") && hasCollisionWithLibFunc(funcdef->GetObjectValue()->GetValue("type")->GetStringValue())) {
 		Object* old_argTable = argTable;
 		OPValue tmp = Evaluate(node->GetValue("argList")->GetObjectValue(), false);
 		retValue = Evaluate(funcdef->GetObjectValue());
@@ -437,7 +435,7 @@ OPValue Evaluator::EvaluateLvalueNormalCall(ASTnode* node, bool insertFlag){
 		argTable = old_argTable;
 	}
 	else {
-		CallerEnvironmentActions(*funcdef);
+		funcdef = CallerEnvironmentActions(*funcdef);
 		Object* old_argTable = argTable;
 		OPValue tmp = Evaluate(node->GetValue("argList")->GetObjectValue(), false);
 		retValue = Evaluate(funcdef->GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
@@ -450,10 +448,13 @@ OPValue Evaluator::EvaluateLvalueNormalCall(ASTnode* node, bool insertFlag){
 
 
 Object* AddLvalueAsFirstArg(Value& lvalue) {
-	Object* PositionalArgs = argTable->GetValue("PositionalArgs")->GetObjectValue();
 	double numOfPositionalArgs = argTable->GetValue("numOfPositionalArgs")->GetNumberValue();
 	double numOfTotalArgs = argTable->GetValue("numOfTotalArgs")->GetNumberValue();
+	Object* PositionalArgs = argTable->GetValue("PositionalArgs")->GetObjectValue();
 	Object* newArgTable = new Object(*argTable);
+	if (PositionalArgs == nullptr)
+		newArgTable->Set("PositionalArgs", new Object());
+
 	for (double i = 0; i < numOfPositionalArgs; ++i) {
 		newArgTable->GetValue("PositionalArgs")->GetObjectValue()->Set(i + 1, *(PositionalArgs->GetValue(i)));
 	}
@@ -479,7 +480,7 @@ OPValue Evaluator::EvaluateLvalueMethodCall(ASTnode* node, bool insertFlag) {
 	argTable = AddLvalueAsFirstArg(*lvalue);
 
 	Value* funcdef = Object_get(*lvalue, node->GetValue("ID")->GetStringValue());
-	CallerEnvironmentActions(*funcdef);
+	*funcdef = CallerEnvironmentActions(*funcdef);
 	
 	OPValue retValue = Evaluate(funcdef->GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
 	//TODO: free argTable
@@ -495,7 +496,7 @@ OPValue Evaluator::EvaluateFuncdefCall(ASTnode* node, bool insertFlag) {
 	// TODO: na tsekarw pio prin gia libfunc (alliws tha petaksei error h evalute ths lvalue)
 
 	OPValue funcdef = Evaluate(node->GetValue("funcdef")->GetObjectValue(), false);
-	CallerEnvironmentActions(*funcdef);
+	funcdef = CallerEnvironmentActions(*funcdef);
 
 	OPValue tmp = Evaluate(node->GetValue("argList")->GetObjectValue(), false);
 	OPValue retValue = Evaluate(funcdef->GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
@@ -745,7 +746,7 @@ OPValue Evaluator::EvaluateFuncEnter(ASTnode* node, bool insertFlag) {
 					curr->Set(id, *Evaluate(expr));
 				}
 				else {
-					throw RuntimeErrorException("Too few arguments in funciton call. Parameter " + id + " has no value (also not default value is defined)");
+					throw RuntimeErrorException("Too few arguments in funciton call. Parameter \"" + id + "\" has no value (also not default value is defined)");
 				}
 			}
 		}
