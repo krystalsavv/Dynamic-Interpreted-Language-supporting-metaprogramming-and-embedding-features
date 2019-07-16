@@ -661,6 +661,7 @@ idlist : formal
 	|		{
 				std::cout << ("Empty (idlist)\n");
 				$$ = new ASTnode("type", "emptyIdlist");
+				$$->Set("numOfParams", 0.0);
 			}
 			;
 
