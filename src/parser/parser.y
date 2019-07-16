@@ -375,7 +375,7 @@ call : call LEFT_PARENTHESIS argList RIGHT_PARENTHESIS
 					std::cout << ("lvalue callsufix\n");
 					$$ = new ASTnode("type", "lvalueCall");
 					$$->Set("lvalue", $1);
-					$$->Set("argList", $2);
+					$$->Set("callsuffix", $2);
 				}
 	| LEFT_PARENTHESIS funcdef RIGHT_PARENTHESIS LEFT_PARENTHESIS argList RIGHT_PARENTHESIS
 				{

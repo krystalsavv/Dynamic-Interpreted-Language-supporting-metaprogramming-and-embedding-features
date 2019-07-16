@@ -415,7 +415,7 @@ OPValue Evaluator::EvaluateLvalueCallSuffix(ASTnode* node, bool insertFlag){
 	OPValue funcdef = Evaluate(node->GetValue("lvalue")->GetObjectValue(), false);
 	CallerEnvironmentActions(*funcdef);
 
-	OPValue tmp = Evaluate(node->GetValue("argList")->GetObjectValue(), false);
+	OPValue tmp = Evaluate(node->GetValue("callsuffix")->GetObjectValue(), false);
 	OPValue retValue = Evaluate(funcdef->GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
 	LeaveFunctionEnvironment(oldCurrent);
 	return retValue;
