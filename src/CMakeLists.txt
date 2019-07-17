@@ -9,4 +9,5 @@ target_link_libraries(  Interpreter             # To
 						Value
 						Evaluator
 						EnvironmentHolder
+						EvaluatorActions
                         )                

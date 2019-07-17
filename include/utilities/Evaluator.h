@@ -7,7 +7,7 @@
 #include "utilities/Exceptions.h"
 #include "utilities/Object.h"
 #include "utilities/AST.h"
-#include "utilities/EnvironmentHolder.h"
+#include "utilities/EvaluatorActions.h"
 
 #define OPValue  std::optional<Value>
 
@@ -95,9 +95,6 @@ namespace interpreter {
 
 		OPValue EvaluateNormCall(ASTnode* node, bool insertFlag = true);
 		OPValue EvaluateMethodCall(ASTnode* node, bool insertFlag = true);
-
-		//arg
-		OPValue EvaluateArg(ASTnode* node, bool insertFlag = true);
 
 		//arglist
 		OPValue EvaluateArglist(ASTnode* node, bool insertFlag = true);

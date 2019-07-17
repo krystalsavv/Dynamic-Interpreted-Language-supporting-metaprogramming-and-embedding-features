@@ -3,7 +3,6 @@
 
 using namespace interpreter;
 
-static Object* argTable = nullptr;
 
 std::map<std::string,OPValue(Evaluator::*)(ASTnode*,bool)> Evaluator::IntializeDispatcher() {
 	std::map<std::string,OPValue(Evaluator::*)(ASTnode*, bool insertFlag)> table;
@@ -447,23 +446,6 @@ OPValue Evaluator::EvaluateLvalueNormalCall(ASTnode* node, bool insertFlag){
 }
 
 
-Object* AddLvalueAsFirstArg(Value& lvalue) {
-	double numOfPositionalArgs = argTable->GetValue("numOfPositionalArgs")->GetNumberValue();
-	double numOfTotalArgs = argTable->GetValue("numOfTotalArgs")->GetNumberValue();
-	Object* PositionalArgs = argTable->GetValue("PositionalArgs")->GetObjectValue();
-	Object* newArgTable = new Object(*argTable);
-	if (PositionalArgs == nullptr)
-		newArgTable->Set("PositionalArgs", new Object());
-
-	for (double i = 0; i < numOfPositionalArgs; ++i) {
-		newArgTable->GetValue("PositionalArgs")->GetObjectValue()->Set(i + 1, *(PositionalArgs->GetValue(i)));
-	}
-	newArgTable->Set("numOfPositionalArgs", numOfPositionalArgs + 1);
-	newArgTable->Set("numOfTotalArgs", numOfTotalArgs + 1);
-	newArgTable->GetValue("PositionalArgs")->GetObjectValue()->Set(0.0, lvalue);
-	return newArgTable;
-}
-
 //methodcall
 OPValue Evaluator::EvaluateLvalueMethodCall(ASTnode* node, bool insertFlag) {
 	Environment* oldCurrent = EnvironmentHolder::getInstance()->GetCurrentEnv();
@@ -502,12 +484,6 @@ OPValue Evaluator::EvaluateFuncdefCall(ASTnode* node, bool insertFlag) {
 	OPValue retValue = Evaluate(funcdef->GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
 	LeaveFunctionEnvironment(oldCurrent);
 	return retValue;
-}
-
-
-//arg
-OPValue Evaluator::EvaluateArg(ASTnode* node, bool insertFlag) {
-	return Value();
 }
 
 //arglist
@@ -801,8 +777,7 @@ OPValue Evaluator::EvaluateOptionalParam(ASTnode* node, bool insertFlag) {
 }
 
 //idlist
-OPValue Evaluator::EvaluateIdlist(ASTnode* node, bool insertFlag) {
-	// TODO: Extra error checking ensuring that all default arguments are at the end of the parameter list after any required parameters 
+OPValue Evaluator::EvaluateIdlist(ASTnode* node, bool insertFlag) { 
 	return new Object(*node);
 }
 
