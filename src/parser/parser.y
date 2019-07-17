@@ -293,8 +293,8 @@ primary : lvalue
 	| LEFT_PARENTHESIS funcdef RIGHT_PARENTHESIS	
 				{ 
 					std::cout << ("(function definition)\n");
-					$$ = new ASTnode("type", "parentheses_funcdef");
-					$$->Set("funcdef", $2);
+					$$ = $2;
+					$$->Set("type", "parentheses_funcdef");
 				}
 	| const	{
 				std::cout << ("constant\n");

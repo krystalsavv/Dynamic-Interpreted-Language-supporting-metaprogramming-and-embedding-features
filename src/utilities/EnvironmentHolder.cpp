@@ -127,6 +127,22 @@ Value* interpreter::InsertFunctionDefinition(std::string id, ASTnode* node) {
 	return value;
 }
 
+
+
+void interpreter::ExpressionfunctionDefinition(ASTnode* node) {
+	node->Set("$closure", EnvironmentHolder::getInstance()->GetCurrentEnv());
+	node->Set("$global", EnvironmentHolder::getInstance()->GetGlobalEnv());
+	if (EnvironmentHolder::getInstance()->GetCurrentEnv()->HasProperty("$outer")) {
+		EnvironmentHolder::getInstance()->GetCurrentEnv()->Set("$sliced", true);
+	}
+	BlockEnvironment* block = SliceEnvironment(EnvironmentHolder::getInstance()->GetCurrentEnv());
+	if (EnvironmentHolder::getInstance()->isGlobalScope()) {
+		EnvironmentHolder::getInstance()->SetGlobalEnv(block);
+	}
+	EnvironmentHolder::getInstance()->SetCurrentEnv(block);
+}
+
+
 Value* interpreter::InsertLvalue(std::string id, const Value& value, Environment* envIterator) {
 	// TODO: lookuo maybe here
 	envIterator->Set(id, value);

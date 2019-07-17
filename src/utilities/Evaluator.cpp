@@ -248,7 +248,25 @@ OPValue Evaluator::EvaluatePostDecrement(ASTnode* node, bool insertFlag) {
 
 // primary
 OPValue Evaluator::EvaluateParenthesisFuncdef(ASTnode* node, bool insertFlag) {
-	return Evaluate(node->GetValue("funcdef")->GetObjectValue()); 
+//	return Evaluate(node->GetValue("funcdef")->GetObjectValue()); 
+	ExpressionfunctionDefinition(node);
+	// Error checking
+	Object* idList = node->GetValue("funcEnter")->GetObjectValue()->GetValue("idlist")->GetObjectValue();
+	double numOfParams = idList->GetValue("numOfParams")->GetNumberValue();
+
+	Object idList_withoutIndex;
+	for (double i = 0; i < numOfParams; ++i) {
+		Object* obj = idList->GetValue(i)->GetObjectValue();
+		Value id = *(obj->GetValue("ID"));
+		if (idList_withoutIndex.HasProperty(id))
+			throw RuntimeErrorException("More than one formal with name " + id.GetStringValue());
+		if (hasCollisionWithLibFunc(id.GetStringValue()))
+			throw RuntimeErrorException("\"" + id.GetStringValue() + "\" is a library function. It can not be used as a formal");
+		idList_withoutIndex.Set(id, Undefined());
+	}
+
+	return (Object *)node;
+
 }
 
 //lvalue
@@ -530,9 +548,10 @@ OPValue Evaluator::EvaluateEmptyArglist(ASTnode* node, bool insertFlag) {
 OPValue interpreter::Evaluator::EvaluateAssignExpr(ASTnode* node, bool insertFlag)
 {
 	Environment* savedEnvironment = EnvironmentHolder::getInstance()->GetCurrentEnv();
+
 	OPValue expr =  Evaluate(node->GetValue("expr")->GetObjectValue());
-	Value& lvalue = EvaluateLvalue(node->GetValue("lvalue")->GetObjectValue(), savedEnvironment);
-	if (lvalue == nil) throw RuntimeErrorException("Cannot be used nil as lvalue");
+	Value& lvalue = EvaluateLvalue(node->GetValue("lvalue")->GetObjectValue(), true, savedEnvironment);
+
 	lvalue = *expr;
 	return lvalue;
 }
@@ -582,7 +601,7 @@ OPValue Evaluator::EvaluateReturnStmt(ASTnode* node, bool insertFlag) {
 }
 
 OPValue Evaluator::EvaluateReturnValueStmt(ASTnode* node, bool insertFlag) {
-	retVal = *Evaluate(node->GetValue("expr")->GetObjectValue());
+	retVal = *Evaluate(node->GetValue("expr")->GetObjectValue(),false);
 	throw ReturnValueException();
 }
 
