@@ -413,9 +413,9 @@ OPValue Evaluator::EvaluateMultiCall(ASTnode* node, bool insertFlag) {
 	if (!(funcdef->isObject() && funcdef->GetObjectValue()->HasProperty("$closure")))
 		throw RuntimeErrorException("Not Callable return value on Multicall");
 
+	OPValue tmp = Evaluate(node->GetValue("argList")->GetObjectValue(), false);
 	funcdef = CallerEnvironmentActions(*funcdef);
 
-	OPValue tmp = Evaluate(node->GetValue("argList")->GetObjectValue(), false);
 	OPValue retValue = Evaluate(funcdef->GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
 	LeaveFunctionEnvironment(oldCurrent);
 	return retValue;
@@ -434,9 +434,9 @@ OPValue Evaluator::EvaluateLvalueNormalCall(ASTnode* node, bool insertFlag){
 		argTable = old_argTable;
 	}
 	else {
-		funcdef = CallerEnvironmentActions(*funcdef);
 		Object* old_argTable = argTable;
 		OPValue tmp = Evaluate(node->GetValue("argList")->GetObjectValue(), false);
+		funcdef = CallerEnvironmentActions(*funcdef);
 		retValue = Evaluate(funcdef->GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
 		// delete argTable
 		argTable = old_argTable;
@@ -457,9 +457,7 @@ OPValue Evaluator::EvaluateLvalueMethodCall(ASTnode* node, bool insertFlag) {
 		throw RuntimeErrorException("Left hand is not an Object in method call");
 	}
 	
-	//TODO: free argTable
-	// tha prepei sthn set na kanw increase tpm ref_counter an to kanw decrease ston destructor
-	argTable = AddLvalueAsFirstArg(*lvalue);
+	AddLvalueAsFirstArg(*lvalue);
 
 	Value* funcdef = Object_get(*lvalue, node->GetValue("ID")->GetStringValue());
 	*funcdef = CallerEnvironmentActions(*funcdef);
@@ -478,9 +476,9 @@ OPValue Evaluator::EvaluateFuncdefCall(ASTnode* node, bool insertFlag) {
 	// TODO: na tsekarw pio prin gia libfunc (alliws tha petaksei error h evalute ths lvalue)
 
 	OPValue funcdef = Evaluate(node->GetValue("funcdef")->GetObjectValue(), false);
+	OPValue tmp = Evaluate(node->GetValue("argList")->GetObjectValue(), false);
 	funcdef = CallerEnvironmentActions(*funcdef);
 
-	OPValue tmp = Evaluate(node->GetValue("argList")->GetObjectValue(), false);
 	OPValue retValue = Evaluate(funcdef->GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
 	LeaveFunctionEnvironment(oldCurrent);
 	return retValue;
@@ -670,9 +668,10 @@ OPValue interpreter::Evaluator::EvaluateFuncdef(ASTnode* node, bool insertFlag)
 	for (double i = 0; i < numOfParams; ++i) {
 		Object* obj = idList->GetValue(i)->GetObjectValue();
 		Value id = *(obj->GetValue("ID"));
-		if (idList_withoutIndex.HasProperty(id)) {
+		if (idList_withoutIndex.HasProperty(id))
 			throw RuntimeErrorException("More than one formal with name " + id.GetStringValue());
-		}
+		if(hasCollisionWithLibFunc(id.GetStringValue()))
+			throw RuntimeErrorException("\"" + id.GetStringValue() + "\" is a library function. It can not be used as a formal");
 		idList_withoutIndex.Set(id, Undefined());
 	}
 
@@ -707,9 +706,9 @@ OPValue Evaluator::EvaluateFuncEnter(ASTnode* node, bool insertFlag) {
 			idList_withoutIndex.Set(id, (Object*)nullptr);
 	}
 	if(PositionalArgs)
-		AddPositionalParamsToEnvironment(idList, argTable);
+		AddPositionalParamsToEnvironment(idList);
 	if(NamedArgs)
-		AddNamedParamsToEnvironment(idList_withoutIndex, argTable);
+		AddNamedParamsToEnvironment(idList_withoutIndex);
 
 	// Default Params
 	if (numOfTotalArgs < numOfParams) {

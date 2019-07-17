@@ -2,6 +2,8 @@
 
 using namespace interpreter;
 
+Object* interpreter::argTable = nullptr;
+
 Value* interpreter::LvalueVarActions(std::string id, bool insertFlag, Environment* envIterator)
 {
 	Value* value = NormalLookUp(id, envIterator);
@@ -69,12 +71,7 @@ Value* interpreter::RvalueLocalVarActions(std::string id, bool insertFlag)
 	return nullptr;
 }
 
-Value& interpreter::CallerEnvironmentActions(Value& funcdefNode, bool isFunctor) {
-	/*
-	already checked at the lvalue evaluation
-	if (funcdefNode == nullptr) {
-		throw RuntimeErrorException("Can not find function definition with name " );
-	}*/
+Value& interpreter::CallerEnvironmentActions(Value& funcdefNode, const Value& that, bool isFunctor) {
 	if (!(funcdefNode.isObject())) {
 		throw RuntimeErrorException("Variable with name " + funcdefNode.GetObjectValue()->GetValue("ID")->GetStringValue() + "is not callable");
 	}
@@ -82,19 +79,19 @@ Value& interpreter::CallerEnvironmentActions(Value& funcdefNode, bool isFunctor)
 		Value* closure = funcdefNode.GetObjectValue()->GetValue("$closure");
 		if (closure != nullptr) {
 			if (isFunctor)
-				//Add GetObjectValue()->GetValue("ID")->GetStringValue() as first arg
-				CreateFunctionEnvironment(closure->GetObjectValue());
+				AddLvalueAsFirstArg(that);
+			CreateFunctionEnvironment(closure->GetObjectValue());
 			return funcdefNode;
 		}
 		else {
 			if (!funcdefNode.GetObjectValue()->HasProperty("()"))
 				throw RuntimeErrorException("Object with name " + funcdefNode.GetObjectValue()->GetValue("ID")->GetStringValue() + "is not a functor");
-			return CallerEnvironmentActions(*funcdefNode.GetObjectValue()->GetValue("()"), true);
+			return CallerEnvironmentActions(*funcdefNode.GetObjectValue()->GetValue("()"), funcdefNode, true);
 		}
 	}
 }
 
-void interpreter::AddPositionalParamsToEnvironment(Object* idList, Object* argTable) {
+void interpreter::AddPositionalParamsToEnvironment(Object* idList) {
 	Object* PositionalArgs = argTable->GetValue("PositionalArgs")->GetObjectValue();
 	double numOfPositionalArgs = argTable->GetValue("numOfPositionalArgs")->GetNumberValue();
 	Environment* curr = EnvironmentHolder::getInstance()->GetCurrentEnv();
@@ -103,7 +100,7 @@ void interpreter::AddPositionalParamsToEnvironment(Object* idList, Object* argTa
 	}
 }
 
-void interpreter::AddNamedParamsToEnvironment(Object& idList_withoutIndex, Object* argTable) {
+void interpreter::AddNamedParamsToEnvironment(Object& idList_withoutIndex) {
 	Object* NamedArgs = argTable->GetValue("NamedArgs")->GetObjectValue();
 	Environment* curr = EnvironmentHolder::getInstance()->GetCurrentEnv();
 	for (auto kv : NamedArgs->GetMap()) {
@@ -114,7 +111,7 @@ void interpreter::AddNamedParamsToEnvironment(Object& idList_withoutIndex, Objec
 	}
 }
 
-Object* interpreter::AddLvalueAsFirstArg(Value& lvalue) {
+void interpreter::AddLvalueAsFirstArg(const Value& lvalue) {
 	double numOfPositionalArgs = argTable->GetValue("numOfPositionalArgs")->GetNumberValue();
 	double numOfTotalArgs = argTable->GetValue("numOfTotalArgs")->GetNumberValue();
 	Object* PositionalArgs = argTable->GetValue("PositionalArgs")->GetObjectValue();
@@ -128,7 +125,9 @@ Object* interpreter::AddLvalueAsFirstArg(Value& lvalue) {
 	newArgTable->Set("numOfPositionalArgs", numOfPositionalArgs + 1);
 	newArgTable->Set("numOfTotalArgs", numOfTotalArgs + 1);
 	newArgTable->GetValue("PositionalArgs")->GetObjectValue()->Set(0.0, lvalue);
-	return newArgTable;
+	//TODO: free argTable
+	// tha prepei sthn set na kanw increase tpm ref_counter an to kanw decrease ston destructor
+	argTable = newArgTable;
 }
 
 Value& interpreter::Object_set(Value& lvalue, std::string id) {

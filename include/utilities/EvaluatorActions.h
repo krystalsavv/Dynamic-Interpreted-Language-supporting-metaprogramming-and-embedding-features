@@ -2,7 +2,7 @@
 #include "utilities/EnvironmentHolder.h"
 
 namespace interpreter {
-	static Object* argTable = nullptr;
+	extern Object* argTable;
 
 	Value* LvalueVarActions(std::string id, bool insertFlag = true, Environment* envIterator = EnvironmentHolder::getInstance()->GetCurrentEnv());
 	Value* LvalueLocalVarActions(std::string id, bool insertFlag = true, Environment* envIterator = EnvironmentHolder::getInstance()->GetCurrentEnv());
@@ -11,10 +11,10 @@ namespace interpreter {
 	Value* RvalueVarActions(std::string id, bool insertFlag = true);
 	Value* RvalueLocalVarActions(std::string id, bool insertFlag = true);
 
-	Value& CallerEnvironmentActions(Value& funcdefNode, bool isFunctor = false);
-	void AddPositionalParamsToEnvironment(Object* idList, Object* argTable);
-	void AddNamedParamsToEnvironment(Object& idList_withoutIndex, Object* argTable);
-	Object* AddLvalueAsFirstArg(Value& lvalue);
+	Value& CallerEnvironmentActions(Value& funcdefNode, const Value& that = (Object*)nullptr, bool isFunctor = false);
+	void AddPositionalParamsToEnvironment(Object* idList);
+	void AddNamedParamsToEnvironment(Object& idList_withoutIndex);
+	void AddLvalueAsFirstArg(const Value& lvalue);
 
 	Value& Object_set(Value& lvalue, std::string id);
 	Value* Object_get(Value& rvalue, std::string id);
