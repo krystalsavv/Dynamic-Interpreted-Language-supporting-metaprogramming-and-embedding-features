@@ -72,20 +72,20 @@ Value* interpreter::RvalueLocalVarActions(std::string id, bool insertFlag)
 }
 
 Value& interpreter::CallerEnvironmentActions(Value& funcdefNode, const Value& that, bool isFunctor) {
-	if (!(funcdefNode.isObject())) {
-		throw RuntimeErrorException("Variable with name " + funcdefNode.GetObjectValue()->GetValue("ID")->GetStringValue() + "is not callable");
+	if (!(funcdefNode.isObject() && funcdefNode.GetObjectValue())) {
+		throw RuntimeErrorException("Cannot call a not callable-member");
 	}
 	else {
 		Value* closure = funcdefNode.GetObjectValue()->GetValue("$closure");
 		if (closure != nullptr) {
 			if (isFunctor)
-				AddLvalueAsFirstArg(that);
+				 AddLvalueAsFirstArg(that);
 			CreateFunctionEnvironment(closure->GetObjectValue());
 			return funcdefNode;
 		}
 		else {
 			if (!funcdefNode.GetObjectValue()->HasProperty("()"))
-				throw RuntimeErrorException("Object with name " + funcdefNode.GetObjectValue()->GetValue("ID")->GetStringValue() + "is not a functor");
+				throw RuntimeErrorException("Can not call Object at line !!!. Object is not a functor");
 			return CallerEnvironmentActions(*funcdefNode.GetObjectValue()->GetValue("()"), funcdefNode, true);
 		}
 	}
@@ -115,7 +115,7 @@ void interpreter::AddLvalueAsFirstArg(const Value& lvalue) {
 	double numOfPositionalArgs = argTable->GetValue("numOfPositionalArgs")->GetNumberValue();
 	double numOfTotalArgs = argTable->GetValue("numOfTotalArgs")->GetNumberValue();
 	Object* PositionalArgs = argTable->GetValue("PositionalArgs")->GetObjectValue();
-	Object* newArgTable = new Object(*argTable);
+	Object* newArgTable = new Object(*argTable);										//??? an deixnei se object na .. lew kai se pio katw comment 
 	if (PositionalArgs == nullptr)
 		newArgTable->Set("PositionalArgs", new Object());
 

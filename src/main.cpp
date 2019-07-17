@@ -36,7 +36,7 @@ int main(int argc,char** argv){
 	catch (RuntimeErrorException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
 	catch (SyntaxErrorException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
 	yylex_destroy(scanner);
-	ast->Print();
+	//ast->Print();
 	OPValue tmp = Evaluator::getInstance()->Evaluate(ast->GetRoot());
 	//std::cout << "------------------------------ EnvironmentChain -----------------------------------" << std::endl << std::endl;
 	//EnvironmentHolder::getInstance()->PrintEnvironmentChain();
