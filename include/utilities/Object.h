@@ -10,7 +10,7 @@ namespace interpreter {
 
 	class Object {
 		map_t symbols;
-		unsigned int referenceCounter = 0;
+		long long int referenceCounter = 0;
 		inline static unsigned int nestedCounterPrint = 0;
 		inline static unsigned long long int anonymousFuncCounter = 0;
 		bool isPrinted = false;
@@ -31,6 +31,8 @@ namespace interpreter {
 
 		void IncreaseReferenceCounter();
 		void DecreaseReferenceCounter();
+		long long int GetReferenceCounter();
+		void ClearObject();
 
 		Value operator==(Object* obj);
 		Value operator!=(Object* obj);
@@ -38,5 +40,9 @@ namespace interpreter {
 
 		static std::string GenerateAnonymousName();
 	};	
+
+	void ClearObject(Object* obj);
+	void DestroyObject(Object* obj);
+
 }
 

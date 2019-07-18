@@ -36,7 +36,7 @@ Value::Value(Undefined value) {
 }
 
 Value::Value(const Value& value) {
-	variant = value.variant;
+	Set(value);
 }
 
 

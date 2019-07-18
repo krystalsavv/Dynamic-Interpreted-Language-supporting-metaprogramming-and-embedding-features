@@ -551,6 +551,12 @@ OPValue interpreter::Evaluator::EvaluateAssignExpr(ASTnode* node, bool insertFla
 	OPValue expr =  Evaluate(node->GetValue("expr")->GetObjectValue());
 	Value& lvalue = EvaluateLvalue(node->GetValue("lvalue")->GetObjectValue(), true, savedEnvironment);
 
+	if (lvalue.isObject() && lvalue.GetObjectValue())
+		lvalue.GetObjectValue()->DecreaseReferenceCounter();
+
+	if (expr->isObject() && expr->GetObjectValue())
+		expr->GetObjectValue()->IncreaseReferenceCounter();
+
 	lvalue = *expr;
 	return lvalue;
 }
@@ -641,7 +647,8 @@ OPValue Evaluator::EvaluateIndexed(ASTnode* node, bool insertFlag) {
 		for (auto kv : obj->GetMap()) {
 			indexedMap->Set(kv.first, kv.second);
 		}
-		obj->~Object(); // call destructor to free this object (TODO: decrise reference counter )
+		//obj->~Object(); // call destructor to free this object (TODO: decrise reference counter ) obj.reference counter == 0
+		//obj->DecreaseReferenceCounter();
 	}
 	return indexedMap;
 }

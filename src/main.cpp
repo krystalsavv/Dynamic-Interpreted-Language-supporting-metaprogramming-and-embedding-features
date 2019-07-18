@@ -42,5 +42,9 @@ int main(int argc,char** argv){
 	//EnvironmentHolder::getInstance()->PrintEnvironmentChain();
 	//std::cout << "------------------------------ GlobalEnvironment -----------------------------------" << std::endl << std::endl;
 	//EnvironmentHolder::getInstance()->PrintGlobalEnvironment();
+
+	DestroyObject(EnvironmentHolder::getInstance()->GetCurrentEnv());
+	DestroyObject(ast->GetRoot());
+	
 	return 0;
 }
