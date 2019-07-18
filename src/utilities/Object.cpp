@@ -32,7 +32,15 @@ Value* Object::GetValue(const Value& key) {
 }
 
 void Object::Set(const Value& key, const Value& value) {
+
+	if (HasProperty(key) && GetValue(key)->isObject() && GetValue(key)->GetObjectValue())
+		DecreaseReferenceCounter();
+
+	if (value.isObject() && value.GetObjectValue())
+		value.GetObjectValue()->IncreaseReferenceCounter();
+
 	symbols[key] = value;
+
 }
 
 bool Object::HasProperty(const Value& key) const {
@@ -69,8 +77,59 @@ std::string Object::toString()  {
 	return s;
 }
 
-void Object::IncreaseReferenceCounter() { ++referenceCounter; }
-void Object::DecreaseReferenceCounter() { --referenceCounter; }
+void Object::IncreaseReferenceCounter() { 
+	++referenceCounter; 
+	/*std::cout << std::endl << "#####################INCREASED##############################\n";
+	std::cout << *this << std::endl << referenceCounter << std::endl;
+	std::cout << "###################################################\n";*/
+}
+
+void Object::DecreaseReferenceCounter() { 
+	--referenceCounter;
+	assert(referenceCounter >= 0);
+	/*std::cout << std::endl << "#####################DECREASED##############################\n";
+	std::cout << *this << std::endl << referenceCounter << std::endl;
+	std::cout << "###################################################\n";*/
+	if (referenceCounter == 0) {
+		//clear object (call destructor or method)
+		delete this;
+	}
+}
+
+long long int Object::GetReferenceCounter()
+{
+	/*std::cout << std::endl << "###################################################\n";
+	std::cout  << *this << std::endl << referenceCounter <<std::endl;
+	std::cout << "###################################################\n";*/
+	return referenceCounter;
+}
+
+void interpreter::ClearObject(Object* obj) {
+	obj->DecreaseReferenceCounter();
+	if(obj->GetReferenceCounter() != 0)
+		return;
+	for (auto pair : obj->GetMap()) {
+		if (pair.first.isObject() && pair.first.GetObjectValue()) {
+			ClearObject(pair.first.GetObjectValue());
+		}
+		if (pair.second.isObject() && pair.second.GetObjectValue()) {
+			ClearObject(pair.second.GetObjectValue());
+		}
+	}
+	
+}
+
+void interpreter::DestroyObject(Object* obj) {
+	for (auto pair : obj->GetMap()) {
+		if (pair.first.isObject() && pair.first.GetObjectValue()) {
+			DestroyObject(pair.first.GetObjectValue());
+		}
+		if (pair.second.isObject() && pair.second.GetObjectValue()) {
+			DestroyObject(pair.second.GetObjectValue());
+		}
+	}
+	delete obj;
+}
 
 //overloads
 Value Object::operator==(Object* obj) {
