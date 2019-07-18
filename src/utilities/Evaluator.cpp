@@ -186,13 +186,13 @@ OPValue Evaluator::EvaluateLessOrEqualExpr(ASTnode* node, bool insertFlag) {
 	return *left <= *right;
 }
 
-OPValue Evaluator::EvaluateEqualExpr(ASTnode* node, bool insertFlag) {						// TODO: na elenxoume to object 
+OPValue Evaluator::EvaluateEqualExpr(ASTnode* node, bool insertFlag) {
 	OPValue left = Evaluate(node->GetValue("left")->GetObjectValue());
 	OPValue right = Evaluate(node->GetValue("right")->GetObjectValue());
 	return *left == *right;
 }
 
-OPValue Evaluator::EvaluateNotEqualExpr(ASTnode* node, bool insertFlag) {					// TODO: na elenxoume to object 
+OPValue Evaluator::EvaluateNotEqualExpr(ASTnode* node, bool insertFlag) {
 	OPValue left = Evaluate(node->GetValue("left")->GetObjectValue());
 	OPValue right = Evaluate(node->GetValue("right")->GetObjectValue());
 	return *left != *right;
@@ -440,7 +440,6 @@ OPValue Evaluator::EvaluateMultiCall(ASTnode* node, bool insertFlag) {
 	return retValue;
 }
 
-
 OPValue Evaluator::EvaluateLvalueNormalCall(ASTnode* node, bool insertFlag){
 	Environment* oldCurrent = EnvironmentHolder::getInstance()->GetCurrentEnv();
 	Object* old_argTable = argTable;
@@ -465,8 +464,6 @@ OPValue Evaluator::EvaluateLvalueNormalCall(ASTnode* node, bool insertFlag){
 	return retValue;
 }
 
-
-//methodcall
 OPValue Evaluator::EvaluateLvalueMethodCall(ASTnode* node, bool insertFlag) {
 	Environment* oldCurrent = EnvironmentHolder::getInstance()->GetCurrentEnv();
 	Object* old_argTable = argTable; 
@@ -489,7 +486,6 @@ OPValue Evaluator::EvaluateLvalueMethodCall(ASTnode* node, bool insertFlag) {
 	LeaveFunctionEnvironment(oldCurrent);	
 	return retValue;
 }
-
 
 OPValue Evaluator::EvaluateFuncdefCall(ASTnode* node, bool insertFlag) {
 	Environment* oldCurrent = EnvironmentHolder::getInstance()->GetCurrentEnv();

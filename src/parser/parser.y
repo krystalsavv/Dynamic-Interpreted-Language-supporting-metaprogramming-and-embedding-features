@@ -21,7 +21,6 @@
 
 
 %union{
-	//int intVal;
 	double numVal;
 	Object* objectVal; 
 	std::string* stringVal;
@@ -397,8 +396,6 @@ call : call LEFT_PARENTHESIS argList RIGHT_PARENTHESIS
 normcall: LEFT_PARENTHESIS argList RIGHT_PARENTHESIS 
 			{
 				std::cout << ("(argList)\n");
-				//$$ = new ASTnode("type", "normcall");
-				//$$->Set("argList", $2);
 				$$ = $2; 
 			}
 			;
