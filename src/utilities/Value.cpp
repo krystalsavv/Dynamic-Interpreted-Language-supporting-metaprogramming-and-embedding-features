@@ -15,7 +15,7 @@ Value::Value(bool value) {
 	variant = value;
 }
 
-Value::Value( double value) {
+Value::Value(double value) {
 	variant = value;
 }
 

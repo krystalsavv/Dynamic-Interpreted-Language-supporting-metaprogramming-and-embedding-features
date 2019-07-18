@@ -31,8 +31,8 @@ int main(int argc,char** argv){
 	} else {
 		yyset_in(stdin, scanner);
 	}
-	AST* ast = new AST(); 
-	try { yyparse(ast, scanner); }
+	AST* ast = new AST();
+	try { yyparse(ast, scanner, 0); }
 	catch (RuntimeErrorException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
 	catch (SyntaxErrorException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
 	yylex_destroy(scanner);

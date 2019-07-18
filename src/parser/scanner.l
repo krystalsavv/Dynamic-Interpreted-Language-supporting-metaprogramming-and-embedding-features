@@ -154,3 +154,13 @@ int keywords_to_enum(std::string text){
 	else if(text == ".")		return DOT;
 	else if(text == "..")		return DOUBLE_DOT;	
 }
+
+
+int yylex(YYSTYPE * yylval_param , yyscan_t yyscanner, int isEval){
+	if(isEval){
+		isEval = 0;	
+		return EVAL_PARSER;
+	}
+	else
+		return yylex(yylval_param, yyscanner);
+}

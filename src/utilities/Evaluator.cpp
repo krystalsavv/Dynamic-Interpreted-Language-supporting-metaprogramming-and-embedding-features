@@ -1,4 +1,7 @@
 #include "utilities/Evaluator.h"
+#include "parser.hpp"
+#include "scanner.h"
+
 #define nil (Object *)nullptr
 
 using namespace interpreter;
@@ -891,5 +894,24 @@ OPValue Evaluator::EvaluateObject_size(ASTnode* node, bool insertFlag) {
 }
 
 OPValue Evaluator::EvaluateEval(ASTnode* node, bool insertFlag) {
-	return std::nullopt;
+	double numOfTotalArgs = argTable->GetValue("numOfTotalArgs")->GetNumberValue();
+	double numOfPositionalArgs = argTable->GetValue("numOfPositionalArgs")->GetNumberValue();
+	if (numOfTotalArgs != 1 || numOfPositionalArgs != numOfTotalArgs) throw SyntaxErrorException("Too many argument in library function eval()");
+	
+	Value* arg = argTable->GetValue("PositionalArgs")->GetObjectValue()->GetValue(0.0);
+	if(!arg->isString()) throw RuntimeErrorException("Library function eval() takes only string valua as an argument");
+	std::string arg_s = arg->GetStringValue();
+	
+	yyscan_t scanner;
+	yylex_init(&scanner);
+	yy_scan_string(arg_s.c_str(), scanner);
+	AST* ast = new AST();
+	try { yyparse(ast, scanner, 1); }
+	catch (RuntimeErrorException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
+	catch (SyntaxErrorException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
+
+	yylex_destroy(scanner);
+	OPValue tmp = Evaluator::getInstance()->Evaluate(ast->GetRoot());
+	
+	return Undefined();
 }

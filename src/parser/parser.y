@@ -9,8 +9,8 @@
 	#include "scanner.h"
 
 	using namespace interpreter; 
-
-	int yyerror (AST* ast, yyscan_t scanner, const char* yaccProvidedMessage);
+	int yyerror (AST* ast, yyscan_t scanner, int isEval, const char* yaccProvidedMessage);
+	int yylex(YYSTYPE * yylval_param , yyscan_t yyscanner, int isEval);
 %}
 
 %code requires {
@@ -31,8 +31,11 @@
 %lex-param {void * scanner}
 %parse-param {AST * ast}
 %parse-param {void * scanner}
+%lex-param {int isEval}
+%parse-param {int isEval}
 
-%start program
+%start start
+
 
 %token	<stringVal>IDENT
 %token  <numVal>INTEGER REALNUMBER			
@@ -41,6 +44,7 @@
 %token	MULTI_LINE_COMMENT
 %token	NESTED_COMMENT
 
+%token EVAL_PARSER
 
 %token <stringVal> WHILE FOR IF ELSE FUNCTION RETURN BREAK CONTINUE AND OR NOT LOCAL TRUE FALSE NIL PLUS MINUS UMINUS ASSIGN MULTI MOD DIV EQUAL NOT_EQUAL INCREMENT DECREMENT 
 %token <stringVal> GREATER_OR_EQUAL LESS_OR_EQUAL GREATER LESS LEFT_SQUARE_BRACKET RIGHT_SQUARE_BRACKET LEFT_BRACKET RIGHT_BRACKET LEFT_PARENTHESIS RIGHT_PARENTHESIS COMMA SEMICOLON COLON DOT DOUBLE_DOT SCOPE WRONG_DEFINITION 
@@ -53,7 +57,7 @@
 %type <objectVal> assignexpr term
 %type <objectVal> lvalue primary call objectdef const member
 %type <objectVal> elist idlist arg argList formal normcall methodcall indexed indexedelem
-%type <objectVal> program
+%type <objectVal> program start
 
 %right ASSIGN
 %left OR
@@ -65,11 +69,27 @@
 %right NOT INCREMENT DECREMENT UMINUS
 %left DOT DOUBLE_DOT
 %left LEFT_SQUARE_BRACKET RIGHT_SQUARE_BRACKET
-%left LEFT_PARENTHESIS	RIGHT_PARENTHESIS
+%left LEFT_PARENTHESIS RIGHT_PARENTHESIS
 
 %expect 1
 
 %%
+start : program 
+			{
+				std::cout << "Start Program" << std::endl; 
+				ast->SetRoot($1);
+			}
+		| EVAL_PARSER {isEval = 0;} expr 
+			{
+				ast->SetRoot($3); 
+			}
+		| EVAL_PARSER EVAL_PARSER {isEval = 0;} program 
+			{
+				ast->SetRoot($4);
+			}
+			;
+
+
 program : program stmt
 				{ 
 					std::cout << "stmt program" << std::endl;
@@ -83,7 +103,7 @@ program : program stmt
 				std::cout << ("Program\n");
 				$$ = new ASTnode("type", "program");
 				$$->Set("numOfStmt", 0.0);
-				ast->SetRoot($$);
+				//ast->SetRoot($$);
 			}
 		;
 
@@ -718,7 +738,7 @@ returnstmt : RETURN SEMICOLON
 
 %%
 
-int yyerror(AST* ast, yyscan_t scanner, const char *yaccProvidedMessage){
+int yyerror(AST* ast, yyscan_t scanner, int isEval, const char *yaccProvidedMessage){
 	//std::cout  << yaccProvidedMessage << ": at line " << yyget_lineno(scanner) << " before token : " << yyget_text(scanner) << std::endl;
 	//std::cout << "INPUT NOT VALID \n";
 	std::string yaccProvidedMessage_string = yaccProvidedMessage;
