@@ -437,7 +437,7 @@ OPValue Evaluator::EvaluateMultiCall(ASTnode* node, bool insertFlag) {
 	funcdef = CallerEnvironmentActions(*funcdef);
 
 	OPValue retValue = Evaluate(funcdef->GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
-	// delete argTable
+	DeleteArgTable();
 	argTable = old_argTable;
 	LeaveFunctionEnvironment(oldCurrent);
 	return retValue;
@@ -454,13 +454,13 @@ OPValue Evaluator::EvaluateLvalueNormalCall(ASTnode* node, bool insertFlag){
 		throw RuntimeErrorException("Cannot call a not callable-member");
 	if (funcdef->GetObjectValue()->HasProperty("type") && hasCollisionWithLibFunc(funcdef->GetObjectValue()->GetValue("type")->GetStringValue())) {		// libfunc
 		retValue = Evaluate(funcdef->GetObjectValue());
-		// delete argTable
+		DeleteArgTable();
 		argTable = old_argTable;
 	}
 	else {
 		funcdef = CallerEnvironmentActions(*funcdef);
 		retValue = Evaluate(funcdef->GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
-		// delete argTable
+		DeleteArgTable();
 		argTable = old_argTable;
 		LeaveFunctionEnvironment(oldCurrent);
 	}
@@ -484,7 +484,7 @@ OPValue Evaluator::EvaluateLvalueMethodCall(ASTnode* node, bool insertFlag) {
 	*funcdef = CallerEnvironmentActions(*funcdef);
 	
 	OPValue retValue = Evaluate(funcdef->GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
-	//TODO: delete argTable
+	DeleteArgTable();
 	argTable = old_argTable;
 	LeaveFunctionEnvironment(oldCurrent);	
 	return retValue;
@@ -493,14 +493,13 @@ OPValue Evaluator::EvaluateLvalueMethodCall(ASTnode* node, bool insertFlag) {
 OPValue Evaluator::EvaluateFuncdefCall(ASTnode* node, bool insertFlag) {
 	Environment* oldCurrent = EnvironmentHolder::getInstance()->GetCurrentEnv();
 	Object* old_argTable = argTable;
-	// TODO: na tsekarw pio prin gia libfunc (alliws tha petaksei error h evalute ths lvalue)
 
 	OPValue tmp = Evaluate(node->GetValue("argList")->GetObjectValue(), false);
 	OPValue funcdef = Evaluate(node->GetValue("funcdef")->GetObjectValue(), false);
 	funcdef = CallerEnvironmentActions(*funcdef);
 
 	OPValue retValue = Evaluate(funcdef->GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
-	//TODO: delete argTable
+	DeleteArgTable();
 	argTable = old_argTable;
 	LeaveFunctionEnvironment(oldCurrent);
 	return retValue;
@@ -508,8 +507,6 @@ OPValue Evaluator::EvaluateFuncdefCall(ASTnode* node, bool insertFlag) {
 
 //arglist
 OPValue Evaluator::EvaluateArglist(ASTnode* node, bool insertFlag) {
-	// free an eixe proigoymeno object an den to kanw otan teleiwsw na to use--> OXI EDW 
-
 	Object* myArgTable = new Object();
 	double numOfTotalArgs =  node->GetValue("numOfTotalArgs")->GetNumberValue();
 	double numOfPositionalArgs = node->GetValue("numOfPositionalArgs")->GetNumberValue();
@@ -532,15 +529,14 @@ OPValue Evaluator::EvaluateArglist(ASTnode* node, bool insertFlag) {
 }
 
 OPValue Evaluator::EvaluateEmptyArglist(ASTnode* node, bool insertFlag) {
-	// tha prepei na kanoume delete to palio argTable --> OXI EDW
 	argTable = new Object();
 	argTable->Set("numOfTotalArgs", 0.0);
 	argTable->Set("numOfPositionalArgs", 0.0);
-	argTable->Set("PositionalArgs",  (Object*)nullptr);
-	argTable->Set("NamedArgs", (Object*)nullptr);
+	argTable->Set("PositionalArgs",  (Object*)nullptr);													
+	argTable->Set("NamedArgs", (Object*)nullptr);														
 	return std::nullopt;
-	//return emptyArgList;
 }
+
 
 
 
@@ -649,6 +645,8 @@ OPValue Evaluator::EvaluateIndexed(ASTnode* node, bool insertFlag) {
 		}
 		//obj->~Object(); // call destructor to free this object (TODO: decrise reference counter ) obj.reference counter == 0
 		//obj->DecreaseReferenceCounter();
+		// eixa kanei comment otan to ylopoiousa :P
+		delete obj;
 	}
 	return indexedMap;
 }
@@ -812,11 +810,11 @@ OPValue Evaluator::EvaluateOptionalParam(ASTnode* node, bool insertFlag) {
 
 //idlist
 OPValue Evaluator::EvaluateIdlist(ASTnode* node, bool insertFlag) { 
-	return new Object(*node);
+	return node; 
 }
 
 OPValue Evaluator::EvaluateEmptyIdlist(ASTnode* node, bool insertFlag) {
-	return new Object(*node);
+	return node;
 }
 
 

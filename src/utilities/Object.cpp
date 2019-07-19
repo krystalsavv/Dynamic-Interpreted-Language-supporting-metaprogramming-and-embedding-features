@@ -38,8 +38,8 @@ Value* Object::GetValue(const Value& key) {
 
 void Object::Set(const Value& key, const Value& value) {
 
-	if (HasProperty(key) && GetValue(key)->isObject() && GetValue(key)->GetObjectValue())
-		DecreaseReferenceCounter();
+	//if (HasProperty(key) && GetValue(key)->isObject() && GetValue(key)->GetObjectValue())
+		//DecreaseReferenceCounter();
 
 	if (value.isObject() && value.GetObjectValue())
 		value.GetObjectValue()->IncreaseReferenceCounter();
