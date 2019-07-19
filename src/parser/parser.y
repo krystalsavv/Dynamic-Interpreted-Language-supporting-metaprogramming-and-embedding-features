@@ -57,7 +57,7 @@
 %type <objectVal> assignexpr term
 %type <objectVal> lvalue primary call objectdef const member
 %type <objectVal> elist idlist arg argList formal normcall methodcall indexed indexedelem
-%type <objectVal> program start
+%type <objectVal> program start eval eval_stmts
 
 %right ASSIGN
 %left OR
@@ -75,19 +75,45 @@
 
 %%
 start : program 
+				{
+					std::cout << "Start Program" << std::endl; 
+					ast->SetRoot($1);
+				}
+			| EVAL_PARSER  {isEval = 0;}  eval
+				{
+					ast->SetRoot($3);	
+				}
+				;
+
+eval : expr 
 			{
-				std::cout << "Start Program" << std::endl; 
-				ast->SetRoot($1);
+				$$ = $1;
 			}
-		| EVAL_PARSER {isEval = 0;} expr 
+		| eval_stmts
 			{
-				ast->SetRoot($3); 
+				$$ = $1;
 			}
-		| EVAL_PARSER EVAL_PARSER {isEval = 0;} program 
-			{
-				ast->SetRoot($4);
+		|	{
+				$$ = new ASTnode("type", "program");
+				$$->Set("numOfStmt", 0.0);
 			}
 			;
+
+eval_stmts: eval_stmts stmt 
+						{
+							$$ = $1;
+							double numOfStmt = $$->GetValue("numOfStmt")->GetNumberValue();
+							$$->Set(std::to_string((int)numOfStmt), $2);
+							numOfStmt++;
+							$$->Set("numOfStmt", numOfStmt);
+						}
+					|	stmt 
+						{
+							$$ = new ASTnode("type", "program");
+							$$->Set(std::to_string(0), $1);
+							$$->Set("numOfStmt", 1.0);
+						}
+						;
 
 
 program : program stmt
@@ -138,7 +164,7 @@ stmt : expr SEMICOLON	{
 								$$ = new ASTnode();
 								$$->Set("type", "continue");
 							}
-	| block 				{
+	| block 			{
 								std::cout << ("Block\n");
 								$$ = $1;
 							}
