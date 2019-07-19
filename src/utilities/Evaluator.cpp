@@ -512,8 +512,6 @@ OPValue Evaluator::EvaluateFuncdefCall(ASTnode* node, bool insertFlag) {
 
 //arglist
 OPValue Evaluator::EvaluateArglist(ASTnode* node, bool insertFlag) {
-	// free an eixe proigoymeno object an den to kanw otan teleiwsw na to use--> OXI EDW 
-
 	Object* myArgTable = new Object();
 	double numOfTotalArgs =  node->GetValue("numOfTotalArgs")->GetNumberValue();
 	double numOfPositionalArgs = node->GetValue("numOfPositionalArgs")->GetNumberValue();
@@ -536,12 +534,11 @@ OPValue Evaluator::EvaluateArglist(ASTnode* node, bool insertFlag) {
 }
 
 OPValue Evaluator::EvaluateEmptyArglist(ASTnode* node, bool insertFlag) {
-	// tha prepei na kanoume delete to palio argTable --> OXI EDW
 	argTable = new Object();
 	argTable->Set("numOfTotalArgs", 0.0);
 	argTable->Set("numOfPositionalArgs", 0.0);
-	argTable->Set("PositionalArgs",  (Object*)nullptr);													// new Object()
-	argTable->Set("NamedArgs", (Object*)nullptr);														// new Object()
+	argTable->Set("PositionalArgs",  (Object*)nullptr);													
+	argTable->Set("NamedArgs", (Object*)nullptr);														
 	return std::nullopt;
 }
 
@@ -816,11 +813,11 @@ OPValue Evaluator::EvaluateOptionalParam(ASTnode* node, bool insertFlag) {
 
 //idlist
 OPValue Evaluator::EvaluateIdlist(ASTnode* node, bool insertFlag) { 
-	return new Object(*node);
+	return node; 
 }
 
 OPValue Evaluator::EvaluateEmptyIdlist(ASTnode* node, bool insertFlag) {
-	return new Object(*node);
+	return node;
 }
 
 
