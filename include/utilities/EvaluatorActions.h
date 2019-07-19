@@ -21,4 +21,5 @@ namespace interpreter {
 	Value& Object_set_brackets(Value& lvalue, Value& expr);
 	Value* Object_get_brackets(Value& rvalue, Value& expr);
 
+	void DeleteArgTable();
 }

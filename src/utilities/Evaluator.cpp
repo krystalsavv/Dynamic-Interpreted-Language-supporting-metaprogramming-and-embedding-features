@@ -438,6 +438,7 @@ OPValue Evaluator::EvaluateMultiCall(ASTnode* node, bool insertFlag) {
 
 	OPValue retValue = Evaluate(funcdef->GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
 	// delete argTable
+	DeleteArgTable();
 	argTable = old_argTable;
 	LeaveFunctionEnvironment(oldCurrent);
 	return retValue;
@@ -455,12 +456,14 @@ OPValue Evaluator::EvaluateLvalueNormalCall(ASTnode* node, bool insertFlag){
 	if (funcdef->GetObjectValue()->HasProperty("type") && hasCollisionWithLibFunc(funcdef->GetObjectValue()->GetValue("type")->GetStringValue())) {		// libfunc
 		retValue = Evaluate(funcdef->GetObjectValue());
 		// delete argTable
+		DeleteArgTable();
 		argTable = old_argTable;
 	}
 	else {
 		funcdef = CallerEnvironmentActions(*funcdef);
 		retValue = Evaluate(funcdef->GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
 		// delete argTable
+		DeleteArgTable();
 		argTable = old_argTable;
 		LeaveFunctionEnvironment(oldCurrent);
 	}
@@ -485,6 +488,7 @@ OPValue Evaluator::EvaluateLvalueMethodCall(ASTnode* node, bool insertFlag) {
 	
 	OPValue retValue = Evaluate(funcdef->GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
 	//TODO: delete argTable
+	DeleteArgTable();
 	argTable = old_argTable;
 	LeaveFunctionEnvironment(oldCurrent);	
 	return retValue;
@@ -493,7 +497,6 @@ OPValue Evaluator::EvaluateLvalueMethodCall(ASTnode* node, bool insertFlag) {
 OPValue Evaluator::EvaluateFuncdefCall(ASTnode* node, bool insertFlag) {
 	Environment* oldCurrent = EnvironmentHolder::getInstance()->GetCurrentEnv();
 	Object* old_argTable = argTable;
-	// TODO: na tsekarw pio prin gia libfunc (alliws tha petaksei error h evalute ths lvalue)
 
 	OPValue tmp = Evaluate(node->GetValue("argList")->GetObjectValue(), false);
 	OPValue funcdef = Evaluate(node->GetValue("funcdef")->GetObjectValue(), false);
@@ -501,6 +504,7 @@ OPValue Evaluator::EvaluateFuncdefCall(ASTnode* node, bool insertFlag) {
 
 	OPValue retValue = Evaluate(funcdef->GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
 	//TODO: delete argTable
+	DeleteArgTable();
 	argTable = old_argTable;
 	LeaveFunctionEnvironment(oldCurrent);
 	return retValue;
@@ -536,11 +540,11 @@ OPValue Evaluator::EvaluateEmptyArglist(ASTnode* node, bool insertFlag) {
 	argTable = new Object();
 	argTable->Set("numOfTotalArgs", 0.0);
 	argTable->Set("numOfPositionalArgs", 0.0);
-	argTable->Set("PositionalArgs",  (Object*)nullptr);
-	argTable->Set("NamedArgs", (Object*)nullptr);
+	argTable->Set("PositionalArgs",  (Object*)nullptr);													// new Object()
+	argTable->Set("NamedArgs", (Object*)nullptr);														// new Object()
 	return std::nullopt;
-	//return emptyArgList;
 }
+
 
 
 
