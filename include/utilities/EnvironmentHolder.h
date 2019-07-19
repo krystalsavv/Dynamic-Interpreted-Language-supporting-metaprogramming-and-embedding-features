@@ -21,7 +21,7 @@ namespace interpreter {
 
 	public:
 		static EnvironmentHolder* getInstance();
-		static EnvironmentHolder* destroyInstance();
+		static void destroyInstance();
 		void SetCurrentEnv(Environment* env);
 		Environment* GetCurrentEnv();
 

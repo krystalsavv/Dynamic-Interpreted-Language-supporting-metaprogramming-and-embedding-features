@@ -108,7 +108,7 @@ Evaluator* Evaluator::getInstance() {
 	return evaluator;
 }
 
-Evaluator* Evaluator::destroyInstance(){
+void Evaluator::destroyInstance(){
 	assert(evaluator);
 	delete evaluator;
 }

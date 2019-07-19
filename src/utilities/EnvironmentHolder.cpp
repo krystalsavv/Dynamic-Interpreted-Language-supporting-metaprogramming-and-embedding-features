@@ -15,7 +15,7 @@ EnvironmentHolder* EnvironmentHolder::getInstance() {
 	return envHolder;
 }
 
-EnvironmentHolder* EnvironmentHolder::destroyInstance(){
+void EnvironmentHolder::destroyInstance(){
 	assert(envHolder);
 	delete envHolder;
 }
@@ -154,6 +154,7 @@ void interpreter::ExpressionfunctionDefinition(ASTnode* node) {
 	//EnvironmentHolder::getInstance()->GetCurrentEnv()->IncreaseReferenceCounter();
 	node->Set("$global", EnvironmentHolder::getInstance()->GetGlobalEnv());
 	//EnvironmentHolder::getInstance()->GetGlobalEnv()->IncreaseReferenceCounter();
+	//std::cout << "---------------------------------------------" << std::endl << *EnvironmentHolder::getInstance()->GetCurrentEnv() << std::endl;
 	if (EnvironmentHolder::getInstance()->GetCurrentEnv()->HasProperty("$outer")) {
 		EnvironmentHolder::getInstance()->GetCurrentEnv()->Set("$sliced", true);
 	}
@@ -166,10 +167,7 @@ void interpreter::ExpressionfunctionDefinition(ASTnode* node) {
 
 
 Value* interpreter::InsertLvalue(std::string id, const Value& value, Environment* envIterator) {
-	// TODO: lookuo maybe here
 	envIterator->Set(id, value);
-	/*if (value.isObject() && value.GetObjectValue())
-		value.GetObjectValue()->IncreaseReferenceCounter();*/
 	return envIterator->GetValue(id);
 }
 

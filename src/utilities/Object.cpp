@@ -20,7 +20,7 @@ Object::Object(const Object& obj) {
 
 
 Object::~Object() {
-	std::cout << "destroyedBlocks: " << ++destroyedBlocks << std::endl;
+	//std::cout << "destroyedBlocks: " << ++destroyedBlocks << std::endl;
 }
 
 
@@ -38,8 +38,8 @@ Value* Object::GetValue(const Value& key) {
 
 void Object::Set(const Value& key, const Value& value) {
 
-	//if (HasProperty(key) && GetValue(key)->isObject() && GetValue(key)->GetObjectValue())
-		//DecreaseReferenceCounter();
+	//if (this && HasProperty(key) && GetValue(key)->isObject() && GetValue(key)->GetObjectValue())
+	//	DecreaseReferenceCounter();
 
 	if (value.isObject() && value.GetObjectValue())
 		value.GetObjectValue()->IncreaseReferenceCounter();
@@ -98,8 +98,6 @@ void Object::DecreaseReferenceCounter() {
 	std::cout << *this << std::endl << referenceCounter << std::endl;
 	std::cout << "###################################################\n";*/
 	if (referenceCounter == 0) {
-		//clear object (call destructor or method)
-		//interpreter::ClearObject(this);
 		ClearObject(this);
 		delete this;
 	}
@@ -112,21 +110,6 @@ long long int Object::GetReferenceCounter()
 	std::cout << "###################################################\n";*/
 	return referenceCounter;
 }
-
-/*void interpreter::ClearObject(Object* obj) {
-	if (!obj) return;
-	obj->DecreaseReferenceCounter();
-	if(obj->GetReferenceCounter() > 0)	return;
-	for (auto pair : obj->GetMap()) {
-		if (pair.first.isObject() && pair.first.GetObjectValue()) {
-			ClearObject(pair.first.GetObjectValue());
-		}
-		if (pair.second.isObject() && pair.second.GetObjectValue()) {
-			ClearObject(pair.second.GetObjectValue());
-		}
-	}
-	
-}*/
 
 //overloads
 Value Object::operator==(Object* obj) {
