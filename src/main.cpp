@@ -36,15 +36,18 @@ int main(int argc,char** argv){
 	catch (RuntimeErrorException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
 	catch (SyntaxErrorException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
 	yylex_destroy(scanner);
-	//ast->Print();
 	OPValue tmp = Evaluator::getInstance()->Evaluate(ast->GetRoot());
+	ast->Print();
 	//std::cout << "------------------------------ EnvironmentChain -----------------------------------" << std::endl << std::endl;
 	//EnvironmentHolder::getInstance()->PrintEnvironmentChain();
 	//std::cout << "------------------------------ GlobalEnvironment -----------------------------------" << std::endl << std::endl;
 	//EnvironmentHolder::getInstance()->PrintGlobalEnvironment();
+	TraverseAndClearAst(ast->GetRoot());
+	//std::cout << "------------------------------ EnvironmentChain -----------------------------------" << std::endl << std::endl;
+	//EnvironmentHolder::getInstance()->PrintEnvironmentChain();
+	ClearEnvironment();
+	DestroyAst(ast->GetRoot());
+	delete ast;
 
-	//DestroyObject(EnvironmentHolder::getInstance()->GetCurrentEnv());
-	//DestroyObject(ast->GetRoot());
-	
 	return 0;
 }

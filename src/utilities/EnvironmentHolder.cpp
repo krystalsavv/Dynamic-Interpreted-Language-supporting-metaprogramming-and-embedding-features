@@ -11,10 +11,11 @@ EnvironmentHolder* EnvironmentHolder::getInstance() {
 }
 
 void EnvironmentHolder::SetCurrentEnv(Environment* env) {
-	if(currentEnv != nullptr )
-		currentEnv->DecreaseReferenceCounter();
 	env->IncreaseReferenceCounter();
+	Environment* oldCurrent = currentEnv;
 	currentEnv = env;
+	if(oldCurrent != nullptr )
+		oldCurrent->DecreaseReferenceCounter();
 }
 
 Environment* EnvironmentHolder::GetCurrentEnv() {
@@ -23,10 +24,11 @@ Environment* EnvironmentHolder::GetCurrentEnv() {
 
 
 void EnvironmentHolder::SetGlobalEnv(Environment* env) {
-	if(globalEnv != nullptr)
-		globalEnv->DecreaseReferenceCounter();
 	env->IncreaseReferenceCounter();
+	Environment* oldGlobal = globalEnv;
 	globalEnv = env;
+	if (oldGlobal != nullptr)
+		oldGlobal->DecreaseReferenceCounter();
 }
 
 Environment* EnvironmentHolder::GetGlobalEnv() {
@@ -96,7 +98,6 @@ void interpreter::LeaveBlockEnvironment() {
 	while (envIterator->HasProperty("$previous")) {
 		envIterator = envIterator->GetValue("$previous")->GetObjectValue();
 	}
-
 	Environment* nextEnv;
 	if (envIterator->GetValue("$sliced")->GetBoolValue()){
 		nextEnv = SliceEnvironment(envIterator->GetValue("$outer")->GetObjectValue());
@@ -122,6 +123,7 @@ Value* interpreter::InsertFunctionDefinition(std::string id, ASTnode* node) {
 	//EnvironmentHolder::getInstance()->GetCurrentEnv()->IncreaseReferenceCounter();
 	node->Set("$global", EnvironmentHolder::getInstance()->GetGlobalEnv());
 	//EnvironmentHolder::getInstance()->GetGlobalEnv()->IncreaseReferenceCounter();
+	//std::cout << "=============================" << std::endl << EnvironmentHolder::getInstance()->GetGlobalEnv()->GetReferenceCounter() << std::endl;
 	if (EnvironmentHolder::getInstance()->GetCurrentEnv()->HasProperty("$outer")) {
 		EnvironmentHolder::getInstance()->GetCurrentEnv()->Set("$sliced", true);
 	}
@@ -130,6 +132,7 @@ Value* interpreter::InsertFunctionDefinition(std::string id, ASTnode* node) {
 		EnvironmentHolder::getInstance()->SetGlobalEnv(block);
 	}
 	EnvironmentHolder::getInstance()->SetCurrentEnv(block);
+	//std::cout << "=============================" << std::endl << EnvironmentHolder::getInstance()->GetGlobalEnv()->GetReferenceCounter() << std::endl;
 
 	return value;
 }
@@ -202,3 +205,7 @@ Value* interpreter::LocalLookUp(std::string id, Environment* envIterator) {		// 
 	 return LocalLookUp(id, envIterator);
  }
 
+ void interpreter::ClearEnvironment(){
+	 EnvironmentHolder::getInstance()->GetCurrentEnv()->DecreaseReferenceCounter();
+	 EnvironmentHolder::getInstance()->GetGlobalEnv()->DecreaseReferenceCounter();
+ }

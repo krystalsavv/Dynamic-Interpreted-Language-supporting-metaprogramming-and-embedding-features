@@ -120,9 +120,9 @@ std::string Value::toString() const {
 		return std::to_string(GetNumberValue());
 	else if (isString())
 		return GetStringValue();
-	else if (isObject() && GetObjectValue() != nullptr)
+	else if (isObject() && GetObjectValue())
 		return GetObjectValue()->toString();
-	else if (isObject() && GetObjectValue() == nullptr)
+	else if (isObject() && !GetObjectValue())
 		return "null";
 	else {
 		return "undefined";

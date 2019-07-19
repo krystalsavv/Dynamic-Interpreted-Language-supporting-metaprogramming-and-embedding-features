@@ -13,13 +13,15 @@ namespace interpreter {
 		long long int referenceCounter = 0;
 		inline static unsigned int nestedCounterPrint = 0;
 		inline static unsigned long long int anonymousFuncCounter = 0;
+		inline static unsigned long long int destroyedBlocks = 0;
 		bool isPrinted = false;
 		static void AddTabs(std::string& s);
 	public:
 		Object() = default;
 		Object(const Value& key, const Value& value);
 		Object(const Object& obj); 
-		
+		~Object();
+
 		map_t GetMap();
 		Value* GetValue(const Value& key);
 		
@@ -32,7 +34,6 @@ namespace interpreter {
 		void IncreaseReferenceCounter();
 		void DecreaseReferenceCounter();
 		long long int GetReferenceCounter();
-		void ClearObject();
 
 		Value operator==(Object* obj);
 		Value operator!=(Object* obj);
@@ -42,7 +43,9 @@ namespace interpreter {
 	};	
 
 	void ClearObject(Object* obj);
-	void DestroyObject(Object* obj);
+
+	//void DestroyObject(Object* obj);
+	//void VisitAndPrint(Object* obj);
 
 }
 

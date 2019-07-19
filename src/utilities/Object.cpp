@@ -14,8 +14,13 @@ Object::Object(const Value& key, const Value& value) {
 
 
 Object::Object(const Object& obj) {
-	
 	symbols = obj.symbols;
+}
+
+
+
+Object::~Object() {
+	std::cout << "destroyedBlocks: " << ++destroyedBlocks << std::endl;
 }
 
 
@@ -57,9 +62,9 @@ size_t interpreter::Object::size() const
 
 std::string Object::toString()  {
 	isPrinted = true;
-	std::string s = "{\n";
 	nestedCounterPrint++;
 	int commaCounter = 0;
+	std::string s = "{\n";
 	for (auto& [key, value] : symbols) {
 		AddTabs(s);
 		if (value.isObject() && value.GetObjectValue() != nullptr && value.GetObjectValue()->isPrinted == true) 
@@ -69,10 +74,12 @@ std::string Object::toString()  {
 		if (commaCounter++ < symbols.size() - 1)
 			s += ", ";
 		s += "\n";
+		//std::cout << s;
 	}
 	nestedCounterPrint--;
 	AddTabs(s);
 	s += "}\n";
+	s += std::to_string(GetReferenceCounter());
 	isPrinted = false;
 	return s;
 }
@@ -92,6 +99,8 @@ void Object::DecreaseReferenceCounter() {
 	std::cout << "###################################################\n";*/
 	if (referenceCounter == 0) {
 		//clear object (call destructor or method)
+		//interpreter::ClearObject(this);
+		ClearObject(this);
 		delete this;
 	}
 }
@@ -104,10 +113,10 @@ long long int Object::GetReferenceCounter()
 	return referenceCounter;
 }
 
-void interpreter::ClearObject(Object* obj) {
+/*void interpreter::ClearObject(Object* obj) {
+	if (!obj) return;
 	obj->DecreaseReferenceCounter();
-	if(obj->GetReferenceCounter() != 0)
-		return;
+	if(obj->GetReferenceCounter() > 0)	return;
 	for (auto pair : obj->GetMap()) {
 		if (pair.first.isObject() && pair.first.GetObjectValue()) {
 			ClearObject(pair.first.GetObjectValue());
@@ -117,19 +126,7 @@ void interpreter::ClearObject(Object* obj) {
 		}
 	}
 	
-}
-
-void interpreter::DestroyObject(Object* obj) {
-	for (auto pair : obj->GetMap()) {
-		if (pair.first.isObject() && pair.first.GetObjectValue()) {
-			DestroyObject(pair.first.GetObjectValue());
-		}
-		if (pair.second.isObject() && pair.second.GetObjectValue()) {
-			DestroyObject(pair.second.GetObjectValue());
-		}
-	}
-	delete obj;
-}
+}*/
 
 //overloads
 Value Object::operator==(Object* obj) {
@@ -149,4 +146,16 @@ std::string Object::GenerateAnonymousName()
 	std::string name = "$f" + std::to_string(anonymousFuncCounter);
 	anonymousFuncCounter++;
 	return name;
+}
+
+void interpreter::ClearObject(Object* obj) {
+	//if (!obj) return;
+	assert(obj);
+	//if (obj->GetReferenceCounter() > 0)	return;
+	for (auto pair : obj->GetMap()) {
+		if (pair.first.isObject() && pair.first.GetObjectValue())
+			pair.first.GetObjectValue()->DecreaseReferenceCounter();
+		if (pair.second.isObject() && pair.second.GetObjectValue())
+			pair.second.GetObjectValue()->DecreaseReferenceCounter();
+	}
 }

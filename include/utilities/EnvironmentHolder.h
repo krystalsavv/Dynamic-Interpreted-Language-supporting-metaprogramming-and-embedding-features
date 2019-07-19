@@ -48,4 +48,5 @@ namespace interpreter {
 	Value* NormalLookUp(std::string id, Environment* envIterator = EnvironmentHolder::getInstance()->GetCurrentEnv());
 	Value* GlobalLookUp(std::string id, Environment* envIterator = EnvironmentHolder::getInstance()->GetGlobalEnv());
 
+	void ClearEnvironment();
 }
