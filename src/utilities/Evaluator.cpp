@@ -108,6 +108,11 @@ Evaluator* Evaluator::getInstance() {
 	return evaluator;
 }
 
+Evaluator* Evaluator::destroyInstance(){
+	assert(evaluator);
+	delete evaluator;
+}
+
 OPValue Evaluator::Evaluate(ASTnode* node, bool insertFlag) {
 	return (this->*EvaluateDispatcher[node->GetValue("type")->GetStringValue()])(node, insertFlag);
 }

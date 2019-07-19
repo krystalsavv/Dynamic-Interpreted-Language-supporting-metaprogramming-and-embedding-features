@@ -16,7 +16,7 @@ namespace interpreter {
 	class Evaluator {
 	public:
 		static Evaluator* getInstance();
-
+		static Evaluator* destroyInstance();
 		//generic Evaluate
 		OPValue Evaluate(ASTnode* node, bool insertFlag = true);
 		

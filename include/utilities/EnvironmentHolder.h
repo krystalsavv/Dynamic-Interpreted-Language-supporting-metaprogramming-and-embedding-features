@@ -15,13 +15,13 @@ namespace interpreter {
 		inline static EnvironmentHolder* envHolder = nullptr;
 
 		Environment* currentEnv = nullptr;
-		Environment* storedEnv = nullptr;
 		Environment* globalEnv = nullptr;
 		EnvironmentHolder() = default;
+		~EnvironmentHolder();
 
 	public:
 		static EnvironmentHolder* getInstance();
-
+		static EnvironmentHolder* destroyInstance();
 		void SetCurrentEnv(Environment* env);
 		Environment* GetCurrentEnv();
 

@@ -4,10 +4,20 @@ using namespace interpreter;
 
 #define CURRENT_ENV 
 
+EnvironmentHolder::~EnvironmentHolder(){
+	currentEnv = nullptr;
+	globalEnv = nullptr;
+}
+
 EnvironmentHolder* EnvironmentHolder::getInstance() {
 	if (!envHolder)
 		envHolder = new EnvironmentHolder();
 	return envHolder;
+}
+
+EnvironmentHolder* EnvironmentHolder::destroyInstance(){
+	assert(envHolder);
+	delete envHolder;
 }
 
 void EnvironmentHolder::SetCurrentEnv(Environment* env) {
