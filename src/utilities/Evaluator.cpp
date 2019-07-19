@@ -437,7 +437,6 @@ OPValue Evaluator::EvaluateMultiCall(ASTnode* node, bool insertFlag) {
 	funcdef = CallerEnvironmentActions(*funcdef);
 
 	OPValue retValue = Evaluate(funcdef->GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
-	// delete argTable
 	DeleteArgTable();
 	argTable = old_argTable;
 	LeaveFunctionEnvironment(oldCurrent);
@@ -455,14 +454,12 @@ OPValue Evaluator::EvaluateLvalueNormalCall(ASTnode* node, bool insertFlag){
 		throw RuntimeErrorException("Cannot call a not callable-member");
 	if (funcdef->GetObjectValue()->HasProperty("type") && hasCollisionWithLibFunc(funcdef->GetObjectValue()->GetValue("type")->GetStringValue())) {		// libfunc
 		retValue = Evaluate(funcdef->GetObjectValue());
-		// delete argTable
 		DeleteArgTable();
 		argTable = old_argTable;
 	}
 	else {
 		funcdef = CallerEnvironmentActions(*funcdef);
 		retValue = Evaluate(funcdef->GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
-		// delete argTable
 		DeleteArgTable();
 		argTable = old_argTable;
 		LeaveFunctionEnvironment(oldCurrent);
@@ -487,7 +484,6 @@ OPValue Evaluator::EvaluateLvalueMethodCall(ASTnode* node, bool insertFlag) {
 	*funcdef = CallerEnvironmentActions(*funcdef);
 	
 	OPValue retValue = Evaluate(funcdef->GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
-	//TODO: delete argTable
 	DeleteArgTable();
 	argTable = old_argTable;
 	LeaveFunctionEnvironment(oldCurrent);	
@@ -503,7 +499,6 @@ OPValue Evaluator::EvaluateFuncdefCall(ASTnode* node, bool insertFlag) {
 	funcdef = CallerEnvironmentActions(*funcdef);
 
 	OPValue retValue = Evaluate(funcdef->GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
-	//TODO: delete argTable
 	DeleteArgTable();
 	argTable = old_argTable;
 	LeaveFunctionEnvironment(oldCurrent);
@@ -650,6 +645,8 @@ OPValue Evaluator::EvaluateIndexed(ASTnode* node, bool insertFlag) {
 		}
 		//obj->~Object(); // call destructor to free this object (TODO: decrise reference counter ) obj.reference counter == 0
 		//obj->DecreaseReferenceCounter();
+		// eixa kanei comment otan to ylopoiousa :P
+		delete obj;
 	}
 	return indexedMap;
 }
