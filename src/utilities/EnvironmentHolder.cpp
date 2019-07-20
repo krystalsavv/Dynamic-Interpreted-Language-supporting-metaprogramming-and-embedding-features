@@ -61,12 +61,13 @@ bool EnvironmentHolder::isGlobalScope() {
 // -----------
 
 void insertLibFunctions() {
-	Environment* curr = EnvironmentHolder::getInstance()->GetCurrentEnv(); 
+	Environment* curr =TemporarilySaveEnvironment(EnvironmentHolder::getInstance()->GetCurrentEnv()); 
 	curr->Set("print", new ASTnode("type", "print"));
 	curr->Set("typeof", new ASTnode("type", "typeof")); 
 	curr->Set("object_keys", new ASTnode("type", "object_keys"));
 	curr->Set("object_size", new ASTnode("type", "object_size"));
 	curr->Set("eval", new ASTnode("type", "eval"));
+	DecreaseTemporarilySavedEnvironment(curr);
 }
 
 void interpreter::InitGlobalEnvironment() {
@@ -104,7 +105,7 @@ void interpreter::CreateBlockEnvironment() {
 }
 
 void interpreter::LeaveBlockEnvironment() {
-	Environment* envIterator = EnvironmentHolder::getInstance()->GetCurrentEnv();
+	Environment* envIterator =TemporarilySaveEnvironment(EnvironmentHolder::getInstance()->GetCurrentEnv());
 	while (envIterator->HasProperty("$previous")) {
 		envIterator = envIterator->GetValue("$previous")->GetObjectValue();
 	}
@@ -115,7 +116,10 @@ void interpreter::LeaveBlockEnvironment() {
 	else {
 		nextEnv = envIterator->GetValue("$outer")->GetObjectValue();
 	}
+	nextEnv->IncreaseReferenceCounter();
 	EnvironmentHolder::getInstance()->SetCurrentEnv(nextEnv);
+	DecreaseTemporarilySavedEnvironment(nextEnv);
+	DecreaseTemporarilySavedEnvironment(envIterator);
 }
 
 BlockEnvironment* interpreter::SliceEnvironment(Environment* previous) {
@@ -137,13 +141,13 @@ Value* interpreter::InsertFunctionDefinition(std::string id, ASTnode* node) {
 	if (EnvironmentHolder::getInstance()->GetCurrentEnv()->HasProperty("$outer")) {
 		EnvironmentHolder::getInstance()->GetCurrentEnv()->Set("$sliced", true);
 	}
-	BlockEnvironment* block = SliceEnvironment(EnvironmentHolder::getInstance()->GetCurrentEnv());
+	BlockEnvironment* block = TemporarilySaveEnvironment(SliceEnvironment(EnvironmentHolder::getInstance()->GetCurrentEnv()));
 	if (EnvironmentHolder::getInstance() -> isGlobalScope()) {
 		EnvironmentHolder::getInstance()->SetGlobalEnv(block);
 	}
 	EnvironmentHolder::getInstance()->SetCurrentEnv(block);
 	//std::cout << "=============================" << std::endl << EnvironmentHolder::getInstance()->GetGlobalEnv()->GetReferenceCounter() << std::endl;
-
+	DecreaseTemporarilySavedEnvironment(block);
 	return value;
 }
 
@@ -158,11 +162,12 @@ void interpreter::ExpressionfunctionDefinition(ASTnode* node) {
 	if (EnvironmentHolder::getInstance()->GetCurrentEnv()->HasProperty("$outer")) {
 		EnvironmentHolder::getInstance()->GetCurrentEnv()->Set("$sliced", true);
 	}
-	BlockEnvironment* block = SliceEnvironment(EnvironmentHolder::getInstance()->GetCurrentEnv());
+	BlockEnvironment* block = TemporarilySaveEnvironment(SliceEnvironment(EnvironmentHolder::getInstance()->GetCurrentEnv()));
 	if (EnvironmentHolder::getInstance()->isGlobalScope()) {
 		EnvironmentHolder::getInstance()->SetGlobalEnv(block);
 	}
 	EnvironmentHolder::getInstance()->SetCurrentEnv(block);
+	DecreaseTemporarilySavedEnvironment(block);
 }
 
 
@@ -211,6 +216,16 @@ Value* interpreter::LocalLookUp(std::string id, Environment* envIterator) {		// 
 
  Value* interpreter::GlobalLookUp(std::string id, Environment* envIterator ) {
 	 return LocalLookUp(id, envIterator);
+ }
+
+ Environment* interpreter::TemporarilySaveEnvironment(Environment* env) {
+	 env->IncreaseReferenceCounter();
+	 return env;
+ }
+
+ void interpreter::DecreaseTemporarilySavedEnvironment(Environment* env) {
+	 env->DecreaseReferenceCounter();
+	 env = nullptr;
  }
 
  void interpreter::ClearEnvironment(){

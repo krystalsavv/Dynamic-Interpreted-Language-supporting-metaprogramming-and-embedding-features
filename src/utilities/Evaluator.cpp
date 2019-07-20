@@ -433,7 +433,7 @@ OPValue Evaluator::EvaluateMemberCallBrackets(ASTnode* node, bool insertFlag) {
 
 
 OPValue Evaluator::EvaluateMultiCall(ASTnode* node, bool insertFlag) {
-	Environment* oldCurrent = EnvironmentHolder::getInstance()->GetCurrentEnv();
+	Environment* oldCurrent = TemporarilySaveEnvironment(EnvironmentHolder::getInstance()->GetCurrentEnv());
 	Object* old_argTable = argTable;
 
 	OPValue tmp = Evaluate(node->GetValue("argList")->GetObjectValue(), false);
@@ -445,11 +445,12 @@ OPValue Evaluator::EvaluateMultiCall(ASTnode* node, bool insertFlag) {
 	DeleteArgTable();
 	argTable = old_argTable;
 	LeaveFunctionEnvironment(oldCurrent);
+	DecreaseTemporarilySavedEnvironment(oldCurrent);
 	return retValue;
 }
 
 OPValue Evaluator::EvaluateLvalueNormalCall(ASTnode* node, bool insertFlag){
-	Environment* oldCurrent = EnvironmentHolder::getInstance()->GetCurrentEnv();
+	Environment* oldCurrent = TemporarilySaveEnvironment(EnvironmentHolder::getInstance()->GetCurrentEnv());
 	Object* old_argTable = argTable;
 	OPValue retValue;
 	OPValue tmp = Evaluate(node->GetValue("argList")->GetObjectValue(), false);
@@ -469,11 +470,13 @@ OPValue Evaluator::EvaluateLvalueNormalCall(ASTnode* node, bool insertFlag){
 		argTable = old_argTable;
 		LeaveFunctionEnvironment(oldCurrent);
 	}
+	DecreaseTemporarilySavedEnvironment(oldCurrent);
 	return retValue;
 }
 
 OPValue Evaluator::EvaluateLvalueMethodCall(ASTnode* node, bool insertFlag) {
-	Environment* oldCurrent = EnvironmentHolder::getInstance()->GetCurrentEnv();
+	Environment* oldCurrent = TemporarilySaveEnvironment(EnvironmentHolder::getInstance()->GetCurrentEnv());
+
 	Object* old_argTable = argTable; 
 
 	OPValue tmp = Evaluate(node->GetValue("argList")->GetObjectValue(), false);
@@ -492,11 +495,13 @@ OPValue Evaluator::EvaluateLvalueMethodCall(ASTnode* node, bool insertFlag) {
 	DeleteArgTable();
 	argTable = old_argTable;
 	LeaveFunctionEnvironment(oldCurrent);	
+	DecreaseTemporarilySavedEnvironment(oldCurrent);
 	return retValue;
 }
 
 OPValue Evaluator::EvaluateFuncdefCall(ASTnode* node, bool insertFlag) {
-	Environment* oldCurrent = EnvironmentHolder::getInstance()->GetCurrentEnv();
+	Environment* oldCurrent = TemporarilySaveEnvironment(EnvironmentHolder::getInstance()->GetCurrentEnv());
+
 	Object* old_argTable = argTable;
 
 	OPValue tmp = Evaluate(node->GetValue("argList")->GetObjectValue(), false);
@@ -507,6 +512,8 @@ OPValue Evaluator::EvaluateFuncdefCall(ASTnode* node, bool insertFlag) {
 	DeleteArgTable();
 	argTable = old_argTable;
 	LeaveFunctionEnvironment(oldCurrent);
+	DecreaseTemporarilySavedEnvironment(oldCurrent);
+
 	return retValue;
 }
 
@@ -547,8 +554,8 @@ OPValue Evaluator::EvaluateEmptyArglist(ASTnode* node, bool insertFlag) {
 
 OPValue interpreter::Evaluator::EvaluateAssignExpr(ASTnode* node, bool insertFlag)
 {
-	Environment* savedEnvironment = EnvironmentHolder::getInstance()->GetCurrentEnv();
-
+	Environment* savedEnvironment = TemporarilySaveEnvironment(EnvironmentHolder::getInstance()->GetCurrentEnv());
+	
 	OPValue expr =  Evaluate(node->GetValue("expr")->GetObjectValue());
 	Value& lvalue = EvaluateLvalue(node->GetValue("lvalue")->GetObjectValue(), true, savedEnvironment);
 
@@ -557,6 +564,8 @@ OPValue interpreter::Evaluator::EvaluateAssignExpr(ASTnode* node, bool insertFla
 
 	if (expr->isObject() && expr->GetObjectValue())
 		expr->GetObjectValue()->IncreaseReferenceCounter();
+
+	DecreaseTemporarilySavedEnvironment(savedEnvironment);
 
 	lvalue = *expr;
 	return lvalue;
@@ -755,8 +764,9 @@ OPValue Evaluator::EvaluateFuncEnter(ASTnode* node, bool insertFlag) {
 			Object* expr = kv.second.GetObjectValue();
 			if (!LocalLookUp(id)) {
 				if (expr) {
-					Environment* curr = EnvironmentHolder::getInstance()->GetCurrentEnv();
+					Environment* curr = TemporarilySaveEnvironment(EnvironmentHolder::getInstance()->GetCurrentEnv());
 					curr->Set(id, *Evaluate(expr));
+					DecreaseTemporarilySavedEnvironment(curr);
 				}
 				else {
 					throw RuntimeErrorException("Too few arguments in funciton call. Parameter \"" + id + "\" has no value (also not default value is defined)");

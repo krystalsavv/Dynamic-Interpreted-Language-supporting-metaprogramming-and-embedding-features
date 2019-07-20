@@ -94,21 +94,23 @@ Value& interpreter::CallerEnvironmentActions(Value& funcdefNode, const Value& th
 void interpreter::AddPositionalParamsToEnvironment(Object* idList) {
 	Object* PositionalArgs = argTable->GetValue("PositionalArgs")->GetObjectValue();
 	double numOfPositionalArgs = argTable->GetValue("numOfPositionalArgs")->GetNumberValue();
-	Environment* curr = EnvironmentHolder::getInstance()->GetCurrentEnv();
+	Environment* curr =TemporarilySaveEnvironment(EnvironmentHolder::getInstance()->GetCurrentEnv());
 	for (double i = 0; i < numOfPositionalArgs; ++i) {
 		curr->Set(*(idList->GetValue(i)->GetObjectValue()->GetValue("ID")), *(PositionalArgs->GetValue(i)));
 	}
+	DecreaseTemporarilySavedEnvironment(curr);
 }
 
 void interpreter::AddNamedParamsToEnvironment(Object& idList_withoutIndex) {
 	Object* NamedArgs = argTable->GetValue("NamedArgs")->GetObjectValue();
-	Environment* curr = EnvironmentHolder::getInstance()->GetCurrentEnv();
+	Environment* curr = TemporarilySaveEnvironment(EnvironmentHolder::getInstance()->GetCurrentEnv());
 	for (auto kv : NamedArgs->GetMap()) {
 		std::string id = kv.first.GetStringValue();
 		if (LocalLookUp(id)) throw RuntimeErrorException("Paramiter " + id + "both positional and named value");
 		if (!(idList_withoutIndex.HasProperty(id))) throw RuntimeErrorException("Unexpected named parameter " + id);
 		curr->Set(id, kv.second);
 	}
+	DecreaseTemporarilySavedEnvironment(curr);
 }
 
 void interpreter::AddLvalueAsFirstArg(const Value& lvalue) {

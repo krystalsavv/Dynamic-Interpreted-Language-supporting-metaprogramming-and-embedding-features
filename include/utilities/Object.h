@@ -44,8 +44,5 @@ namespace interpreter {
 
 	void ClearObject(Object* obj);
 
-	//void DestroyObject(Object* obj);
-	//void VisitAndPrint(Object* obj);
-
 }
 
