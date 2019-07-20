@@ -600,10 +600,10 @@ OPValue Evaluator::EvaluateWhileStmt(ASTnode* node, bool insertFlag) {
 }
 
 OPValue Evaluator::EvaluateForStmt(ASTnode* node, bool insertFlag) {
-	OPValue tmp;
-	for (tmp = Evaluate(node->GetValue("init_elist")->GetObjectValue());
+	OPValue tmp,elist,init_elist;
+	for (init_elist = Evaluate(node->GetValue("init_elist")->GetObjectValue());
 		Evaluate(node->GetValue("condition")->GetObjectValue())->toBool();
-		tmp = Evaluate(node->GetValue("elist")->GetObjectValue())) {
+		elist = Evaluate(node->GetValue("elist")->GetObjectValue())) {
 		try { tmp = Evaluate(node->GetValue("stmt")->GetObjectValue()); }
 		catch (BreakException& ) { break; }
 		catch (ContinueException& ) { continue; }
