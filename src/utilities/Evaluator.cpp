@@ -608,6 +608,8 @@ OPValue Evaluator::EvaluateForStmt(ASTnode* node, bool insertFlag) {
 		catch (BreakException& ) { break; }
 		catch (ContinueException& ) { continue; }
 	}
+	init_elist->GetObjectValue()->DecreaseReferenceCounter();
+	elist->GetObjectValue()->DecreaseReferenceCounter();
 	return std::nullopt;
 }
 
@@ -637,6 +639,7 @@ OPValue Evaluator::EvaluateSemicolon(ASTnode* node, bool insertFlag) { return st
 //elist
 OPValue Evaluator::EvaluateElist(ASTnode* node, bool insertFlag) {
 	Object* elistMap = new Object();
+	elistMap->IncreaseReferenceCounter();
 	double numOfExprs = node->GetValue("numOfExprs")->GetNumberValue();
 	for (int i = 0; i < numOfExprs; i++) {
 		elistMap->Set((double)i, *Evaluate(node->GetValue(std::to_string(i))->GetObjectValue()));

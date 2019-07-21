@@ -80,31 +80,30 @@ bool Value::isUndefined() const {
 
 
 bool Value::toBool() const {
-	if (this->isNumber()) {
-		if (this->GetNumberValue() > 0)
+	if (isNumber()) {
+		if (GetNumberValue() > 0)
 			return true;
 		else
 			return false;
 	}
-	else if (this->isString()) {
-		if (this->GetStringValue().empty())
+	else if (isString()) {
+		if (GetStringValue().empty())
 			return false;
 		else
 			return true;
 	}
-	else if (this->isObject()) {
-		if (this->GetObjectValue() == nullptr)
+	else if (isObject()) {
+		if (!GetObjectValue())
 			return false;
 		else
 			return true;
 	}
-	else if (this->isBool()) {
-		return this->GetBoolValue();
+	else if (isBool()) {
+		return GetBoolValue();
 	}
 	else if (isUndefined()) {
 		throw RuntimeErrorException("Undefined to bool");
 	}
-	// TODO: libfunc
 }
 
 
@@ -133,14 +132,14 @@ std::string Value::toString() const {
 //arithmetics
 Value Value::operator+(Value& right) {
 	Value val;
-	if (this->isNumber() && right.isNumber())
-		val = this->GetNumberValue() + right.GetNumberValue();
-	else if (this->isString() && right.isString())
-		val = this->GetStringValue() + right.GetStringValue();
-	else if (this->isNumber() && right.isString())
-		val = std::to_string(this->GetNumberValue()) + right.GetStringValue();
-	else if (this->isString() && right.isNumber())
-		val = this->GetStringValue() + std::to_string(right.GetNumberValue());
+	if (isNumber() && right.isNumber())
+		val = GetNumberValue() + right.GetNumberValue();
+	else if (isString() && right.isString())
+		val = GetStringValue() + right.GetStringValue();
+	else if (isNumber() && right.isString())
+		val = std::to_string(GetNumberValue()) + right.GetStringValue();
+	else if (isString() && right.isNumber())
+		val = GetStringValue() + std::to_string(right.GetNumberValue());
 	else {
 		return Undefined();
 	}
@@ -149,8 +148,8 @@ Value Value::operator+(Value& right) {
 
 Value Value::operator-(Value& right) {
 	Value val;
-	if (this->isNumber() && right.isNumber())
-		val = this->GetNumberValue() - right.GetNumberValue();
+	if (isNumber() && right.isNumber())
+		val = GetNumberValue() - right.GetNumberValue();
 	else
 		throw RuntimeErrorException("Non numeric types in subtraction ");
 	return val;
@@ -159,8 +158,8 @@ Value Value::operator-(Value& right) {
 
 Value Value::operator*(Value& right) {
 	Value val;
-	if (this->isNumber() && right.isNumber())
-		val = this->GetNumberValue() * right.GetNumberValue();
+	if (isNumber() && right.isNumber())
+		val = GetNumberValue() * right.GetNumberValue();
 	else
 		throw RuntimeErrorException("Non numeric types in multiplication ");
 	return val;
@@ -168,8 +167,8 @@ Value Value::operator*(Value& right) {
 
 Value Value::operator/(Value& right) {
 	Value val;
-	if (this->isNumber() && right.isNumber())
-		val = this->GetNumberValue() / right.GetNumberValue();
+	if (isNumber() && right.isNumber())
+		val = GetNumberValue() / right.GetNumberValue();
 	else
 		throw RuntimeErrorException("Non numeric types in division ");
 	return val;
@@ -177,8 +176,8 @@ Value Value::operator/(Value& right) {
 
 Value Value::operator%(Value& right) {
 	Value val;
-	if (this->isNumber() && right.isNumber())
-		val = (double)((int)this->GetNumberValue() % (int)right.GetNumberValue());
+	if (isNumber() && right.isNumber())
+		val = (double)((int)GetNumberValue() % (int)right.GetNumberValue());
 	else
 		throw RuntimeErrorException("Non numeric types in mod ");
 	return val;
@@ -187,8 +186,8 @@ Value Value::operator%(Value& right) {
 //prefix
 Value& Value::operator++() {
 	Value val;
-	if (this->isNumber()) 
-		this->Set(this->GetNumberValue() + 1);
+	if (isNumber()) 
+		Set(GetNumberValue() + 1);
 	else
 		throw RuntimeErrorException("Non numeric types in prefix increment ");
 	return *this;
@@ -197,9 +196,9 @@ Value& Value::operator++() {
 //postfix
 Value Value::operator++(int) {
 	Value val;
-	if (this->isNumber()) {
-		val = this->GetNumberValue();
-		this->Set(this->GetNumberValue() + 1);
+	if (isNumber()) {
+		val = GetNumberValue();
+		Set(GetNumberValue() + 1);
 	}
 	else
 		throw RuntimeErrorException("Non numeric types in postfix increment ");
@@ -208,8 +207,8 @@ Value Value::operator++(int) {
 
 //prefix
 Value& Value::Value::operator--() {
-	if (this->isNumber()) 
-		this->Set(this->GetNumberValue() - 1);
+	if (isNumber()) 
+		Set(GetNumberValue() - 1);
 	else
 		throw RuntimeErrorException("Non numeric types in prefix decrement ");
 	return *this;
@@ -218,9 +217,9 @@ Value& Value::Value::operator--() {
 //postfix
 Value Value::operator--(int) {
 	Value val;
-	if (this->isNumber()) {
-		val = this->GetNumberValue();
-		this->Set(this->GetNumberValue() - 1);
+	if (isNumber()) {
+		val = GetNumberValue();
+		Set(GetNumberValue() - 1);
 	}
 	else
 		throw RuntimeErrorException("Non numeric types in postfix decrement ");
@@ -229,8 +228,8 @@ Value Value::operator--(int) {
 
 Value Value::Value::operator-() {
 	Value val;
-	if (this->isNumber())
-		val = -(this->GetNumberValue());
+	if (isNumber())
+		val = -(GetNumberValue());
 	else
 		throw RuntimeErrorException("Non numeric type in uminus ");
 	return val;
@@ -240,8 +239,8 @@ Value Value::Value::operator-() {
 //equals
 Value Value::operator>(Value& right) {
 	Value val;
-	if (this->isNumber() && right.isNumber())
-		val = (this->GetNumberValue() > right.GetNumberValue());
+	if (isNumber() && right.isNumber())
+		val = (GetNumberValue() > right.GetNumberValue());
 	else
 		throw RuntimeErrorException("Non numeric types in operator greater than (>)");
 	return val;
@@ -249,8 +248,8 @@ Value Value::operator>(Value& right) {
 
 Value Value::operator>=(Value& right) {
 	Value val;
-	if (this->isNumber() && right.isNumber())
-		val = (this->GetNumberValue() >= right.GetNumberValue());
+	if (isNumber() && right.isNumber())
+		val = (GetNumberValue() >= right.GetNumberValue());
 	else
 		throw RuntimeErrorException("Non numeric types in operator greater than equal (>=)");
 	return val;
@@ -258,8 +257,8 @@ Value Value::operator>=(Value& right) {
 
 Value Value::operator<(Value& right) {
 	Value val;
-	if (this->isNumber() && right.isNumber())
-		val = (this->GetNumberValue() < right.GetNumberValue());
+	if (isNumber() && right.isNumber())
+		val = (GetNumberValue() < right.GetNumberValue());
 	else
 		throw RuntimeErrorException("Non numeric types in operator less than (<)");
 	return val;
@@ -267,8 +266,8 @@ Value Value::operator<(Value& right) {
 
 Value Value::operator<=(Value& right) {
 	Value val;
-	if (this->isNumber() && right.isNumber())
-		val = (this->GetNumberValue() <= right.GetNumberValue());
+	if (isNumber() && right.isNumber())
+		val = (GetNumberValue() <= right.GetNumberValue());
 	else
 		throw RuntimeErrorException("Non numeric types in operator less than equal (<=)");
 	return val;
@@ -277,14 +276,14 @@ Value Value::operator<=(Value& right) {
 
 Value Value::operator==(Value& right) {
 	Value val;
-	if (this->isNumber() && right.isNumber())
-		val = (this->GetNumberValue() == right.GetNumberValue());
-	else if (this->isString() && right.isString())
-		val = (this->GetStringValue() == right.GetStringValue());
-	else if (this->isBool() && right.isBool())
-		val = (this->GetBoolValue() == right.GetBoolValue());
-	else if (this->isObject() && right.isObject()) {
-		val = this->GetObjectValue() == right.GetObjectValue();
+	if (isNumber() && right.isNumber())
+		val = (GetNumberValue() == right.GetNumberValue());
+	else if (isString() && right.isString())
+		val = (GetStringValue() == right.GetStringValue());
+	else if (isBool() && right.isBool())
+		val = (GetBoolValue() == right.GetBoolValue());
+	else if (isObject() && right.isObject()) {
+		val = GetObjectValue() == right.GetObjectValue();
 	}
 	else
 		//throw RuntimeErrorException("Invalid types in operator equal (==)");
@@ -294,14 +293,14 @@ Value Value::operator==(Value& right) {
 
 Value Value::operator!=(Value& right) {
 	Value val;
-	if (this->isNumber() && right.isNumber())
-		val = (this->GetNumberValue() != right.GetNumberValue());
-	else if (this->isString() && right.isString())
-		val = (this->GetStringValue() != right.GetStringValue());
-	else if (this->isBool() && right.isBool())
-		val = (this->GetBoolValue() != right.GetBoolValue());
-	else if (this->isObject() && right.isObject()) {
-		val = this->GetObjectValue() != right.GetObjectValue();
+	if (isNumber() && right.isNumber())
+		val = (GetNumberValue() != right.GetNumberValue());
+	else if (isString() && right.isString())
+		val = (GetStringValue() != right.GetStringValue());
+	else if (isBool() && right.isBool())
+		val = (GetBoolValue() != right.GetBoolValue());
+	else if (isObject() && right.isObject()) {
+		val = GetObjectValue() != right.GetObjectValue();
 	}
 	else
 		//throw RuntimeErrorException("Invalid types in operator not equal (!=)");
@@ -311,14 +310,14 @@ Value Value::operator!=(Value& right) {
 //for consts (unordered map comparison)
 bool Value::operator==(const Value& right) const {
 	bool b;
-	if (this->isNumber() && right.isNumber())
-		b = (this->GetNumberValue() == right.GetNumberValue());
-	else if (this->isString() && right.isString())
-		b = (this->GetStringValue() == right.GetStringValue());
-	else if (this->isBool() && right.isBool())
-		b = (this->GetBoolValue() == right.GetBoolValue());
-	else if (this->isObject() && right.isObject()) {
-			b = this->GetObjectValue() == right.GetObjectValue();
+	if (isNumber() && right.isNumber())
+		b = (GetNumberValue() == right.GetNumberValue());
+	else if (isString() && right.isString())
+		b = (GetStringValue() == right.GetStringValue());
+	else if (isBool() && right.isBool())
+		b = (GetBoolValue() == right.GetBoolValue());
+	else if (isObject() && right.isObject()) {
+			b = GetObjectValue() == right.GetObjectValue();
 	}
 	else
 		//throw RuntimeErrorException("Invalid types in operator equal (==)");
@@ -329,14 +328,14 @@ bool Value::operator==(const Value& right) const {
 //for consts (unordered map comparison)
 bool Value::operator!=(const Value& right) const {
 	bool b;
-	if (this->isNumber() && right.isNumber())
-		b = (this->GetNumberValue() != right.GetNumberValue());
-	else if (this->isString() && right.isString())
-		b = (this->GetStringValue() != right.GetStringValue());
-	else if (this->isBool() && right.isBool())
-		b = (this->GetBoolValue() != right.GetBoolValue());
-	else if (this->isObject() && right.isObject()) {
-		b = this->GetObjectValue() != right.GetObjectValue();
+	if (isNumber() && right.isNumber())
+		b = (GetNumberValue() != right.GetNumberValue());
+	else if (isString() && right.isString())
+		b = (GetStringValue() != right.GetStringValue());
+	else if (isBool() && right.isBool())
+		b = (GetBoolValue() != right.GetBoolValue());
+	else if (isObject() && right.isObject()) {
+		b = GetObjectValue() != right.GetObjectValue();
 	}
 	else
 		//throw RuntimeErrorException("Invalid types in operator not equal (!=)");
@@ -346,15 +345,15 @@ bool Value::operator!=(const Value& right) const {
 
 //logical
 Value Value::operator&&(Value& right) {
-	return (this->toBool() && right.toBool());
+	return (toBool() && right.toBool());
 }
 
 Value Value::operator||(Value& right) {
-	return (this->toBool() || right.toBool());
+	return (toBool() || right.toBool());
 }
 
 Value Value::operator!() {
-	return !(this->toBool());
+	return !(toBool());
 }
 
 std::ostream& interpreter::operator<< (std::ostream& out, const Value& value) {
