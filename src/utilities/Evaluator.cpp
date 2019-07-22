@@ -352,11 +352,11 @@ Value& Evaluator::EvaluateLvalueMemberBrackets(ASTnode* node, bool insertFlag, E
 {
 	OPValue expr = Evaluate(node->GetValue("expr")->GetObjectValue(), false);
 	if (*expr == nil) throw RuntimeErrorException("Cannot use nil as expression in brackets");
-	std::cout << "\n-------------------------------------------\n";
-	std::cout << *expr << std::endl;
+	//std::cout << "\n-------------------------------------------\n";
+	//std::cout << *expr << std::endl;
 	Value& lvalue = EvaluateLvalue(node->GetValue("lvalue")->GetObjectValue(), false);
-	std::cout << *expr << std::endl;
-	std::cout << "\n-------------------------------------------\n";
+	//std::cout << *expr << std::endl;
+	//std::cout << "\n-------------------------------------------\n";
 	//std::cout << lvalue;
 	if (lvalue.isUndefined()) throw RuntimeErrorException("Cannot read value " + expr->toString() + " of undefined");
 	if (lvalue.isObject()) {
@@ -613,8 +613,8 @@ OPValue Evaluator::EvaluateForStmt(ASTnode* node, bool insertFlag) {
 		catch (BreakException& ) { break; }
 		catch (ContinueException& ) { continue; }
 	}
-	init_elist->GetObjectValue()->DecreaseReferenceCounter();
-	elist->GetObjectValue()->DecreaseReferenceCounter();
+	//init_elist->GetObjectValue()->DecreaseReferenceCounter();
+	//elist->GetObjectValue()->DecreaseReferenceCounter();
 	return std::nullopt;
 }
 
@@ -623,7 +623,10 @@ OPValue Evaluator::EvaluateReturnStmt(ASTnode* node, bool insertFlag) {
 }
 
 OPValue Evaluator::EvaluateReturnValueStmt(ASTnode* node, bool insertFlag) {
+	Value oldRetVal = retVal;
 	retVal = *Evaluate(node->GetValue("expr")->GetObjectValue(),false);
+	if (retVal.isObject() && retVal.GetObjectValue()) retVal.GetObjectValue()->IncreaseReferenceCounter();
+	if (oldRetVal.isObject() && oldRetVal.GetObjectValue()) oldRetVal.GetObjectValue()->DecreaseReferenceCounter();
 	throw ReturnValueException();
 }
 
@@ -665,9 +668,6 @@ OPValue Evaluator::EvaluateIndexed(ASTnode* node, bool insertFlag) {
 		for (auto kv : obj->GetMap()) {
 			indexedMap->Set(kv.first, kv.second);
 		}
-		//obj->~Object(); // call destructor to free this object (TODO: decrise reference counter ) obj.reference counter == 0
-		//obj->DecreaseReferenceCounter();
-		// eixa kanei comment otan to ylopoiousa :P
 		delete obj;
 	}
 	return indexedMap;

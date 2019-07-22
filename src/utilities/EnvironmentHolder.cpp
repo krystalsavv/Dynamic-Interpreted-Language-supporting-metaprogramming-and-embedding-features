@@ -225,7 +225,6 @@ Value* interpreter::LocalLookUp(std::string id, Environment* envIterator) {		// 
 
  void interpreter::DecreaseTemporarilySavedEnvironment(Environment* env) {
 	 env->DecreaseReferenceCounter();
-	 env = nullptr;
  }
 
  void interpreter::ClearEnvironment(){

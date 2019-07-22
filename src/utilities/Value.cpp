@@ -122,7 +122,7 @@ std::string Value::toString() const {
 	else if (isObject() && GetObjectValue())
 		return GetObjectValue()->toString();
 	else if (isObject() && !GetObjectValue())
-		return "null";
+		return "nil";
 	else {
 		return "undefined";
 	}
