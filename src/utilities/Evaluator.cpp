@@ -352,11 +352,11 @@ Value& Evaluator::EvaluateLvalueMemberBrackets(ASTnode* node, bool insertFlag, E
 {
 	OPValue expr = Evaluate(node->GetValue("expr")->GetObjectValue(), false);
 	if (*expr == nil) throw RuntimeErrorException("Cannot use nil as expression in brackets");
-	std::cout << "\n-------------------------------------------\n";
-	std::cout << *expr << std::endl;
+	//std::cout << "\n-------------------------------------------\n";
+	//std::cout << *expr << std::endl;
 	Value& lvalue = EvaluateLvalue(node->GetValue("lvalue")->GetObjectValue(), false);
-	std::cout << *expr << std::endl;
-	std::cout << "\n-------------------------------------------\n";
+	//std::cout << *expr << std::endl;
+	//std::cout << "\n-------------------------------------------\n";
 	//std::cout << lvalue;
 	if (lvalue.isUndefined()) throw RuntimeErrorException("Cannot read value " + expr->toString() + " of undefined");
 	if (lvalue.isObject()) {

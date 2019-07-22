@@ -172,9 +172,6 @@ Value* interpreter::Object_get_brackets(Value& rvalue, Value& expr) {
 }
 
 void interpreter ::DeleteArgTable() {
-	if (argTable->GetValue("PositionalArgs"))
-		delete (argTable->GetValue("PositionalArgs")->GetObjectValue());
-	if (argTable->GetValue("NamedArgs"))
-		delete (argTable->GetValue("NamedArgs")->GetObjectValue());
+	ClearObject(argTable);
 	delete argTable;
 }
