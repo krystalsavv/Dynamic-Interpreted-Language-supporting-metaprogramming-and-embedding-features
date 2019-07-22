@@ -624,9 +624,19 @@ OPValue Evaluator::EvaluateReturnStmt(ASTnode* node, bool insertFlag) {
 
 OPValue Evaluator::EvaluateReturnValueStmt(ASTnode* node, bool insertFlag) {
 	Value oldRetVal = retVal;
-	retVal = *Evaluate(node->GetValue("expr")->GetObjectValue(),false);
-	if (retVal.isObject() && retVal.GetObjectValue()) retVal.GetObjectValue()->IncreaseReferenceCounter();
-	if (oldRetVal.isObject() && oldRetVal.GetObjectValue()) oldRetVal.GetObjectValue()->DecreaseReferenceCounter();
+	if (retFlag == false) {
+		retFlag = true;
+		retVal = *Evaluate(node->GetValue("expr")->GetObjectValue(), false);
+		if (oldRetVal.isObject() && oldRetVal.GetObjectValue())
+			oldRetVal.GetObjectValue()->DecreaseReferenceCounter();
+		retFlag = false;
+	}
+	else
+	{
+		retVal = *Evaluate(node->GetValue("expr")->GetObjectValue(), false);
+	}
+	if (retVal.isObject() && retVal.GetObjectValue())
+		retVal.GetObjectValue()->IncreaseReferenceCounter();
 	throw ReturnValueException();
 }
 
@@ -647,7 +657,6 @@ OPValue Evaluator::EvaluateSemicolon(ASTnode* node, bool insertFlag) { return st
 //elist
 OPValue Evaluator::EvaluateElist(ASTnode* node, bool insertFlag) {
 	Object* elistMap = new Object();
-	elistMap->IncreaseReferenceCounter();
 	double numOfExprs = node->GetValue("numOfExprs")->GetNumberValue();
 	for (int i = 0; i < numOfExprs; i++) {
 		elistMap->Set((double)i, *Evaluate(node->GetValue(std::to_string(i))->GetObjectValue()));

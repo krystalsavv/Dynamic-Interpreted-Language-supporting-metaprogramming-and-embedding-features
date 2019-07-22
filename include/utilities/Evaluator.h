@@ -31,7 +31,7 @@ namespace interpreter {
 
 		inline static Evaluator* evaluator = nullptr;
 		Value retVal;
-
+		bool retFlag = false;
 		Evaluator();
 
 		// program
