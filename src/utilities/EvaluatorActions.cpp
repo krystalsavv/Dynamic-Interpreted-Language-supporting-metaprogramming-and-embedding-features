@@ -175,3 +175,8 @@ void interpreter ::DeleteArgTable() {
 	ClearObject(argTable);
 	delete argTable;
 }
+
+void interpreter::DeleteForElist(Object* elist) {
+    ClearObject(elist);
+    delete elist;
+}

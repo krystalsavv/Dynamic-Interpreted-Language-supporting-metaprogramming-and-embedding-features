@@ -612,7 +612,11 @@ OPValue Evaluator::EvaluateForStmt(ASTnode* node, bool insertFlag) {
 		try { tmp = Evaluate(node->GetValue("stmt")->GetObjectValue()); }
 		catch (BreakException& ) { break; }
 		catch (ContinueException& ) { continue; }
+		if(elist->isObject() && elist->GetObjectValue())
+			DeleteForElist(elist->GetObjectValue());
 	}
+	DeleteForElist(elist->GetObjectValue());
+	DeleteForElist(init_elist->GetObjectValue());	
 	//init_elist->GetObjectValue()->DecreaseReferenceCounter();
 	//elist->GetObjectValue()->DecreaseReferenceCounter();
 	return std::nullopt;

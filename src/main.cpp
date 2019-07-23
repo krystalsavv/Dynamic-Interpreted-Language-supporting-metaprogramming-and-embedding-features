@@ -42,14 +42,14 @@ int main(int argc,char** argv){
 	//EnvironmentHolder::getInstance()->PrintEnvironmentChain();
 	//std::cout << "------------------------------ GlobalEnvironment -----------------------------------" << std::endl << std::endl;
 	//EnvironmentHolder::getInstance()->PrintGlobalEnvironment();
-	//TraverseAndClearAst(ast->GetRoot());
+	TraverseAndClearAst(ast->GetRoot());
 	//std::cout << "------------------------------ EnvironmentChain -----------------------------------" << std::endl << std::endl;
 	//EnvironmentHolder::getInstance()->PrintEnvironmentChain();
-	//ClearEnvironment();
-	//DestroyAst(ast->GetRoot());
-	//delete ast;
-	//EnvironmentHolder::getInstance()->destroyInstance();
-	//Evaluator::getInstance()->destroyInstance();
+	ClearEnvironment();
+	DestroyAst(ast->GetRoot());
+	delete ast;
+	EnvironmentHolder::getInstance()->destroyInstance();
+	Evaluator::getInstance()->destroyInstance();
 
 	return 0;
 }

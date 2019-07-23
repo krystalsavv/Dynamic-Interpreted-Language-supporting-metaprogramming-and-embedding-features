@@ -7,7 +7,7 @@ AST::AST(ASTnode* root) {
 }
 
 AST::~AST(){
-	std::cout << "the ast is gone" << std::endl;
+	// std::cout << "the ast is gone" << std::endl;
 }
 
 
