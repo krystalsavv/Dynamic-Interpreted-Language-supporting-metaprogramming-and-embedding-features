@@ -22,4 +22,5 @@ namespace interpreter {
 	Value* Object_get_brackets(Value& rvalue, Value& expr);
 
 	void DeleteArgTable();
+	void DeleteForElist(Object* elist);
 }
