@@ -1,13 +1,9 @@
 #pragma once
 
-#include <variant>
-#include <string>
-#include <iostream>
-#include <cassert>
-#include <iostream> 
+#include "utilities/ValueReference.h"
 #include "utilities/Exceptions.h"
 
-#define variant_t std::variant<bool, double, std::string, Object*, Undefined> 
+#define variant_t std::variant<bool, double, std::string, Object*, Undefined, ValueReference*> 
 
 namespace interpreter {
 
@@ -30,12 +26,15 @@ namespace interpreter {
 		Value(const char* value);
 		Value(Object* value);
 		Value(Undefined value);
+		Value(ValueReference* value);
+		Value(ValueReference& value);
 		Value(const Value& value);
 
 		const bool& GetBoolValue() const;
 		const double& GetNumberValue() const;
 		const std::string& GetStringValue() const;
 		Object* GetObjectValue() const;
+		ValueReference* GetValueReference() const;
 
 		bool toBool() const;
 		std::string toString() const;
@@ -45,6 +44,7 @@ namespace interpreter {
 		bool isString() const;
 		bool isObject() const;
 		bool isUndefined() const;
+		bool isValueReference() const;
 
 		void Set(const Value& value);
 

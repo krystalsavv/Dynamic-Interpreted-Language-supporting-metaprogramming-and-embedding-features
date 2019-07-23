@@ -892,6 +892,8 @@ OPValue Evaluator::EvaluateTypeof(ASTnode* node, bool insertFlag) {
 		return "number";
 	else if (argument.isString())
 		return "string";
+	else if (argument.isValueReference())
+		return "native value reference";
 	else if (argument.isUndefined())
 		return "undefined";
 }
