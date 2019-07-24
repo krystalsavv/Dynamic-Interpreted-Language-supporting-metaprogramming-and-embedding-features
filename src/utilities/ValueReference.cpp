@@ -11,7 +11,7 @@ ValueReference::ValueReference(int* value) {
 }
 
 ValueReference::ValueReference(int value) {
-	variant = &value;
+	variant = (int*)&value;
 }
 
 ValueReference::ValueReference(double* value) {
@@ -19,7 +19,7 @@ ValueReference::ValueReference(double* value) {
 }
 
 ValueReference::ValueReference(double value) {
-	variant = &value;
+	variant = (double*)&value;
 }
 
 ValueReference::ValueReference(std::string* value) {
@@ -27,7 +27,7 @@ ValueReference::ValueReference(std::string* value) {
 }
 
 ValueReference::ValueReference(std::string value) {
-	variant = &value;
+	variant = (std::string*)&value;
 }
 
 ValueReference::ValueReference(bool* value) {
@@ -35,7 +35,7 @@ ValueReference::ValueReference(bool* value) {
 }
 
 ValueReference::ValueReference(bool value) {
-	variant = &value;
+	variant = (bool*)&value;
 }
 
 ValueReference::ValueReference(void* value, std::string type) {
@@ -47,19 +47,19 @@ ValueReference::ValueReference(const ValueReference& value) {
 	Set(value);
 }
 
-const int* ValueReference::GetInteger() const {
+ int* ValueReference::GetInteger() const {
 	return std::get<int*>(variant);
 }
 
-const double* ValueReference::GetDouble() const {
+double* ValueReference::GetDouble() const {
 	return std::get<double*>(variant);
 }
 
-const std::string* ValueReference::GetString() const {
+std::string* ValueReference::GetString() const {
 	return std::get<std::string*>(variant);
 }
 
-const bool* ValueReference::GetBool() const {
+bool* ValueReference::GetBool() const {
 	return std::get<bool*>(variant);
 }
 
@@ -112,12 +112,18 @@ std::string ValueReference::toString() const {
 
 ValueReference ValueReference::operator+(ValueReference& right) {
 	ValueReference val;
-	if (isInteger() && right.isInteger())
-		val = *GetInteger() + *right.GetInteger();
-	else if (isString() && right.isString())
-		val = *GetString() + *right.GetString();
-	else if (isDouble() && right.isDouble())
-		val = *GetDouble() + *right.GetDouble();
+	if (isInteger() && right.isInteger()) {
+		int i = *GetInteger() + *right.GetInteger();
+		val = &i;
+	}
+	else if (isString() && right.isString()) {
+		std::string s = *GetString() + *right.GetString();
+		val = &s;
+	}
+	else if (isDouble() && right.isDouble()) {
+		double d = *GetDouble() + *right.GetDouble();
+		val = &d;
+	}
 	else
 		throw RuntimeErrorException("Non same types in operator + in value reference ");
 	return val;
@@ -126,9 +132,9 @@ ValueReference ValueReference::operator+(ValueReference& right) {
 //prefix
 ValueReference& ValueReference::operator++() {
 	if (isInteger())
-		Set( *GetInteger() + 1);
-	else if (isDouble())
-		Set(*GetDouble() + 1);
+		(*GetInteger())++;
+	else if (isDouble()) 
+		(*GetDouble())++;
 	else
 		throw RuntimeErrorException("Non numeric types in prefix increment ");
 	return *this;
@@ -136,26 +142,27 @@ ValueReference& ValueReference::operator++() {
 
 //postfix
 ValueReference ValueReference::operator++(int) {
-	ValueReference val;
 	if (isInteger()) {
-		val = (int*)GetInteger();
-		Set( *GetInteger() + 1);
+		int x = (*GetInteger())++;
+		std::cout << x << std::endl;
+		return x;
 	}
 	else if (isDouble()) {
-		val = (double*)GetDouble();
-		Set(*GetDouble() + 1);
+		return 5;
 	}
 	else
 		throw RuntimeErrorException("Non numeric types in postfix increment ");
-	return val;
 }
 
 //prefix
 ValueReference& ValueReference::operator--() {
-	if (isInteger())
-		Set(*GetInteger() - 1);
-	else if (isDouble())
-		Set(*GetDouble() - 1);
+	if (isInteger()) {
+		(*GetInteger())--;
+	}
+	else if (isDouble()) {
+		double d = *GetDouble() - 1;
+		Set(&d);
+	}
 	else
 		throw RuntimeErrorException("Non numeric types in prefix decrement ");
 	return *this;
@@ -166,11 +173,13 @@ ValueReference ValueReference::operator--(int) {
 	ValueReference val;
 	if (isInteger()) {
 		val = (int*)GetInteger();
-		Set(*GetInteger() - 1);
+		int i = *GetInteger() - 1;
+		Set(&i);
 	}
 	else if (isDouble()) {
 		val = (double*)GetDouble();
-		Set(*GetDouble() - 1);
+		double d = *GetDouble() - 1;
+		Set(&d);
 	}
 	else
 		throw RuntimeErrorException("Non numeric types in postfix increment ");
@@ -179,9 +188,10 @@ ValueReference ValueReference::operator--(int) {
 
 ValueReference ValueReference::operator-() {
 	ValueReference val;
-	if (isInteger())
-		val =  -(*GetInteger());
-	if (isDouble())
+	if (isInteger()) {
+		int i = *GetInteger() - 1;
+	}
+	else if (isDouble())
 		val = -(*GetDouble());
 	else
 		throw RuntimeErrorException("Non numeric type in uminus ");

@@ -28,10 +28,10 @@ namespace interpreter {
 
 
 
-		const int* GetInteger() const;
-		const double* GetDouble() const;
-		const std::string* GetString() const;
-		const bool* GetBool() const;
+		int* GetInteger() const;
+		double* GetDouble() const;
+		std::string* GetString() const;
+		bool* GetBool() const;
 		void* GetClass() const;
 		std::string GetType() const;
 
