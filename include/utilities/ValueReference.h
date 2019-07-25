@@ -6,26 +6,27 @@
 #include <iostream> 
 #include "utilities/Exceptions.h"
 
-#define native_t std::variant<int*,double*,bool*,std::string*,void*> 
+#define native_t std::variant<int*, double*, bool*, std::string*, void*> 
 
 namespace interpreter {
 	class ValueReference
 	{
-		native_t variant;
+		native_t valueRefVariant;
 		std::string type;
+		ValueReference(int value);
+		ValueReference(double value);
+		ValueReference(std::string value);
+		ValueReference(bool value);
+
 	public:
 		ValueReference();
 		ValueReference(int* value);
-		ValueReference(int value);
 		ValueReference(double* value);
-		ValueReference(double value);
 		ValueReference(std::string* value);
-		ValueReference(std::string value);
 		ValueReference(bool* value);
-		ValueReference(bool value);
 		ValueReference(void* value, std::string type = "class");
-		ValueReference(const ValueReference& value);
-
+		ValueReference(ValueReference& value);
+		//~ValueReference();
 
 
 		int* GetInteger() const;
@@ -41,11 +42,16 @@ namespace interpreter {
 		bool isString() const;
 		bool isClass() const;
 
-		void Set(const ValueReference& value);
+		//void Set(ValueReference& value);
 
 		std::string toString() const;
 
 		ValueReference operator+(ValueReference& right);
+		ValueReference operator-(ValueReference& right);
+		ValueReference operator*(ValueReference& right);
+		ValueReference operator/(ValueReference& right);
+		ValueReference operator%(ValueReference& right);
+
 		//prefix
 		ValueReference& operator++();
 		//postfix

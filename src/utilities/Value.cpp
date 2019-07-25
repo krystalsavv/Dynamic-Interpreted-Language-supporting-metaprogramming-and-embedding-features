@@ -40,7 +40,7 @@ Value::Value(ValueReference* value) {
 }
 
 Value::Value(ValueReference& value) {
-	variant = &value;
+	variant = new ValueReference(value);
 }
 
 Value::Value(const Value& value) {
@@ -200,12 +200,8 @@ Value Value::operator-(Value& right) {
 	Value val;
 	if (isNumber() && right.isNumber())
 		val = GetNumberValue() - right.GetNumberValue();
-	else if (isValueReference() && GetValueReference() && right.isValueReference() && right.GetValueReference()) {
-		if (GetValueReference()->isInteger() && right.GetValueReference()->isInteger())
-			val = (double)*GetValueReference()->GetInteger() - (double)*right.GetValueReference()->GetInteger();
-		else if (GetValueReference()->isDouble() && right.GetValueReference()->isDouble())
-			val = *GetValueReference()->GetDouble() - *right.GetValueReference()->GetDouble();
-	}
+	else if (isValueReference() && GetValueReference() && right.isValueReference() && right.GetValueReference())
+		val = *GetValueReference() - *right.GetValueReference();
 	else
 		throw RuntimeErrorException("Non numeric types in subtraction ");
 	return val;
@@ -216,12 +212,8 @@ Value Value::operator*(Value& right) {
 	Value val;
 	if (isNumber() && right.isNumber())
 		val = GetNumberValue() * right.GetNumberValue();
-	else if (isValueReference() && GetValueReference() && right.isValueReference() && right.GetValueReference()) {
-		if (GetValueReference()->isInteger() && right.GetValueReference()->isInteger())
-			val = (double)*GetValueReference()->GetInteger() * (double)*right.GetValueReference()->GetInteger();
-		else if (GetValueReference()->isDouble() && right.GetValueReference()->isDouble())
-			val = *GetValueReference()->GetDouble() * *right.GetValueReference()->GetDouble();
-	}
+	else if (isValueReference() && GetValueReference() && right.isValueReference() && right.GetValueReference())
+		val = *GetValueReference() * *right.GetValueReference();
 	else
 		throw RuntimeErrorException("Non numeric types in multiplication ");
 	return val;
@@ -231,12 +223,8 @@ Value Value::operator/(Value& right) {
 	Value val;
 	if (isNumber() && right.isNumber())
 		val = GetNumberValue() / right.GetNumberValue();
-	else if (isValueReference() && GetValueReference() && right.isValueReference() && right.GetValueReference()) {
-		if (GetValueReference()->isInteger() && right.GetValueReference()->isInteger())
-			val = (double)(*GetValueReference()->GetInteger() / *right.GetValueReference()->GetInteger());
-		else if (GetValueReference()->isDouble() && right.GetValueReference()->isDouble())
-			val = *GetValueReference()->GetDouble() / *right.GetValueReference()->GetDouble();
-	}
+	else if (isValueReference() && GetValueReference() && right.isValueReference() && right.GetValueReference())
+		val = *GetValueReference() / *right.GetValueReference();
 	else
 		throw RuntimeErrorException("Non numeric types in division ");
 	return val;
@@ -246,12 +234,8 @@ Value Value::operator%(Value& right) {
 	Value val;
 	if (isNumber() && right.isNumber())
 		val = (double)((int)GetNumberValue() % (int)right.GetNumberValue());
-	else if (isValueReference() && GetValueReference() && right.isValueReference() && right.GetValueReference()) {
-		if (GetValueReference()->isInteger() && right.GetValueReference()->isInteger())
-			val = (double)(*GetValueReference()->GetInteger() % *right.GetValueReference()->GetInteger());
-		else if (GetValueReference()->isDouble() && right.GetValueReference()->isDouble())
-			val = (double)((int)*GetValueReference()->GetDouble() % (int)*right.GetValueReference()->GetDouble());
-	}
+	else if (isValueReference() && GetValueReference() && right.isValueReference() && right.GetValueReference())
+		val = *GetValueReference() % *right.GetValueReference();
 	else
 		throw RuntimeErrorException("Non numeric types in mod ");
 	return val;
@@ -261,8 +245,6 @@ Value Value::operator%(Value& right) {
 Value& Value::operator++() {
 	if (isNumber())
 		Set(GetNumberValue() + 1);
-	else if (isValueReference() && GetValueReference())
-		++*GetValueReference();
 	else
 		throw RuntimeErrorException("Non numeric types in prefix increment ");
 	return *this;
@@ -392,8 +374,8 @@ Value Value::operator==(Value& right) {
 			val = *GetValueReference()->GetDouble() == *right.GetValueReference()->GetDouble();
 		else if (GetValueReference()->isString() && right.GetValueReference()->isString())
 			val = *GetValueReference()->GetString() == *right.GetValueReference()->GetString();
-		else if (GetValueReference()->isClass() && right.GetValueReference()->isClass())
-			val = GetValueReference()->GetClass() == right.GetValueReference()->GetClass();
+		//else if (GetValueReference()->isClass() && right.GetValueReference()->isClass())
+		//	val = GetValueReference()->GetClass() == right.GetValueReference()->GetClass();
 	}
 	else
 		//throw RuntimeErrorException("Invalid types in operator equal (==)");
@@ -421,8 +403,8 @@ Value Value::operator!=(Value& right) {
 			val = *GetValueReference()->GetDouble() != *right.GetValueReference()->GetDouble();
 		else if (GetValueReference()->isString() && right.GetValueReference()->isString())
 			val = *GetValueReference()->GetString() != *right.GetValueReference()->GetString();
-		else if (GetValueReference()->isClass() && right.GetValueReference()->isClass())
-			val = GetValueReference()->GetClass() != right.GetValueReference()->GetClass();
+		//else if (GetValueReference()->isClass() && right.GetValueReference()->isClass())
+		//	val = GetValueReference()->GetClass() != right.GetValueReference()->GetClass();
 	}
 	else
 		//throw RuntimeErrorException("Invalid types in operator not equal (!=)");
@@ -450,8 +432,8 @@ bool Value::operator==(const Value& right) const {
 			b = *GetValueReference()->GetDouble() == *right.GetValueReference()->GetDouble();
 		else if (GetValueReference()->isString() && right.GetValueReference()->isString())
 			b = *GetValueReference()->GetString() == *right.GetValueReference()->GetString();
-		else if (GetValueReference()->isClass() && right.GetValueReference()->isClass())
-			b = GetValueReference()->GetClass() == right.GetValueReference()->GetClass();
+		//else if (GetValueReference()->isClass() && right.GetValueReference()->isClass())
+		//	b = GetValueReference()->GetClass() == right.GetValueReference()->GetClass();
 	}
 	else
 		b = false;
@@ -479,8 +461,8 @@ bool Value::operator!=(const Value& right) const {
 			b = *GetValueReference()->GetDouble() != *right.GetValueReference()->GetDouble();
 		else if (GetValueReference()->isString() && right.GetValueReference()->isString())
 			b = *GetValueReference()->GetString() != *right.GetValueReference()->GetString();
-		else if (GetValueReference()->isClass() && right.GetValueReference()->isClass())
-			b = GetValueReference()->GetClass() != right.GetValueReference()->GetClass();
+		//else if (GetValueReference()->isClass() && right.GetValueReference()->isClass())
+		//	b = GetValueReference()->GetClass() != right.GetValueReference()->GetClass();
 	}
 	else
 		b = true;
