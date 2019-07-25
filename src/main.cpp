@@ -1,6 +1,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include "parser.hpp"
 #include "scanner.h"
 #include "utilities/Object.h"
@@ -15,6 +16,16 @@ std::string InputToString(const char* filename) {
 	return str;
 }
 
+void TerminateInterpreter(AST* ast, yyscan_t scanner) {
+	yylex_destroy(scanner);
+	TraverseAndClearAst(ast->GetRoot());
+	ClearEnvironment();
+	DestroyAst(ast->GetRoot());
+	delete ast;
+	EnvironmentHolder::getInstance()->destroyInstance();
+	Evaluator::getInstance()->destroyInstance();
+}
+
 
 
 int main(int argc,char** argv){
@@ -24,32 +35,38 @@ int main(int argc,char** argv){
 	if(argc>1) {
 		std::string inputString = InputToString(argv[1]);
 		yy_scan_string(inputString.c_str(), scanner);
-		// if(argc==3){
-		//	FILE * output = fopen(argv[2], "w");
-	 	// 	yyset_out(output, scanner);
-	 	// }
+		AST* ast = new AST();
+		try { yyparse(ast, scanner, 0); }
+		catch (RuntimeErrorException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
+		catch (SyntaxErrorException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
+		*Evaluator::getInstance()->Evaluate(ast->GetRoot());
+		//ast->Print();
+		//std::cout << "------------------------------ EnvironmentChain -----------------------------------" << std::endl << std::endl;
+		//EnvironmentHolder::getInstance()->PrintEnvironmentChain();
+		//std::cout << "------------------------------ GlobalEnvironment -----------------------------------" << std::endl << std::endl;
+		//EnvironmentHolder::getInstance()->PrintGlobalEnvironment();
+		TerminateInterpreter(ast, scanner);
 	} else {
-		yyset_in(stdin, scanner);
+		std::string inputString = "";
+		//yyset_in(stdin, scanner);
+		while (true) {
+			std::cout << "\nAlphaDI > ";
+			getline(std::cin, inputString);
+			yy_scan_string(inputString.c_str(), scanner);
+			AST* ast = new AST();
+			try { yyparse(ast, scanner, 0); }
+			catch (RuntimeErrorException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
+			catch (SyntaxErrorException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
+			*Evaluator::getInstance()->Evaluate(ast->GetRoot());
+		}
+		//ast->Print();
+		//std::cout << "------------------------------ EnvironmentChain -----------------------------------" << std::endl << std::endl;
+		//EnvironmentHolder::getInstance()->PrintEnvironmentChain();
+		//std::cout << "------------------------------ GlobalEnvironment -----------------------------------" << std::endl << std::endl;
+		//EnvironmentHolder::getInstance()->PrintGlobalEnvironment();
+		//TerminateInterpreter(ast, scanner);
 	}
-	AST* ast = new AST();
-	try { yyparse(ast, scanner, 0); }
-	catch (RuntimeErrorException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
-	catch (SyntaxErrorException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
-	yylex_destroy(scanner);
-	//ast->Print();
-	*Evaluator::getInstance()->Evaluate(ast->GetRoot());
-	//std::cout << "------------------------------ EnvironmentChain -----------------------------------" << std::endl << std::endl;
-	//EnvironmentHolder::getInstance()->PrintEnvironmentChain();
-	//std::cout << "------------------------------ GlobalEnvironment -----------------------------------" << std::endl << std::endl;
-	//EnvironmentHolder::getInstance()->PrintGlobalEnvironment();
-	TraverseAndClearAst(ast->GetRoot());
-	//std::cout << "------------------------------ EnvironmentChain -----------------------------------" << std::endl << std::endl;
-	//EnvironmentHolder::getInstance()->PrintEnvironmentChain();
-	ClearEnvironment();
-	DestroyAst(ast->GetRoot());
-	delete ast;
-	EnvironmentHolder::getInstance()->destroyInstance();
-	Evaluator::getInstance()->destroyInstance();
+
 
 	return 0;
 }
