@@ -1,9 +1,10 @@
 add_subdirectory(parser)
 add_subdirectory(utilities)
+add_subdirectory(interpreter)
 
-add_executable(Interpreter main.cpp) 
+add_executable(InterpreterExec main.cpp) 
 
-target_link_libraries(  Interpreter             # To
+target_link_libraries(  InterpreterExec             # To
                         Object                  # What
                         Parser
 						Value
@@ -11,4 +12,5 @@ target_link_libraries(  Interpreter             # To
 						EnvironmentHolder
 						EvaluatorActions
 						ValueReference
+						Interpreter
                         )                

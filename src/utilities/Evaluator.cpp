@@ -122,19 +122,10 @@ Value& Evaluator::EvaluateLvalue(ASTnode* node, bool insertFlag, Environment* en
 }
 
 OPValue Evaluator::EvaluateProgram(ASTnode* node, bool insertFlag) {
-	InitGlobalEnvironment();
-
 	OPValue tmp;
 	double numOfStmt = node->GetValue("numOfStmt")->GetNumberValue();
 	for (int i = 0; i < numOfStmt; i++) {
-		try { tmp = Evaluate(node->GetValue(std::to_string(i))->GetObjectValue()); }
-		catch (BreakException& e) {std::cout << std::endl << e.what() << std::endl;exit(0);}
-		catch (ContinueException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
-		catch (ReturnException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
-		catch (ReturnValueException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
-		catch (RuntimeErrorException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
-		catch (SyntaxErrorException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
-		
+		tmp = Evaluate(node->GetValue(std::to_string(i))->GetObjectValue());
 	}
 	return std::nullopt;
 }
@@ -949,10 +940,7 @@ OPValue Evaluator::EvaluateEval(ASTnode* node, bool insertFlag) {
 	yylex_init(&scanner);
 	yy_scan_string(arg_s.c_str(), scanner);
 	AST* ast = new AST();
-	try { yyparse(ast, scanner, 1); }
-	catch (RuntimeErrorException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
-	catch (SyntaxErrorException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
-
+	yyparse(ast, scanner, 1);
 	yylex_destroy(scanner);
 	OPValue tmp = Evaluator::getInstance()->Evaluate(ast->GetRoot());
 	
