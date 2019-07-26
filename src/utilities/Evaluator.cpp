@@ -941,8 +941,10 @@ OPValue Evaluator::EvaluateEval(ASTnode* node, bool insertFlag) {
 	yy_scan_string(arg_s.c_str(), scanner);
 	AST* ast = new AST();
 	yyparse(ast, scanner, 1);
-	yylex_destroy(scanner);
 	OPValue tmp = Evaluator::getInstance()->Evaluate(ast->GetRoot());
+	yylex_destroy(scanner);
+	if (ast->GetRoot())
+		ast->GetRoot()->DecreaseReferenceCounter();
 	
 	return Undefined();
 }
