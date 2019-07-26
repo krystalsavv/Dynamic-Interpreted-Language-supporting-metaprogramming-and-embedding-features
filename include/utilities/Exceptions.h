@@ -9,11 +9,11 @@ namespace interpreter {
 	public:
 
 		BreakException(std::string str) {
-			message = "Break Exception: " + str + "\n";
+			message = "Error: Break outside of loop";
 		}
 
 		BreakException() {
-			message = "Break Exception\n";
+			message = "Error: Break outside of loop ";
 		}
 
 		const char* what() const noexcept override {
@@ -27,11 +27,11 @@ namespace interpreter {
 	public:
 
 		ContinueException(std::string str) {
-			message = "Continue Exception: " + str + "\n";
+			message = "Error: Continue outside of loop ";
 		}
 
 		ContinueException() {
-			message = "Continue Exception\n";
+			message = "Error: Continue outside of loop ";
 		}
 
 		const char* what() const noexcept override {
@@ -45,11 +45,11 @@ namespace interpreter {
 	public:
 
 		ReturnException(std::string str) {
-			message = "Return Exception: " + str + "\n";
+			message = "Error: Return outside of function ";
 		}
 
 		ReturnException() {
-			message = "Return Exception\n";
+			message = "Error: Return outside of function ";
 		}
 
 		const char* what() const noexcept override {
@@ -63,11 +63,11 @@ namespace interpreter {
 	public:
 
 		ReturnValueException(std::string str) {
-			message = "Return value Exception: " + str + "\n";
+			message = "Error: Return outside of function ";
 		}
 
 		ReturnValueException() {
-			message = "Return value Exception\n";
+			message = "Error: Return outside of function ";
 		}
 
 		const char* what() const noexcept override {
@@ -81,11 +81,11 @@ namespace interpreter {
 	public:
 
 		RuntimeErrorException(std::string str) {
-			message = "Runtime Error: " + str + "\n";
+			message = "Runtime Error: " + str;
 		}
 
 		RuntimeErrorException() {
-			message = "Runtime Error\n";
+			message = "Runtime Error: ";
 		}
 
 		const char* what() const noexcept override {
@@ -99,11 +99,11 @@ namespace interpreter {
 	public:
 
 		SyntaxErrorException(std::string str) {
-			message = "Syntax Error: " + str + "\n";
+			message = "Syntax Error: " + str;
 		}
 
 		SyntaxErrorException() {
-			message = "Syntax Error\n";
+			message = "Syntax Error: ";
 		}
 
 		const char* what() const noexcept override {

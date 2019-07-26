@@ -495,7 +495,7 @@ argList : arg
 				else {
 					double numOfPositionalArgs = $$->GetValue("numOfPositionalArgs")->GetNumberValue();
 					if(numOfTotalArgs != numOfPositionalArgs) {
-						throw RuntimeErrorException("Positional paramiter after named paramiter"); 
+						throw RuntimeErrorException("Positional paramiter after named parameter"); 
 					}
 					$$->GetValue("PositionalArgs")->GetObjectValue()->Set(numOfPositionalArgs, $3);
 					numOfPositionalArgs++;
@@ -765,9 +765,7 @@ returnstmt : RETURN SEMICOLON
 %%
 
 int yyerror(AST* ast, yyscan_t scanner, int isEval, const char *yaccProvidedMessage){
-	//std::cout  << yaccProvidedMessage << ": at line " << yyget_lineno(scanner) << " before token : " << yyget_text(scanner) << std::endl;
-	//std::cout << "INPUT NOT VALID \n";
 	std::string yaccProvidedMessage_string = yaccProvidedMessage;
-	throw SyntaxErrorException(yaccProvidedMessage_string +  ": at line "+ std::to_string(yyget_lineno(scanner)) +  " before token : "  + yyget_text(scanner));
+	throw SyntaxErrorException(yaccProvidedMessage_string + " undefined token  \" "  + yyget_text(scanner) + "\"");
 	return 0;
 }

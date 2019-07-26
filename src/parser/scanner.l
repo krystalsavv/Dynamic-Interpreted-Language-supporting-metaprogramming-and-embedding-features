@@ -8,7 +8,7 @@
 
 	int keywords_to_enum(std::string text);
 	std::string stringVal = "";
-	int commentCounter = 0; 	
+	int commentCounter = 0; 
 %}
 
 %option noyywrap
@@ -25,7 +25,6 @@ real 		[0-9]+\.[0-9](e|E)?[0-9]*
 space 		[\r\n \t\v]
 id 			[a-zA-Z][a-zA-Z_0-9]* 
 comment1 	"//".*
-comment2 	"#".*
 punc 		[\[\]\{\}\(\)\;\,]|(\:{1,2})|(\.{1,2})
 
 %x STRING_
@@ -68,10 +67,8 @@ punc 		[\[\]\{\}\(\)\;\,]|(\:{1,2})|(\.{1,2})
 							}
 
 
-<STRING_>"\\"				{	   
-							 	std::cerr << "WARNING: invalid escape character "<< yytext << " in line "<< yylineno << " will be ignored.\n";  
-							}
-<STRING_><<EOF>> 			{ std::cerr << "ERROR: not closed string at line " << yylineno << std::endl; yyterminate(); } 	
+<STRING_>"\\"				{ std::cerr << "Error: invalid escape character "<< yytext << " at line "<< yylineno << " .\n"; yyterminate(); }
+<STRING_><<EOF>> 			{ std::cerr << "Error: String is not closed at line " << yylineno << std::endl; yyterminate(); } 	
 
 <STRING_>.					{ stringVal += yytext; }
 
@@ -86,11 +83,11 @@ punc 		[\[\]\{\}\(\)\;\,]|(\:{1,2})|(\.{1,2})
 									BEGIN(INITIAL);
 							}
 
-<COMMENT3><<EOF>>  			{ std::cerr << "ERROR: not closed comment at line " << yylineno << std::endl; yyterminate(); } 	
+<COMMENT3><<EOF>>  			{ std::cerr << "Error: Comment is not closed (EOF) started at line " << yylineno << std::endl; yyterminate(); } 
 
 <COMMENT3>. 				{}
 
-"*/" 						{ std::cerr << "ERROR: not closed comment at line " << yylineno << std::endl; yyterminate(); } 	
+
 
 
 {keyword}	{return keywords_to_enum(yytext);}
@@ -101,13 +98,12 @@ punc 		[\[\]\{\}\(\)\;\,]|(\:{1,2})|(\.{1,2})
 return REALNUMBER;}
 {space}		{}
 {comment1}	{}
-{comment2}	{}
 {punc}		{return keywords_to_enum(yytext);}
 {id}		{	stringVal.assign(yytext); 
 				yylval->stringVal = new std::string(stringVal); 
 				return IDENT; }
 
-. 			{std::cerr << "Line " << yylineno << " : Lexical analysis error:You can not have an identifier starting with number or symbol $ (WRONG DEFINITION). \n"; return WRONG_DEFINITION;}
+. 			{std::cerr << "Error: Undefined token \"" << yytext << "\" at line " << yylineno << ". \n"; yyterminate();}
 
 %%
 
