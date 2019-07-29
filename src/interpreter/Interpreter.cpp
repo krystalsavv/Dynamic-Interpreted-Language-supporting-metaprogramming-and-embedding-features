@@ -35,7 +35,7 @@ void  Interpreter::InvokeInterpreter( char* file) {
 			yy_scan_string(inputString.c_str(), scanner);
 			yyset_lineno(1, scanner);
 			AST* ast = new AST();
-			try { yyparse(ast, scanner, 0);  *Evaluator::getInstance()->Evaluate(ast->GetRoot()); }
+			try { yyparse(ast, scanner, 1);  *Evaluator::getInstance()->Evaluate(ast->GetRoot()); }
 			catch (BreakException& e) { std::cout << std::endl << e.what() << " at line " << yyget_lineno(scanner) << std::endl; TerminateLoopInteractive(ast, scanner); continue; }
 			catch (ContinueException& e) { std::cout << std::endl << e.what() << " at line " << yyget_lineno(scanner) << std::endl; TerminateLoopInteractive(ast, scanner); continue; }
 			catch (ReturnException& e) { std::cout << std::endl << e.what() << " at line " << yyget_lineno(scanner) << std::endl; TerminateLoopInteractive(ast, scanner); continue; }
