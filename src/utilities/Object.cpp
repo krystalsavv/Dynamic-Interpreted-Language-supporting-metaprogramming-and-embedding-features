@@ -43,6 +43,8 @@ void Object::Set(const Value& key, const Value& value) {
 
 	if (value.isObject() && value.GetObjectValue())
 		value.GetObjectValue()->IncreaseReferenceCounter();
+	if (key.isObject() && key.GetObjectValue())
+		key.GetObjectValue()->IncreaseReferenceCounter();
 
 	symbols[key] = value;
 

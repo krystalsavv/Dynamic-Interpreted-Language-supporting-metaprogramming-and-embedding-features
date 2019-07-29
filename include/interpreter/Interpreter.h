@@ -15,8 +15,8 @@ namespace interpreter {
 
 	class Interpreter
 	{
-		void TerminateInterpreterNonInteractive(AST* ast, yyscan_t scanner);
-		void TerminateLoopInteractive(AST* ast, yyscan_t scanner);
+		void TerminateInterpreterNonInteractive(AST* ast, yyscan_t& scanner);
+		void TerminateLoopInteractive(AST* ast, yyscan_t& scanner);
 		std::string InputToString(const char* filename);
 	
 	public:

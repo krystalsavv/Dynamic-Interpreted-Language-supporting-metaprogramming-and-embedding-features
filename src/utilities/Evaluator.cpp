@@ -610,7 +610,8 @@ OPValue Evaluator::EvaluateForStmt(ASTnode* node, bool insertFlag) {
 		if(elist->isObject() && elist->GetObjectValue())
 			DeleteForElist(elist->GetObjectValue());
 	}
-	DeleteForElist(elist->GetObjectValue());
+	if (elist->isObject() && elist->GetObjectValue())
+		DeleteForElist(elist->GetObjectValue());
 	DeleteForElist(init_elist->GetObjectValue());	
 	//init_elist->GetObjectValue()->DecreaseReferenceCounter();
 	//elist->GetObjectValue()->DecreaseReferenceCounter();
@@ -676,6 +677,7 @@ OPValue Evaluator::EvaluateIndexed(ASTnode* node, bool insertFlag) {
 		for (auto kv : obj->GetMap()) {
 			indexedMap->Set(kv.first, kv.second);
 		}
+		//delete obj;
 		DeleteForElist(obj);
 	}
 	return indexedMap;
