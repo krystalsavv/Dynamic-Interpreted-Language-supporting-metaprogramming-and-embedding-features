@@ -13,8 +13,8 @@ if(WIN32)
     set(CMAKE_CXX_FLAGS_RELEASE "/O2")
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 elseif(UNIX)
-    set(CMAKE_CXX_FLAGS "-Wall -pedantic")
-    set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g3 -g")
+    set(CMAKE_CXX_FLAGS "-Wall -pedantic -g")
+    set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g3")
     set(CMAKE_CXX_FLAGS_RELEASE "-O2")
 endif()
 
@@ -33,4 +33,5 @@ include_directories(include)
 include_directories(${ROOT}/src/parser/generated)
 
 add_subdirectory(src)
-#add_subdirectory(test)
+#add_subdirectory(test/embedding)
+
