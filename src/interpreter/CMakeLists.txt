@@ -1,1 +1,0 @@
-add_library(Interpreter STATIC Interpreter.cpp)

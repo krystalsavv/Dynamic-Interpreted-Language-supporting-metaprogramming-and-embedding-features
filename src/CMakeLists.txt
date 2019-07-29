@@ -1,16 +1,14 @@
 add_subdirectory(parser)
 add_subdirectory(utilities)
-add_subdirectory(interpreter)
 
-add_executable(InterpreterExec main.cpp) 
+add_executable(AlphaDI main.cpp interpreter/Interpreter.cpp) 
 
-target_link_libraries(  InterpreterExec             # To
+target_link_libraries(  AlphaDI             # To
                         Object                  # What
                         Parser
-						Value
-						Evaluator
-						EnvironmentHolder
-						EvaluatorActions
-						ValueReference
-						Interpreter
+			Value
+			Evaluator
+			EnvironmentHolder
+			EvaluatorActions
+			ValueReference
                         )                
