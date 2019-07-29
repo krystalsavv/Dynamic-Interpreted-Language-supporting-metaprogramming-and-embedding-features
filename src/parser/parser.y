@@ -46,9 +46,10 @@
 
 %token EVAL_PARSER
 
-%token <stringVal> WHILE FOR IF ELSE FUNCTION RETURN BREAK CONTINUE AND OR NOT LOCAL TRUE FALSE NIL PLUS MINUS UMINUS ASSIGN MULTI MOD DIV EQUAL NOT_EQUAL INCREMENT DECREMENT 
-%token <stringVal> GREATER_OR_EQUAL LESS_OR_EQUAL GREATER LESS LEFT_SQUARE_BRACKET RIGHT_SQUARE_BRACKET LEFT_BRACKET RIGHT_BRACKET LEFT_PARENTHESIS RIGHT_PARENTHESIS COMMA SEMICOLON COLON DOT DOUBLE_DOT SCOPE WRONG_DEFINITION 
+%token WHILE FOR IF ELSE FUNCTION RETURN BREAK CONTINUE AND OR NOT LOCAL TRUE FALSE NIL PLUS MINUS UMINUS ASSIGN MULTI MOD DIV EQUAL NOT_EQUAL INCREMENT DECREMENT 
+%token GREATER_OR_EQUAL LESS_OR_EQUAL GREATER LESS LEFT_SQUARE_BRACKET RIGHT_SQUARE_BRACKET LEFT_BRACKET RIGHT_BRACKET LEFT_PARENTHESIS RIGHT_PARENTHESIS COMMA SEMICOLON COLON DOT DOUBLE_DOT SCOPE WRONG_DEFINITION 
 
+%token	META_SYNTAX_OPEN META_SYNTAX_CLOSE META_ESCAPE META_INLINE META_PARSE META_UNPARSE 
 
 
 %type <objectVal> stmt tmp_block
@@ -58,6 +59,7 @@
 %type <objectVal> lvalue primary call objectdef const member
 %type <objectVal> elist idlist arg argList formal normcall methodcall indexed indexedelem
 %type <objectVal> program start eval eval_stmts
+%type <objectVal> meta_syntax meta_escape meta_inline meta_parce meta_unparce
 
 %right ASSIGN
 %left OR
@@ -258,8 +260,12 @@ expr :	 assignexpr	{ $$ = $1;}
 							$$->Set("left", $1);
 							$$->Set("right", $3);
 						}
-	| term				{	
+	| term			{	
 							std::cout << ("Terminal\n");
+							$$ = $1;
+						}
+	| meta_syntax 
+						{
 							$$ = $1;
 						}
 	| error 	{}
@@ -397,7 +403,7 @@ member : lvalue DOT IDENT
 					$$ = new ASTnode("type", "member_callVar");
 					$$->Set("call", $1);
 					$$->Set("ID", *$3);
-					delete($3); 
+					delete $3; 
 				}
 	| call LEFT_SQUARE_BRACKET expr RIGHT_SQUARE_BRACKET
 				{
@@ -452,7 +458,7 @@ methodcall : DOUBLE_DOT IDENT LEFT_PARENTHESIS argList RIGHT_PARENTHESIS
 				$$ = new ASTnode("type", "methodcall");
 				$$->Set("ID", *$2); 
 				$$->Set("argList", $4); 
-				
+				delete $2;
 			}
 			;
 
@@ -763,6 +769,18 @@ returnstmt : RETURN SEMICOLON
 					$$->Set("expr", $2);
 				}
 				;
+
+meta_syntax : META_SYNTAX_OPEN expr META_SYNTAX_CLOSE 
+						{
+							std::cout << "Meta Syntax\n" ;
+							$$ = new ASTnode("type", "meta_syntax");
+							$$->Set("expr", $2);
+						}
+						;
+
+
+
+
 
 
 %%

@@ -32,6 +32,13 @@ punc 		[\[\]\{\}\(\)\;\,]|(\:{1,2})|(\.{1,2})
 
 %%
 
+"\.\<"						{ return META_SYNTAX_OPEN; }
+"\>\."						{ return META_SYNTAX_CLOSE; }
+"\.~"						{ return META_ESCAPE; }
+"\.\!"						{ return META_INLINE; }
+"\.@"						{ return META_PARSE; }
+"\.#"						{ return META_UNPARSE; }
+
 "\"" 						{
 								stringVal = "";
 								BEGIN(STRING_);
@@ -92,10 +99,11 @@ punc 		[\[\]\{\}\(\)\;\,]|(\:{1,2})|(\.{1,2})
 
 {keyword}	{return keywords_to_enum(yytext);}
 {operator}	{return keywords_to_enum(yytext);}
-{integer} 	{yylval->numVal = atoi(yytext);
-					return INTEGER;}
-{real} 		{yylval->numVal = atof(yytext);
-return REALNUMBER;}
+{integer} 	{	yylval->numVal = atoi(yytext);
+				return INTEGER;}
+{real} 		{	yylval->numVal = atof(yytext);
+				return REALNUMBER;
+			}
 {space}		{}
 {comment1}	{}
 {punc}		{return keywords_to_enum(yytext);}
@@ -107,7 +115,7 @@ return REALNUMBER;}
 
 %%
 
-int keywords_to_enum(std::string text){
+int keywords_to_enum(std::string text) {
 	if(text == "if") 			return IF;
 	else if(text == "else") 	return ELSE;
 	else if(text == "while") 	return WHILE;
@@ -151,8 +159,7 @@ int keywords_to_enum(std::string text){
 	else if(text == "..")		return DOUBLE_DOT;	
 }
 
-
-int yylex(YYSTYPE * yylval_param , yyscan_t yyscanner, int isEval){
+int yylex(YYSTYPE * yylval_param , yyscan_t yyscanner, int isEval) {
 	if(isEval){
 		isEval = 0;	
 		return EVAL_PARSER;

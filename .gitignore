@@ -28,3 +28,5 @@ CTestTestfile.cmake
 _deps
 src/parser/~m4_in_temp_file_qVNhMq
 src/parser/~m4_out_temp_file_GGrpoH
+src/utilities/scanner.l - Shortcut.lnk
+src/utilities/parser.y - Shortcut.lnk
