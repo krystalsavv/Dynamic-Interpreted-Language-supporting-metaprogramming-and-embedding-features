@@ -28,7 +28,7 @@ comment1 	"//".*
 punc 		[\[\]\{\}\(\)\;\,]|(\:{1,2})|(\.{1,2})
 
 %x STRING_
-%x COMMENT3
+%x COMMENT2
 
 %%
 
@@ -80,19 +80,19 @@ punc 		[\[\]\{\}\(\)\;\,]|(\:{1,2})|(\.{1,2})
 <STRING_>.					{ stringVal += yytext; }
 
 
-"/*" 						{ commentCounter++; BEGIN(COMMENT3); }
+"/*" 						{ commentCounter++; BEGIN(COMMENT2); }
 
-<COMMENT3>"/*" 				{ commentCounter++; }
+<COMMENT2>"/*" 				{ commentCounter++; }
 
-<COMMENT3>"*/" 				{
+<COMMENT2>"*/" 				{
 								commentCounter--;
 								if(!commentCounter)
 									BEGIN(INITIAL);
 							}
 
-<COMMENT3><<EOF>>  			{ std::cerr << "Error: Comment is not closed (EOF) started at line " << yylineno << std::endl; yyterminate(); } 
+<COMMENT2><<EOF>>  			{ std::cerr << "Error: Comment is not closed (EOF) started at line " << yylineno << std::endl; yyterminate(); } 
 
-<COMMENT3>. 				{}
+<COMMENT2>. 				{}
 
 
 

@@ -59,7 +59,7 @@
 %type <objectVal> lvalue primary call objectdef const member
 %type <objectVal> elist idlist arg argList formal normcall methodcall indexed indexedelem
 %type <objectVal> program start eval eval_stmts
-%type <objectVal> meta_syntax meta_escape meta_inline meta_parce meta_unparce
+%type <objectVal> meta meta_syntax meta_escape meta_inline meta_parse meta_unparse
 
 %right ASSIGN
 %left OR
@@ -264,8 +264,7 @@ expr :	 assignexpr	{ $$ = $1;}
 							std::cout << ("Terminal\n");
 							$$ = $1;
 						}
-	| meta_syntax 
-						{
+	| meta			{
 							$$ = $1;
 						}
 	| error 	{}
@@ -770,6 +769,30 @@ returnstmt : RETURN SEMICOLON
 				}
 				;
 
+
+meta:  meta_syntax 
+						{
+							// exei conflict giati ola exoyn expr alla den kserw gt
+							$$ = $1;
+						}
+	| meta_escape 
+						{
+							$$ = $1;
+						}
+	| meta_inline
+						{
+							$$ = $1;
+						}
+	| meta_parse 
+						{
+							$$ = $1;
+						}
+	| meta_unparse 
+						{
+							$$ = $1;
+						}
+
+
 meta_syntax : META_SYNTAX_OPEN expr META_SYNTAX_CLOSE 
 						{
 							std::cout << "Meta Syntax\n" ;
@@ -778,9 +801,41 @@ meta_syntax : META_SYNTAX_OPEN expr META_SYNTAX_CLOSE
 						}
 						;
 
+meta_escape: META_ESCAPE IDENT
+						{
+							std::cout << "Meta Escape\n" ;
+							$$ = new ASTnode("type", "meta_escape");
+							$$->Set("ID", *$2);
+							delete $2;
+						}
+						;
 
+meta_inline: META_INLINE expr
+						{
+							//TODO: check that expr is AST
+							std::cout << "Meta Inline\n" ;
+							$$ = new ASTnode("type", "meta_inline");
+							$$->Set("expr", $2);
+						}
+						;
 
+meta_parse: META_PARSE STRING
+						{
+							std::cout << "Meta Escape\n" ;
+							$$ = new ASTnode("type", "meta_parse");
+							$$->Set("stringConst", *$2);
+							delete $2;
+						}
+						;
 
+meta_unparse: META_UNPARSE expr
+						{
+							//TODO: check that expr is AST
+							std::cout << "Meta unparse\n" ;
+							$$ = new ASTnode("type", "meta_unparse");
+							$$->Set("expr", $2);
+						}
+						;
 
 
 %%
