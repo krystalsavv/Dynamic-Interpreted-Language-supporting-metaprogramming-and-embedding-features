@@ -27,7 +27,7 @@ namespace interpreter {
 		Value(Object* value);
 		Value(Undefined value);
 		Value(ValueReference* value);
-		Value(ValueReference& value);
+		Value(ValueReference value);
 		Value(const Value& value);
 
 		const bool& GetBoolValue() const;

@@ -39,7 +39,7 @@ Value::Value(ValueReference* value) {
 	variant = value;
 }
 
-Value::Value(ValueReference& value) {
+Value::Value(ValueReference value) {
 	variant = new ValueReference(value);
 }
 
@@ -189,7 +189,7 @@ Value Value::operator+(Value& right) {
 	else if (isString() && right.isNumber())
 		val = GetStringValue() + std::to_string(right.GetNumberValue());
 	else if (isValueReference() && GetValueReference() && right.isValueReference() && right.GetValueReference())
-		val = *GetValueReference() + *right.GetValueReference();
+		val = Value(*GetValueReference() + *right.GetValueReference());
 	else {
 		return Undefined();
 	}
@@ -201,7 +201,7 @@ Value Value::operator-(Value& right) {
 	if (isNumber() && right.isNumber())
 		val = GetNumberValue() - right.GetNumberValue();
 	else if (isValueReference() && GetValueReference() && right.isValueReference() && right.GetValueReference())
-		val = *GetValueReference() - *right.GetValueReference();
+		val = Value(*GetValueReference() - *right.GetValueReference());
 	else
 		throw RuntimeErrorException("Non numeric types in subtraction ");
 	return val;
@@ -213,7 +213,7 @@ Value Value::operator*(Value& right) {
 	if (isNumber() && right.isNumber())
 		val = GetNumberValue() * right.GetNumberValue();
 	else if (isValueReference() && GetValueReference() && right.isValueReference() && right.GetValueReference())
-		val = *GetValueReference() * *right.GetValueReference();
+		val = Value(*GetValueReference() * *right.GetValueReference());
 	else
 		throw RuntimeErrorException("Non numeric types in multiplication ");
 	return val;
@@ -224,7 +224,7 @@ Value Value::operator/(Value& right) {
 	if (isNumber() && right.isNumber())
 		val = GetNumberValue() / right.GetNumberValue();
 	else if (isValueReference() && GetValueReference() && right.isValueReference() && right.GetValueReference())
-		val = *GetValueReference() / *right.GetValueReference();
+		val = Value(*GetValueReference() / *right.GetValueReference());
 	else
 		throw RuntimeErrorException("Non numeric types in division ");
 	return val;
@@ -235,7 +235,7 @@ Value Value::operator%(Value& right) {
 	if (isNumber() && right.isNumber())
 		val = (double)((int)GetNumberValue() % (int)right.GetNumberValue());
 	else if (isValueReference() && GetValueReference() && right.isValueReference() && right.GetValueReference())
-		val = *GetValueReference() % *right.GetValueReference();
+		val = Value(*GetValueReference() % *right.GetValueReference());
 	else
 		throw RuntimeErrorException("Non numeric types in mod ");
 	return val;
