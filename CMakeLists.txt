@@ -14,7 +14,7 @@ if(WIN32)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 elseif(UNIX)
     set(CMAKE_CXX_FLAGS "-Wall -pedantic")
-    set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g3")
+    set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g3 -g")
     set(CMAKE_CXX_FLAGS_RELEASE "-O2")
 endif()
 
