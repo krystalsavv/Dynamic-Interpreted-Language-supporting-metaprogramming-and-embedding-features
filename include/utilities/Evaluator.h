@@ -158,7 +158,12 @@ namespace interpreter {
 		OPValue EvaluateObject_size(ASTnode* node, bool insertFlag = true);
 		OPValue EvaluateEval(ASTnode* node, bool insertFlag = true);
 
-		
+		// metaprogramming
+		OPValue EvaluateSyntax(ASTnode* node, bool insertFlag = true);
+		OPValue EvaluateEscape(ASTnode* node, bool insertFlag = true);
+		OPValue EvaluateInline(ASTnode* node, bool insertFlag = true);
+		OPValue EvaluateParse(ASTnode* node, bool insertFlag = true);
+		OPValue EvaluateUnparse(ASTnode* node, bool insertFlag = true);
 	};
 
 }

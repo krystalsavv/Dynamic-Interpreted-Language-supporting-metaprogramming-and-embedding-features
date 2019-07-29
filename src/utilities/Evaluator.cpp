@@ -79,6 +79,11 @@ std::map<std::string,OPValue(Evaluator::*)(ASTnode*,bool)> Evaluator::IntializeD
 	table["object_keys"] = &Evaluator::EvaluateObject_keys;
 	table["object_size"] = &Evaluator::EvaluateObject_size;
 	table["eval"] = &Evaluator::EvaluateEval;
+	table["meta_syntax"] = &Evaluator::EvaluateSyntax;
+//	table["meta_escape"] = &Evaluator::EvaluateEscape;
+//	table["meta_inline"] = &Evaluator::EvaluateInline;
+//	table["meta_parce"] = &Evaluator::EvaluateParse;
+//	table["meta_unparce"] = &Evaluator::EvaluateUnparse;
 
 	return table;
 }
@@ -947,4 +952,32 @@ OPValue Evaluator::EvaluateEval(ASTnode* node, bool insertFlag) {
 		ast->GetRoot()->DecreaseReferenceCounter();
 	
 	return Undefined();
+}
+
+
+
+OPValue  Evaluator::EvaluateSyntax(ASTnode* node, bool insertFlag) {
+	//TODO
+	std::cout << "SYNTAX\n";
+	return std::nullopt;
+}
+
+OPValue  Evaluator::EvaluateEscape(ASTnode* node, bool insertFlag) {
+	//TODO
+	return std::nullopt;
+}
+
+OPValue  Evaluator::EvaluateInline(ASTnode* node, bool insertFlag) {
+	//TODO
+	return std::nullopt;
+}
+
+OPValue  Evaluator::EvaluateParse(ASTnode* node, bool insertFlag) {
+	//TODO
+	return std::nullopt;
+}
+
+OPValue  Evaluator::EvaluateUnparse(ASTnode* node, bool insertFlag) {
+	//TODO
+	return std::nullopt;
 }
