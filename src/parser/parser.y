@@ -352,21 +352,21 @@ lvalue : IDENT
 				std::cout << ("ID\n");
 				$$ = new ASTnode("type", "var");
 				$$->Set("ID", *$1);
-				delete($1); 
+				delete $1; 
 			}
 	| LOCAL IDENT	
 			{
 				std::cout << ("Local ID\n");
 				$$ = new ASTnode("type", "localVar");					
 				$$->Set("ID", *$2);
-				delete($2); 
+				delete $2; 
 			}
 	| SCOPE IDENT	
 			{
 				std::cout << ("::ID\n");
 				$$ = new ASTnode("type", "globalVar");		
 				$$->Set("ID", *$2);
-				delete($2); 
+				delete $2; 
 			}
 	| member	
 			{ 
@@ -381,7 +381,7 @@ member : lvalue DOT IDENT
 					$$ = new ASTnode("type", "member_lvalueVar");
 					$$->Set("lvalue", $1);
 					$$->Set("ID", *$3);
-					delete($3); 
+					delete $3; 
 				
 				}
 	| lvalue LEFT_SQUARE_BRACKET expr RIGHT_SQUARE_BRACKET 
@@ -466,7 +466,7 @@ arg : expr	{
 				$$ = new ASTnode("type", "namedParam");
 				$$->Set("expr", $3);
 				$$->Set("ID", *$1);
-				delete($1);
+				delete $1;
 			} 
 			;
 
@@ -617,6 +617,7 @@ funcdef : FUNCTION IDENT
 					funcEnter->Set("idlist", $5);			//prosoxh an vgalw panw action
 					funcEnter->Set("funcbody", $7);
 					$$->Set("funcEnter", funcEnter);
+					delete $2;
 				}
 		| FUNCTION 
 				{
@@ -647,7 +648,7 @@ const : INTEGER {
 					std::cout << ("String\n");
 					$$ = new ASTnode("type", "stringConst");
 					$$->Set("value", *$1);
-					delete($1);
+					delete $1;
 				}
 		| TRUE 	{
 					std::cout << ("TRUE\n");
@@ -670,6 +671,7 @@ formal: IDENT
 			std::cout << ("id list\n");
 			$$ = new ASTnode("type", "param");
 			$$->Set("ID", *$1);
+			delete $1;
 		}
 	
 	| IDENT ASSIGN expr
@@ -678,6 +680,7 @@ formal: IDENT
 			$$ = new ASTnode("type", "optionalParam");
 			$$->Set("ID", *$1);
 			$$->Set("expr", $3);
+			delete $1;
 		}
 	;
 
