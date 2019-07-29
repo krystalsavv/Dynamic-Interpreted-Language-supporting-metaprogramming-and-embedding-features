@@ -352,7 +352,7 @@ lvalue : IDENT
 				std::cout << ("ID\n");
 				$$ = new ASTnode("type", "var");
 				$$->Set("ID", *$1);
-				delete $1; 
+				delete $1;
 			}
 	| LOCAL IDENT	
 			{
@@ -397,7 +397,7 @@ member : lvalue DOT IDENT
 					$$ = new ASTnode("type", "member_callVar");
 					$$->Set("call", $1);
 					$$->Set("ID", *$3);
-					delete($3); 
+					delete $3; 
 				}
 	| call LEFT_SQUARE_BRACKET expr RIGHT_SQUARE_BRACKET
 				{
@@ -452,7 +452,7 @@ methodcall : DOUBLE_DOT IDENT LEFT_PARENTHESIS argList RIGHT_PARENTHESIS
 				$$ = new ASTnode("type", "methodcall");
 				$$->Set("ID", *$2); 
 				$$->Set("argList", $4); 
-				
+				delete $2;
 			}
 			;
 
