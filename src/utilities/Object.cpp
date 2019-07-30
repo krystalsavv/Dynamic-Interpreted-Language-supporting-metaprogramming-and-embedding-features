@@ -50,6 +50,14 @@ void Object::Set(const Value& key, const Value& value) {
 
 }
 
+void Object::SetLine(size_t line) {
+	this->line = line;
+}
+
+size_t Object::GetLine() {
+	return line;
+}
+
 bool Object::HasProperty(const Value& key) const {
 	if (symbols.find(key) != symbols.end())
 		return true;

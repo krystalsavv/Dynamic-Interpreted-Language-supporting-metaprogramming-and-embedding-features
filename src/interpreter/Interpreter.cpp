@@ -2,6 +2,8 @@
 
 using namespace interpreter;
 
+size_t interpreter::lineno = 1;
+
 void  Interpreter::InvokeInterpreter( char* file) {
 	if (file != NULL) {
 		yyscan_t scanner;
@@ -15,12 +17,12 @@ void  Interpreter::InvokeInterpreter( char* file) {
 			InitGlobalEnvironment(); 
 			*Evaluator::getInstance()->Evaluate(ast->GetRoot()); 
 		}
-		catch (BreakException& e) { std::cout << std::endl << e.what() << " at line " << yyget_lineno(scanner) << std::endl; exit(0); }
-		catch (ContinueException& e) { std::cout << std::endl << e.what() << " at line " << yyget_lineno(scanner) << std::endl; exit(0); }
-		catch (ReturnException& e) { std::cout << std::endl << e.what() << " at line " << yyget_lineno(scanner) << std::endl; exit(0); }
-		catch (ReturnValueException& e) { std::cout << std::endl << e.what() << " at line " << yyget_lineno(scanner) << std::endl; exit(0); }
-		catch (RuntimeErrorException& e) { std::cout << std::endl << e.what() << " at line " << yyget_lineno(scanner) << std::endl; exit(0); }
-		catch (SyntaxErrorException& e) { std::cout << std::endl << e.what() << " at line " << yyget_lineno(scanner) << std::endl; exit(0); }
+		catch (BreakException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
+		catch (ContinueException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
+		catch (ReturnException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
+		catch (ReturnValueException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
+		catch (RuntimeErrorException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
+		catch (SyntaxErrorException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
 		//ast->Print();
 		//std::cout << "------------------------------ EnvironmentChain -----------------------------------" << std::endl << std::endl;
 		//EnvironmentHolder::getInstance()->PrintEnvironmentChain();
@@ -43,12 +45,12 @@ void  Interpreter::InvokeInterpreter( char* file) {
 				yyparse(ast, scanner, 1);  
 				*Evaluator::getInstance()->Evaluate(ast->GetRoot()); 
 			}
-			catch (BreakException& e) { std::cout << std::endl << e.what() << " at line " << yyget_lineno(scanner) << std::endl; TerminateLoopInteractive(ast, scanner); continue; }
-			catch (ContinueException& e) { std::cout << std::endl << e.what() << " at line " << yyget_lineno(scanner) << std::endl; TerminateLoopInteractive(ast, scanner); continue; }
-			catch (ReturnException& e) { std::cout << std::endl << e.what() << " at line " << yyget_lineno(scanner) << std::endl; TerminateLoopInteractive(ast, scanner); continue; }
-			catch (ReturnValueException& e) { std::cout << std::endl << e.what() << " at line " << yyget_lineno(scanner) << std::endl; TerminateLoopInteractive(ast, scanner); continue; }
-			catch (RuntimeErrorException& e) { std::cout << std::endl << e.what() << " at line " << yyget_lineno(scanner) << std::endl; TerminateLoopInteractive(ast, scanner); continue; }
-			catch (SyntaxErrorException& e) { std::cout << std::endl << e.what() << " at line " << yyget_lineno(scanner) << std::endl; TerminateLoopInteractive(ast, scanner); continue; }
+			catch (BreakException& e) { std::cout << std::endl << e.what() << std::endl; TerminateLoopInteractive(ast, scanner); continue; }
+			catch (ContinueException& e) { std::cout << std::endl << e.what() << std::endl; TerminateLoopInteractive(ast, scanner); continue; }
+			catch (ReturnException& e) { std::cout << std::endl << e.what() << std::endl; TerminateLoopInteractive(ast, scanner); continue; }
+			catch (ReturnValueException& e) { std::cout << std::endl << e.what() << std::endl; TerminateLoopInteractive(ast, scanner); continue; }
+			catch (RuntimeErrorException& e) { std::cout << std::endl << e.what() << std::endl; TerminateLoopInteractive(ast, scanner); continue; }
+			catch (SyntaxErrorException& e) { std::cout << std::endl << e.what() << std::endl; TerminateLoopInteractive(ast, scanner); continue; }
 			TerminateLoopInteractive(ast, scanner);
 
 		}

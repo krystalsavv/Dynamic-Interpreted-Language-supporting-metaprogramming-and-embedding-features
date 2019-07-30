@@ -114,11 +114,15 @@ void Evaluator::destroyInstance(){
 }
 
 OPValue Evaluator::Evaluate(ASTnode* node, bool insertFlag) {
-	return (this->*EvaluateDispatcher[node->GetValue("type")->GetStringValue()])(node, insertFlag);
+	lineno = node->GetLine();
+	OPValue ret = (this->*EvaluateDispatcher[node->GetValue("type")->GetStringValue()])(node, insertFlag);
+	return ret;
 }
 
 Value& Evaluator::EvaluateLvalue(ASTnode* node, bool insertFlag, Environment* env) {
-	return (this->*EvaluateLvalueDispatcher[node->GetValue("type")->GetStringValue()])(node,insertFlag, env);
+	lineno = node->GetLine();
+	Value& ret = (this->*EvaluateLvalueDispatcher[node->GetValue("type")->GetStringValue()])(node,insertFlag, env);
+	return ret;
 }
 
 OPValue Evaluator::EvaluateProgram(ASTnode* node, bool insertFlag) {
@@ -258,7 +262,7 @@ OPValue Evaluator::EvaluateParenthesisFuncdef(ASTnode* node, bool insertFlag) {
 		Object* obj = idList->GetValue(i)->GetObjectValue();
 		Value id = *(obj->GetValue("ID"));
 		if (idList_withoutIndex.HasProperty(id))
-			throw RuntimeErrorException("More than one formal with name " + id.GetStringValue());
+			throw RuntimeErrorException("More than one formal with name \"" + id.GetStringValue() + "\"");
 		if (hasCollisionWithLibFunc(id.GetStringValue()))
 			throw RuntimeErrorException("\"" + id.GetStringValue() + "\" is a library function. It can not be used as a formal");
 		idList_withoutIndex.Set(id, Undefined());
@@ -272,10 +276,10 @@ OPValue Evaluator::EvaluateParenthesisFuncdef(ASTnode* node, bool insertFlag) {
 Value& Evaluator::EvaluateLvalueIdent(ASTnode* node, bool insertFlag, Environment* env) {
 	Value* value = LvalueVarActions(node->GetValue("ID")->GetStringValue(),insertFlag, env);
 	if (value == nullptr && !insertFlag) {
-		throw RuntimeErrorException("Undefined variable " + node->GetValue("ID")->GetStringValue());
+		throw RuntimeErrorException("Undefined variable \"" + node->GetValue("ID")->GetStringValue() + "\"");
 	}
 	else if (value == nullptr && insertFlag) {
-		throw SyntaxErrorException("Collision with library function: " + node->GetValue("ID")->GetStringValue());
+		throw SyntaxErrorException("Collision with library function: \"" + node->GetValue("ID")->GetStringValue() + "\"");
 	}
 	return *value;
 }
@@ -283,10 +287,10 @@ Value& Evaluator::EvaluateLvalueIdent(ASTnode* node, bool insertFlag, Environmen
 Value& Evaluator::EvaluateLvalueLocalIdent(ASTnode* node, bool insertFlag, Environment* env) {
 	Value* value = LvalueLocalVarActions(node->GetValue("ID")->GetStringValue(), insertFlag, env);
 	if (value == nullptr && !insertFlag) {
-		throw RuntimeErrorException("Undefined local variable " + node->GetValue("ID")->GetStringValue());
+		throw RuntimeErrorException("Undefined local variable \"" + node->GetValue("ID")->GetStringValue() + "\"");
 	}
 	else if (value == nullptr && insertFlag) {
-		throw SyntaxErrorException("Collision with library function: " + node->GetValue("ID")->GetStringValue());
+		throw SyntaxErrorException("Collision with library function: \"" + node->GetValue("ID")->GetStringValue() + "\"");
 	}
 	return *value;
 }
@@ -294,7 +298,7 @@ Value& Evaluator::EvaluateLvalueLocalIdent(ASTnode* node, bool insertFlag, Envir
 Value& Evaluator::EvaluateLvalueGlobalIdent(ASTnode* node, bool insertFlag, Environment* env) {
 	Value* value = GlobalVarActions(node->GetValue("ID")->GetStringValue(), env);
 	if (value == nullptr) {
-		throw RuntimeErrorException("Undefined global variable " + node->GetValue("ID")->GetStringValue());
+		throw RuntimeErrorException("Undefined global variable \"" + node->GetValue("ID")->GetStringValue() + "\"");
 	}
 	return *value;
 }
@@ -303,7 +307,7 @@ Value& Evaluator::EvaluateLvalueGlobalIdent(ASTnode* node, bool insertFlag, Envi
 OPValue Evaluator::EvaluateIdent(ASTnode* node, bool insertFlag) {
 	Value* value = RvalueVarActions(node->GetValue("ID")->GetStringValue(), insertFlag);
 	if (value == nullptr) {
-		throw RuntimeErrorException("Undefined variable " + node->GetValue("ID")->GetStringValue());
+		throw RuntimeErrorException("Undefined variable \"" + node->GetValue("ID")->GetStringValue() + "\"");
 	}
 	return *value;
 }
@@ -311,10 +315,10 @@ OPValue Evaluator::EvaluateIdent(ASTnode* node, bool insertFlag) {
 OPValue Evaluator::EvaluateLocalIdent(ASTnode* node, bool insertFlag) {
 	Value* value = RvalueLocalVarActions(node->GetValue("ID")->GetStringValue());
 	if (value == nullptr && insertFlag) {
-		throw SyntaxErrorException("Collision with library function " + node->GetValue("ID")->GetStringValue());
+		throw SyntaxErrorException("Collision with library function \"" + node->GetValue("ID")->GetStringValue() + "\"");
 	}
 	else if (value == nullptr && !insertFlag) {
-		throw RuntimeErrorException("Undefined or collision with" + node->GetValue("ID")->GetStringValue());
+		throw RuntimeErrorException("Undefined or collision with \"" + node->GetValue("ID")->GetStringValue() + "\"");
 	}
 	return *value;
 }
@@ -322,7 +326,7 @@ OPValue Evaluator::EvaluateLocalIdent(ASTnode* node, bool insertFlag) {
 OPValue Evaluator::EvaluateGlobalIdent(ASTnode* node, bool insertFlag) {
 	Value* value = GlobalVarActions(node->GetValue("ID")->GetStringValue());
 	if (value == nullptr) {
-		throw RuntimeErrorException("Undefined global variable " + node->GetValue("ID")->GetStringValue());
+		throw RuntimeErrorException("Undefined global variable \"" + node->GetValue("ID")->GetStringValue() + "\"");
 	}
 	return *value;
 }
@@ -332,11 +336,11 @@ OPValue Evaluator::EvaluateGlobalIdent(ASTnode* node, bool insertFlag) {
 Value& Evaluator::EvaluateLvalueMemberIdent(ASTnode* node, bool insertFlag, Environment* env )
 {
 	Value& lvalue = EvaluateLvalue(node->GetValue("lvalue")->GetObjectValue(),false);
-	if (lvalue.isUndefined()) throw RuntimeErrorException("Cannot read id " + node->GetValue("ID")->GetStringValue() + " of undefined");
+	if (lvalue.isUndefined()) throw RuntimeErrorException("Cannot read id \"" + node->GetValue("ID")->GetStringValue() + "\" of undefined");
 	if (lvalue.isObject()) {
 		return Object_set(lvalue, node->GetValue("ID")->GetStringValue());
 	}
-	throw RuntimeErrorException("Cannot read id " + node->GetValue("ID")->GetStringValue() + " of non-object variable");
+	throw RuntimeErrorException("Cannot read id \"" + node->GetValue("ID")->GetStringValue() + "\" of non-object variable");
 }
 
 Value& Evaluator::EvaluateLvalueMemberBrackets(ASTnode* node, bool insertFlag, Environment* env)
@@ -349,38 +353,38 @@ Value& Evaluator::EvaluateLvalueMemberBrackets(ASTnode* node, bool insertFlag, E
 	//std::cout << *expr << std::endl;
 	//std::cout << "\n-------------------------------------------\n";
 	//std::cout << lvalue;
-	if (lvalue.isUndefined()) throw RuntimeErrorException("Cannot read value " + expr->toString() + " of undefined");
+	if (lvalue.isUndefined()) throw RuntimeErrorException("Cannot read value \"" + expr->toString() + "\" of undefined");
 	if (lvalue.isObject()) {
 		return Object_set_brackets(lvalue, *expr);
 	}
-	throw RuntimeErrorException("Cannot read value " + expr->toString() + " of non-object variable");
+	throw RuntimeErrorException("Cannot read value \"" + expr->toString() + "\" of non-object variable");
 }
 
 Value& Evaluator::EvaluateLvalueMemberCallIdent(ASTnode* node, bool insertFlag, Environment* env){
 	OPValue call = Evaluate(node->GetValue("call")->GetObjectValue(), false);
-	if (call->isUndefined()) throw RuntimeErrorException("Cannot read id " + node->GetValue("ID")->GetStringValue() + " of undefined");
+	if (call->isUndefined()) throw RuntimeErrorException("Cannot read id \"" + node->GetValue("ID")->GetStringValue() + "\" of undefined");
 	if (call->isObject()) {
 		return Object_set(*call, node->GetValue("ID")->GetStringValue());
 	}
-	throw RuntimeErrorException("Cannot read id " + node->GetValue("ID")->GetStringValue() + " of non-object variable");
+	throw RuntimeErrorException("Cannot read id \"" + node->GetValue("ID")->GetStringValue() + "\" of non-object variable");
 }
 
 Value& Evaluator::EvaluateLvalueMemberCallBrackets(ASTnode* node, bool insertFlag, Environment* env){
 	OPValue expr = Evaluate(node->GetValue("expr")->GetObjectValue(), false);
 	if (*expr == nil) throw RuntimeErrorException("Cannot use nil as expression in brackets");
 	Value& call = EvaluateLvalue(node->GetValue("call")->GetObjectValue(), false);
-	if (call.isUndefined()) throw RuntimeErrorException("Cannot read value " + expr->toString() + " of undefined");
+	if (call.isUndefined()) throw RuntimeErrorException("Cannot read value \"" + expr->toString() + "\" of undefined");
 	if (call.isObject()) {
 		return Object_set_brackets(call, *expr);
 	}
-	throw RuntimeErrorException("Cannot read value " + expr->toString() + " of non-object variable");
+	throw RuntimeErrorException("Cannot read value \"" + expr->toString() + "\" of non-object variable");
 }
 
 
 //rvalue member
 OPValue Evaluator::EvaluateMemberIdent(ASTnode* node, bool insertFlag) {
 	OPValue rvalue = Evaluate(node->GetValue("lvalue")->GetObjectValue(), false);
-	if (rvalue->isUndefined()) throw RuntimeErrorException("Cannot read id " + node->GetValue("ID")->GetStringValue() +" of undefined");
+	if (rvalue->isUndefined()) throw RuntimeErrorException("Cannot read id \"" + node->GetValue("ID")->GetStringValue() +"\" of undefined");
 	if (rvalue->isObject()) {
 		Value* value = Object_get(*rvalue, node->GetValue("ID")->GetStringValue());
 		if (value != nullptr)
@@ -393,7 +397,7 @@ OPValue Evaluator::EvaluateMemberBrackets(ASTnode* node, bool insertFlag) {
 	OPValue expr = Evaluate(node->GetValue("expr")->GetObjectValue(), false);
 	if (*expr == nil) throw RuntimeErrorException("Cannot use nil as expression in brackets");
 	OPValue rvalue = Evaluate(node->GetValue("lvalue")->GetObjectValue(), false);
-	if (rvalue->isUndefined()) throw RuntimeErrorException("Cannot read value " + expr->toString() + " of undefined");
+	if (rvalue->isUndefined()) throw RuntimeErrorException("Cannot read value \"" + expr->toString() + "\" of undefined");
 	if (rvalue->isObject()) {
 		Value* value = Object_get_brackets(*rvalue, *expr);
 		if (value != nullptr)
@@ -404,7 +408,7 @@ OPValue Evaluator::EvaluateMemberBrackets(ASTnode* node, bool insertFlag) {
 
 OPValue Evaluator::EvaluateMemberCallIdent(ASTnode* node, bool insertFlag) {
 	OPValue call = Evaluate(node->GetValue("call")->GetObjectValue(), false);
-	if (call->isUndefined()) throw RuntimeErrorException("Cannot read id " + node->GetValue("ID")->GetStringValue() + " of undefined");
+	if (call->isUndefined()) throw RuntimeErrorException("Cannot read id \"" + node->GetValue("ID")->GetStringValue() + "\" of undefined");
 	if (call->isObject()) {
 		Value* value = Object_get(*call, node->GetValue("ID")->GetStringValue());
 		if (value != nullptr)
@@ -417,7 +421,7 @@ OPValue Evaluator::EvaluateMemberCallBrackets(ASTnode* node, bool insertFlag) {
 	OPValue expr = Evaluate(node->GetValue("expr")->GetObjectValue(), false);
 	if (*expr == nil) throw RuntimeErrorException("Cannot use nil as expression in brackets");
 	OPValue call = Evaluate(node->GetValue("call")->GetObjectValue(), false);
-	if (call->isUndefined()) throw RuntimeErrorException("Cannot read value " + expr->toString() + " of undefined");
+	if (call->isUndefined()) throw RuntimeErrorException("Cannot read value \"" + expr->toString() + "\" of undefined");
 	if (call->isObject()) {
 		Value* value = Object_get_brackets(*call, *expr);
 		if (value != nullptr)
@@ -452,9 +456,14 @@ OPValue Evaluator::EvaluateLvalueNormalCall(ASTnode* node, bool insertFlag){
 	OPValue tmp = Evaluate(node->GetValue("argList")->GetObjectValue(), false);
 	OPValue funcdef = Evaluate(node->GetValue("lvalue")->GetObjectValue(), false);
 
-	if (!(funcdef->isObject() && funcdef->GetObjectValue()))
+	if (!(funcdef->isObject() && funcdef->GetObjectValue()) && !(funcdef->isString() && hasCollisionWithLibFunc(funcdef->GetStringValue())))
 		throw RuntimeErrorException("Cannot call a not callable-member");
-	if (funcdef->GetObjectValue()->HasProperty("type") && hasCollisionWithLibFunc(funcdef->GetObjectValue()->GetValue("type")->GetStringValue())) {		// libfunc
+	if (funcdef->isString()) {
+		retValue = Evaluate(GlobalLookUp(funcdef->GetStringValue())->GetObjectValue());
+		DeleteArgTable();
+		argTable = old_argTable;
+	}
+	else if (funcdef->GetObjectValue()->HasProperty("type") && hasCollisionWithLibFunc(funcdef->GetObjectValue()->GetValue("type")->GetStringValue())) {		// libfunc
 		retValue = Evaluate(funcdef->GetObjectValue());
 		DeleteArgTable();
 		argTable = old_argTable;
@@ -688,7 +697,7 @@ OPValue Evaluator::EvaluateIndexedElem(ASTnode* node, bool insertFlag) {
 	Object* newObject = new Object();
 	OPValue key = Evaluate(node->GetValue("keyExpr")->GetObjectValue());
 	OPValue value = Evaluate(node->GetValue("valueExpr")->GetObjectValue());
-	if (key->isUndefined()) throw RuntimeErrorException("Key of value " + value->toString() + " is undefined");
+	if (key->isUndefined()) throw RuntimeErrorException("Key of value \"" + value->toString() + "\" is undefined");
 	newObject->Set(*key, *value);
 	return newObject;
 }
@@ -722,7 +731,7 @@ OPValue interpreter::Evaluator::EvaluateFuncdef(ASTnode* node, bool insertFlag)
 {
 	Value* value = LvalueFuncDefActions(node->GetValue("ID")->GetStringValue(),node);
 	if (value == nullptr) {
-		throw RuntimeErrorException("Function with id " + node->GetValue("ID")->GetStringValue() + " already exists");
+		throw RuntimeErrorException("Function with id \"" + node->GetValue("ID")->GetStringValue() + "\" already exists");
 	}
 
 	// Error checking
@@ -734,7 +743,7 @@ OPValue interpreter::Evaluator::EvaluateFuncdef(ASTnode* node, bool insertFlag)
 		Object* obj = idList->GetValue(i)->GetObjectValue();
 		Value id = *(obj->GetValue("ID"));
 		if (idList_withoutIndex.HasProperty(id))
-			throw RuntimeErrorException("More than one formal with name " + id.GetStringValue());
+			throw RuntimeErrorException("More than one formal with name \"" + id.GetStringValue() + "\"");
 		if(hasCollisionWithLibFunc(id.GetStringValue()))
 			throw RuntimeErrorException("\"" + id.GetStringValue() + "\" is a library function. It can not be used as a formal");
 		idList_withoutIndex.Set(id, Undefined());

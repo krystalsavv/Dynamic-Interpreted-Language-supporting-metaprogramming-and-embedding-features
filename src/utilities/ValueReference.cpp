@@ -123,7 +123,7 @@ ValueReference ValueReference::operator+(ValueReference& right) {
 		val = *GetDouble() + *right.GetDouble();
 	}
 	else
-		throw RuntimeErrorException("Non same types in operator + in value reference ");
+		throw RuntimeErrorException("Non same types in operator+ in value reference ");
 	return val;
 }
 
@@ -136,7 +136,7 @@ ValueReference ValueReference::operator-(ValueReference& right) {
 		val = *GetDouble() - *right.GetDouble();
 	}
 	else
-		throw RuntimeErrorException("Non same types in operator + in value reference ");
+		throw RuntimeErrorException("Non same types in operator- in value reference ");
 	return val;
 }
 
@@ -149,7 +149,7 @@ ValueReference ValueReference::operator*(ValueReference& right) {
 		val = *GetDouble() * *right.GetDouble();
 	}
 	else
-		throw RuntimeErrorException("Non same types in operator + in value reference ");
+		throw RuntimeErrorException("Non same types in operator* in value reference ");
 	return val;
 }
 
@@ -162,7 +162,7 @@ ValueReference ValueReference::operator/(ValueReference& right) {
 		val = *GetDouble() / *right.GetDouble();
 	}
 	else
-		throw RuntimeErrorException("Non same types in operator + in value reference ");
+		throw RuntimeErrorException("Non same types in operator/ in value reference ");
 	return val;
 }
 
@@ -175,7 +175,7 @@ ValueReference ValueReference::operator%(ValueReference& right) {
 		val = (int)*GetDouble() % (int)*right.GetDouble();
 	}
 	else
-		throw RuntimeErrorException("Non same types in operator + in value reference ");
+		throw RuntimeErrorException("Non same types in operator% in value reference ");
 	return val;
 }
 
@@ -225,7 +225,7 @@ ValueReference ValueReference::operator--(int) {
 		return (*GetDouble())--;
 	}
 	else
-		throw RuntimeErrorException("Non numeric types in postfix increment ");
+		throw RuntimeErrorException("Non numeric types in postfix decrement ");
 }
 
 ValueReference ValueReference::operator-() {

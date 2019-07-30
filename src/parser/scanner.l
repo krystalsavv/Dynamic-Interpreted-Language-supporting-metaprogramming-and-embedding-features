@@ -85,6 +85,8 @@ punc 		[\[\]\{\}\(\)\;\,]|(\:{1,2})|(\.{1,2})
 
 <COMMENT3><<EOF>>  			{ std::cerr << "Error: Comment is not closed (EOF) started at line " << yylineno << std::endl; yyterminate(); } 
 
+<COMMENT3>"\n"				{}
+
 <COMMENT3>. 				{}
 
 

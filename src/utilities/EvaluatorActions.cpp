@@ -85,7 +85,7 @@ Value& interpreter::CallerEnvironmentActions(Value& funcdefNode, const Value& th
 		}
 		else {
 			if (!funcdefNode.GetObjectValue()->HasProperty("()"))
-				throw RuntimeErrorException("Can not call Object at line !!!. Object is not a functor");
+				throw RuntimeErrorException("Cannot call Object. Object is not a functor");
 			return CallerEnvironmentActions(*funcdefNode.GetObjectValue()->GetValue("()"), funcdefNode, true);
 		}
 	}
@@ -106,8 +106,8 @@ void interpreter::AddNamedParamsToEnvironment(Object& idList_withoutIndex) {
 	Environment* curr = TemporarilySaveEnvironment(EnvironmentHolder::getInstance()->GetCurrentEnv());
 	for (auto kv : NamedArgs->GetMap()) {
 		std::string id = kv.first.GetStringValue();
-		if (LocalLookUp(id)) throw RuntimeErrorException("Paramiter " + id + "both positional and named value");
-		if (!(idList_withoutIndex.HasProperty(id))) throw RuntimeErrorException("Unexpected named parameter " + id);
+		if (LocalLookUp(id)) throw RuntimeErrorException("Parameter \"" + id + "\" both positional and named value");
+		if (!(idList_withoutIndex.HasProperty(id))) throw RuntimeErrorException("Unexpected named parameter \"" + id + "\"");
 		curr->Set(id, kv.second);
 	}
 	DecreaseTemporarilySavedEnvironment(curr);
@@ -137,7 +137,7 @@ Value& interpreter::Object_set(Value& lvalue, std::string id) {
 		Value* closureVariable = LocalLookUp(id, lvalue.GetObjectValue()->GetValue("$closure")->GetObjectValue());
 		if (closureVariable != nullptr)
 			return *closureVariable;
-		throw RuntimeErrorException("No closure variable with id " + id);
+		throw RuntimeErrorException("No closure variable with id \"" + id + "\"");
 	}
 	else {
 		if (!lvalue.GetObjectValue()->HasProperty(id))
