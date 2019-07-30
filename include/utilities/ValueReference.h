@@ -25,7 +25,7 @@ namespace interpreter {
 		ValueReference(std::string* value);
 		ValueReference(bool* value);
 		ValueReference(void* value, std::string type = "class");
-		ValueReference(ValueReference& value);
+		ValueReference(const ValueReference& v);
 		//~ValueReference();
 
 
@@ -42,7 +42,11 @@ namespace interpreter {
 		bool isString() const;
 		bool isClass() const;
 
-		//void Set(ValueReference& value);
+		void Set(ValueReference& v);
+		void Set(int i);
+		void Set(double d);
+		void Set(bool b);
+		void Set(std::string s);
 
 		std::string toString() const;
 

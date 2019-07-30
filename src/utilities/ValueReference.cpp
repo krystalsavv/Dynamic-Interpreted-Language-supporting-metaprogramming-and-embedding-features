@@ -43,8 +43,8 @@ ValueReference::ValueReference(void* value, std::string type) {
 	this->type = type;
 }
 
-ValueReference::ValueReference(ValueReference& value) {
-	valueRefVariant = value.valueRefVariant;
+ValueReference::ValueReference(const ValueReference& v) {
+	valueRefVariant = v.valueRefVariant;
 }
 
 
@@ -93,10 +93,6 @@ bool ValueReference::isClass() const {
 	return true;
 }
 
-//void ValueReference::Set(const ValueReference& value) {
-//	valueRefVariant = value.valueRefVariant;
-//}
-
 std::string ValueReference::toString() const {
 	if (isBool())
 		return std::to_string(*GetBool());
@@ -108,6 +104,32 @@ std::string ValueReference::toString() const {
 		return std::to_string(*GetDouble());
 	else
 		return type;
+}
+void ValueReference::Set(ValueReference& v) {
+	if (v.isBool())
+		(*GetBool()) = (*v.GetBool());
+	else if (v.isDouble())
+		(*GetDouble()) = (*v.GetDouble());
+	else if (v.isInteger())
+		(*GetInteger()) = (*v.GetInteger());
+	else if (v.isString())
+		(*GetString()) = (*v.GetString());
+}
+
+void ValueReference::Set(int i) {
+	(*GetInteger()) = i;
+}
+
+void ValueReference::Set(double d) {
+	(*GetDouble()) = d;
+}
+
+void ValueReference::Set(bool b) {
+	(*GetBool()) = b;
+}
+
+void ValueReference::Set(std::string s) {
+	(*GetString()) = s;
 }
 
 
