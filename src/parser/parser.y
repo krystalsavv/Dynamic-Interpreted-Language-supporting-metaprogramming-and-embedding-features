@@ -44,12 +44,12 @@
 %token	MULTI_LINE_COMMENT
 %token	NESTED_COMMENT
 
-%token EVAL_PARSER
+%token EVAL_PARSER META_PARSER
 
 %token WHILE FOR IF ELSE FUNCTION RETURN BREAK CONTINUE AND OR NOT LOCAL TRUE FALSE NIL PLUS MINUS UMINUS ASSIGN MULTI MOD DIV EQUAL NOT_EQUAL INCREMENT DECREMENT 
 %token GREATER_OR_EQUAL LESS_OR_EQUAL GREATER LESS LEFT_SQUARE_BRACKET RIGHT_SQUARE_BRACKET LEFT_BRACKET RIGHT_BRACKET LEFT_PARENTHESIS RIGHT_PARENTHESIS COMMA SEMICOLON COLON DOT DOUBLE_DOT SCOPE WRONG_DEFINITION 
 
-%token	META_SYNTAX_OPEN META_SYNTAX_CLOSE META_ESCAPE META_INLINE META_PARSE META_UNPARSE 
+%token	META_SYNTAX_OPEN META_SYNTAX_CLOSE META_ESCAPE META_EXECUTE META_PARSE META_UNPARSE 
 
 
 %type <objectVal> stmt tmp_block
@@ -59,7 +59,7 @@
 %type <objectVal> lvalue primary call objectdef const member
 %type <objectVal> elist idlist arg argList formal normcall methodcall indexed indexedelem
 %type <objectVal> program start eval eval_stmts
-%type <objectVal> meta meta_syntax meta_escape meta_inline meta_parse meta_unparse
+%type <objectVal> meta meta_syntax meta_escape meta_execute meta_parse meta_unparse
 
 %right ASSIGN
 %left OR
@@ -70,6 +70,8 @@
 %left MULTI DIV MOD
 %right NOT INCREMENT DECREMENT UMINUS
 %left DOT DOUBLE_DOT
+%right META_UNPARSE
+%right META_EXECUTE
 %left LEFT_SQUARE_BRACKET RIGHT_SQUARE_BRACKET
 %left LEFT_PARENTHESIS RIGHT_PARENTHESIS
 
@@ -84,6 +86,10 @@ start : program
 			| EVAL_PARSER  {isEval = 0;}  eval
 				{
 					ast->SetRoot($3);	
+				}
+			| META_PARSER {isEval = 0;} expr
+				{
+					ast->SetRoot($3);
 				}
 				;
 
@@ -265,6 +271,7 @@ expr :	 assignexpr	{ $$ = $1;}
 							$$ = $1;
 						}
 	| meta			{
+							std::cout << ("Meta\n");
 							$$ = $1;
 						}
 	| error 	{}
@@ -772,14 +779,13 @@ returnstmt : RETURN SEMICOLON
 
 meta:  meta_syntax 
 						{
-							// exei conflict giati ola exoyn expr alla den kserw gt
 							$$ = $1;
 						}
 	| meta_escape 
 						{
 							$$ = $1;
 						}
-	| meta_inline
+	| meta_execute
 						{
 							$$ = $1;
 						}
@@ -810,11 +816,11 @@ meta_escape: META_ESCAPE IDENT
 						}
 						;
 
-meta_inline: META_INLINE expr
+meta_execute: META_EXECUTE expr
 						{
 							//TODO: check that expr is AST
 							std::cout << "Meta Inline\n" ;
-							$$ = new ASTnode("type", "meta_inline");
+							$$ = new ASTnode("type", "meta_execute");
 							$$->Set("expr", $2);
 						}
 						;

@@ -161,7 +161,7 @@ namespace interpreter {
 		// metaprogramming
 		OPValue EvaluateSyntax(ASTnode* node, bool insertFlag = true);
 		OPValue EvaluateEscape(ASTnode* node, bool insertFlag = true);
-		OPValue EvaluateInline(ASTnode* node, bool insertFlag = true);
+		OPValue EvaluateExecute(ASTnode* node, bool insertFlag = true);
 		OPValue EvaluateParse(ASTnode* node, bool insertFlag = true);
 		OPValue EvaluateUnparse(ASTnode* node, bool insertFlag = true);
 	};

@@ -35,7 +35,7 @@ punc 		[\[\]\{\}\(\)\;\,]|(\:{1,2})|(\.{1,2})
 "\.\<"						{ return META_SYNTAX_OPEN; }
 "\>\."						{ return META_SYNTAX_CLOSE; }
 "\.~"						{ return META_ESCAPE; }
-"\.\!"						{ return META_INLINE; }
+"\.\!"						{ return META_EXECUTE; }
 "\.@"						{ return META_PARSE; }
 "\.#"						{ return META_UNPARSE; }
 
@@ -160,9 +160,12 @@ int keywords_to_enum(std::string text) {
 }
 
 int yylex(YYSTYPE * yylval_param , yyscan_t yyscanner, int isEval) {
-	if(isEval){
+	if (isEval == 1) {
 		isEval = 0;	
 		return EVAL_PARSER;
+	} else if(isEval == 2) {
+		isEval = 0;	
+		return META_PARSER;
 	}
 	else
 		return yylex(yylval_param, yyscanner);

@@ -81,7 +81,7 @@ std::map<std::string,OPValue(Evaluator::*)(ASTnode*,bool)> Evaluator::IntializeD
 	table["eval"] = &Evaluator::EvaluateEval;
 	table["meta_syntax"] = &Evaluator::EvaluateSyntax;
 	table["meta_escape"] = &Evaluator::EvaluateEscape;
-	table["meta_inline"] = &Evaluator::EvaluateInline;
+	table["meta_execute"] = &Evaluator::EvaluateExecute;
 	table["meta_parse"] = &Evaluator::EvaluateParse;
 	table["meta_unparse"] = &Evaluator::EvaluateUnparse;
 
@@ -967,26 +967,30 @@ OPValue  Evaluator::EvaluateEscape(ASTnode* node, bool insertFlag) {
 	return std::nullopt;
 }
 
-OPValue  Evaluator::EvaluateInline(ASTnode* node, bool insertFlag) {
+OPValue  Evaluator::EvaluateExecute(ASTnode* node, bool insertFlag) {
 	//TODO
 	return std::nullopt;
 }
 
 OPValue  Evaluator::EvaluateParse(ASTnode* node, bool insertFlag) {
-	//TODO
-	std::cout << node->GetValue("stringConst")->GetStringValue() << std::endl;
+	std::cout << "\" "<<node->GetValue("stringConst")->GetStringValue() << "\"" << std::endl;
+
 	yyscan_t scanner;
 	yylex_init(&scanner);
 	yy_scan_string(node->GetValue("stringConst")->GetStringValue().c_str(), scanner);
+	
 	AST* ast = new AST();
-	yyparse(ast, scanner, 1);
-	OPValue tmp = Evaluator::getInstance()->Evaluate(ast->GetRoot());
+	yyparse(ast, scanner, 2);
+	
+	//OPValue tmp = Evaluator::getInstance()->Evaluate(ast->GetRoot());
 	yylex_destroy(scanner);
-	ASTnode* root = ast->GetRoot();
+	ASTnode* metaAST = new ASTnode("type", "metaAST");
+	metaAST->Set("root", ast->GetRoot());
+	ast->GetRoot()->DecreaseReferenceCounter();
 	delete ast;
-	//TODO: isws na prepei na allazw ton typo tou root 
-	//return ast; // an to vlw sto variant 
-	return root;
+
+	std::cout << *metaAST << std::endl;
+	return metaAST;
 }
 
 OPValue  Evaluator::EvaluateUnparse(ASTnode* node, bool insertFlag) {
