@@ -180,3 +180,14 @@ void interpreter::DeleteForElist(Object* elist) {
     ClearObject(elist);
     delete elist;
 }
+
+bool  interpreter::isAST(const Value& value) {
+	if (!value.isObject())
+		return false;
+	ASTnode* node = value.GetObjectValue();
+	if ((node->HasProperty("type") && node->GetValue("type")->isString() && node->GetValue("type")->GetStringValue() == "metaAST") &&
+		(node->HasProperty("root") && node->GetValue("root")->isObject()))
+		return true;
+	else
+		return false;
+}

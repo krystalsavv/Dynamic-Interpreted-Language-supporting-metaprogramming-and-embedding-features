@@ -18,8 +18,8 @@ void  Interpreter::InvokeInterpreter( char* file) {
 		catch (RuntimeErrorException& e) { std::cout << std::endl << e.what() << " at line " << yyget_lineno(scanner) << std::endl; exit(0); }
 		catch (SyntaxErrorException& e) { std::cout << std::endl << e.what() << " at line " << yyget_lineno(scanner) << std::endl; exit(0); }
 		//ast->Print();
-		//std::cout << "------------------------------ EnvironmentChain -----------------------------------" << std::endl << std::endl;
-		//EnvironmentHolder::getInstance()->PrintEnvironmentChain();
+		std::cout << "------------------------------ EnvironmentChain -----------------------------------" << std::endl << std::endl;
+		EnvironmentHolder::getInstance()->PrintEnvironmentChain();
 		//std::cout << "------------------------------ GlobalEnvironment -----------------------------------" << std::endl << std::endl;
 		//EnvironmentHolder::getInstance()->PrintGlobalEnvironment();
 		TerminateInterpreterNonInteractive(ast, scanner);

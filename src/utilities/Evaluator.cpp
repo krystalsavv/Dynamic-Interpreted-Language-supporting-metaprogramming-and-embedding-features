@@ -84,6 +84,7 @@ std::map<std::string,OPValue(Evaluator::*)(ASTnode*,bool)> Evaluator::IntializeD
 	table["meta_execute"] = &Evaluator::EvaluateExecute;
 	table["meta_parse"] = &Evaluator::EvaluateParse;
 	table["meta_unparse"] = &Evaluator::EvaluateUnparse;
+	table["metaAST"] = &Evaluator::EvaluateMetaAST;
 
 	return table;
 }
@@ -954,46 +955,51 @@ OPValue Evaluator::EvaluateEval(ASTnode* node, bool insertFlag) {
 	return Undefined();
 }
 
-
-
 OPValue  Evaluator::EvaluateSyntax(ASTnode* node, bool insertFlag) {
-	//TODO
-	std::cout << "SYNTAX\n";
-	return std::nullopt;
+	Value* ast = node->GetValue("expr");
+	assert(isAST(*ast));							
+	return *ast;
 }
 
 OPValue  Evaluator::EvaluateEscape(ASTnode* node, bool insertFlag) {
-	//TODO
-	return std::nullopt;
+	std::string id = node->GetValue("ID")->GetStringValue();
+	Value* ast =  NormalLookUp(id);
+	if (ast == nullptr) throw RuntimeErrorException("Undefined variable \"" + id + "\"");
+	if (!isAST(*ast)) throw RuntimeErrorException("Variable \"" + id + "\" is not an AST");
+	return *ast;
 }
 
 OPValue  Evaluator::EvaluateExecute(ASTnode* node, bool insertFlag) {
-	//TODO
-	return std::nullopt;
+	OPValue ast = Evaluate(node->GetValue("expr")->GetObjectValue());
+	std::cout << *ast << std::endl; 
+	if (!isAST(*ast)) throw RuntimeErrorException(" Can not execute right value. It is not an AST");
+	return Evaluator::getInstance()->Evaluate(ast->GetObjectValue()->GetValue("root")->GetObjectValue());
 }
 
 OPValue  Evaluator::EvaluateParse(ASTnode* node, bool insertFlag) {
-	std::cout << "\" "<<node->GetValue("stringConst")->GetStringValue() << "\"" << std::endl;
-
 	yyscan_t scanner;
 	yylex_init(&scanner);
 	yy_scan_string(node->GetValue("stringConst")->GetStringValue().c_str(), scanner);
 	
 	AST* ast = new AST();
 	yyparse(ast, scanner, 2);
-	
-	//OPValue tmp = Evaluator::getInstance()->Evaluate(ast->GetRoot());
-	yylex_destroy(scanner);
+
 	ASTnode* metaAST = new ASTnode("type", "metaAST");
 	metaAST->Set("root", ast->GetRoot());
+
 	ast->GetRoot()->DecreaseReferenceCounter();
 	delete ast;
+	yylex_destroy(scanner);
 
-	std::cout << *metaAST << std::endl;
 	return metaAST;
 }
 
 OPValue  Evaluator::EvaluateUnparse(ASTnode* node, bool insertFlag) {
-	//TODO
-	return std::nullopt;
+	ASTnode* ast = node->GetValue("expr")->GetObjectValue();
+	if (!isAST(ast)) throw RuntimeErrorException(" Can not Unparse right value. It is not an AST");
+	return ast->toString();
+}
+
+OPValue  Evaluator::EvaluateMetaAST(ASTnode* node, bool insertFlag) {
+	return node; 
 }

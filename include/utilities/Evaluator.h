@@ -164,6 +164,7 @@ namespace interpreter {
 		OPValue EvaluateExecute(ASTnode* node, bool insertFlag = true);
 		OPValue EvaluateParse(ASTnode* node, bool insertFlag = true);
 		OPValue EvaluateUnparse(ASTnode* node, bool insertFlag = true);
+		OPValue EvaluateMetaAST(ASTnode* node, bool insertFlag = true);
 	};
 
 }

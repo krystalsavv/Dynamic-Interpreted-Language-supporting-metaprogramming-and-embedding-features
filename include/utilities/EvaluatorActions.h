@@ -23,4 +23,6 @@ namespace interpreter {
 
 	void DeleteArgTable();
 	void DeleteForElist(Object* elist);
+
+	bool isAST(const Value& value);
 }

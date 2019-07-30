@@ -72,6 +72,8 @@
 %left DOT DOUBLE_DOT
 %right META_UNPARSE
 %right META_EXECUTE
+%right META_SYNTAX_OPEN META_SYNTAX_CLOSE
+%right META_ESCAPE
 %left LEFT_SQUARE_BRACKET RIGHT_SQUARE_BRACKET
 %left LEFT_PARENTHESIS RIGHT_PARENTHESIS
 
@@ -803,7 +805,9 @@ meta_syntax : META_SYNTAX_OPEN expr META_SYNTAX_CLOSE
 						{
 							std::cout << "Meta Syntax\n" ;
 							$$ = new ASTnode("type", "meta_syntax");
-							$$->Set("expr", $2);
+							 ASTnode* root = new ASTnode("type", "metaAST");
+							 root->Set("root", $2);
+							$$->Set("expr", root);
 						}
 						;
 
@@ -818,8 +822,7 @@ meta_escape: META_ESCAPE IDENT
 
 meta_execute: META_EXECUTE expr
 						{
-							//TODO: check that expr is AST
-							std::cout << "Meta Inline\n" ;
+							std::cout << "Meta Execute\n" ;
 							$$ = new ASTnode("type", "meta_execute");
 							$$->Set("expr", $2);
 						}

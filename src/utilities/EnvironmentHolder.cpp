@@ -202,6 +202,7 @@ Value* interpreter::LocalLookUp(std::string id, Environment* envIterator) {		// 
  }
 
  Value* interpreter::NormalLookUp(std::string id, Environment* envIterator) {
+	 EnvironmentHolder::getInstance()->PrintEnvironmentChain();
 	while (envIterator!=nullptr){
 		
 		envIterator = LocalLookUpForNormal(id, envIterator);
