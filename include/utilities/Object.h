@@ -11,6 +11,7 @@ namespace interpreter {
 	class Object {
 		map_t symbols;
 		long long int referenceCounter = 0;
+		size_t line = 0;
 		inline static unsigned int nestedCounterPrint = 0;
 		inline static unsigned long long int anonymousFuncCounter = 0;
 		inline static unsigned long long int destroyedBlocks = 0;
@@ -26,6 +27,8 @@ namespace interpreter {
 		Value* GetValue(const Value& key);
 		
 		void Set(const Value& key, const Value& value);
+		void SetLine(size_t line);
+		size_t GetLine();
 
 		bool HasProperty(const Value& key) const;
 		size_t size() const;

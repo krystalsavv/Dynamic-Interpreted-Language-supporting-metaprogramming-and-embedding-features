@@ -43,9 +43,19 @@ void Object::Set(const Value& key, const Value& value) {
 
 	if (value.isObject() && value.GetObjectValue())
 		value.GetObjectValue()->IncreaseReferenceCounter();
+	if (key.isObject() && key.GetObjectValue())
+		key.GetObjectValue()->IncreaseReferenceCounter();
 
 	symbols[key] = value;
 
+}
+
+void Object::SetLine(size_t line) {
+	this->line = line;
+}
+
+size_t Object::GetLine() {
+	return line;
 }
 
 bool Object::HasProperty(const Value& key) const {

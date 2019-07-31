@@ -106,6 +106,7 @@ eval : expr
 		|	{
 				$$ = new ASTnode("type", "program");
 				$$->Set("numOfStmt", 0.0);
+				$$->SetLine(yyget_lineno(scanner));
 			}
 			;
 
@@ -122,6 +123,7 @@ eval_stmts: eval_stmts stmt
 							$$ = new ASTnode("type", "program");
 							$$->Set(std::to_string(0), $1);
 							$$->Set("numOfStmt", 1.0);
+							$$->SetLine(yyget_lineno(scanner));
 						}
 						;
 
@@ -139,6 +141,7 @@ program : program stmt
 				std::cout << ("Program\n");
 				$$ = new ASTnode("type", "program");
 				$$->Set("numOfStmt", 0.0);
+				$$->SetLine(yyget_lineno(scanner));
 				//ast->SetRoot($$);
 			}
 		;
@@ -168,11 +171,13 @@ stmt : expr SEMICOLON	{
 							std::cout << ("BREAK\n");
 							$$ = new ASTnode();
 							$$->Set("type", "break");
+							$$->SetLine(yyget_lineno(scanner));
 						}
 	| CONTINUE SEMICOLON	{
 								std::cout << ("CONTINUE\n");
 								$$ = new ASTnode();
 								$$->Set("type", "continue");
+								$$->SetLine(yyget_lineno(scanner));
 							}
 	| block 			{
 								std::cout << ("Block\n");
@@ -186,6 +191,7 @@ stmt : expr SEMICOLON	{
 								std::cout << ("Semicolon ;\n");
 								$$ = new ASTnode();
 								$$->Set("type", "semicolon");
+								$$->SetLine(yyget_lineno(scanner));
 							}
 	;
 
@@ -195,78 +201,91 @@ expr :	 assignexpr	{ $$ = $1;}
 							$$ = new ASTnode("type", "add");
 							$$->Set("left", $1);
 							$$->Set("right", $3);
+							$$->SetLine(yyget_lineno(scanner));
 						}
 	| expr MINUS expr	{
 							std::cout << ("expression - expression \n"); 
 							$$ = new ASTnode("type", "sub");
 							$$->Set("left", $1);
 							$$->Set("right", $3);
+							$$->SetLine(yyget_lineno(scanner));
 						}
 	| expr MULTI expr	{
 							std::cout << ("expression * expression \n"); 
 							$$ = new ASTnode("type", "mul");
 							$$->Set("left", $1);
 							$$->Set("right", $3);
+							$$->SetLine(yyget_lineno(scanner));
 						}
 	| expr DIV expr		{
 							std::cout << ("expression / expression \n"); 
 							$$ = new ASTnode("type", "div");
 							$$->Set("left", $1);
 							$$->Set("right", $3);
+							$$->SetLine(yyget_lineno(scanner));
 						}
 	| expr MOD expr		{
 							std::cout << ("expression %% expression \n"); 
 							$$ = new ASTnode("type", "mod");
 							$$->Set("left", $1);
 							$$->Set("right", $3);
+							$$->SetLine(yyget_lineno(scanner));
 						}
 	| expr GREATER expr	{
 							std::cout << ("expression > expression \n");
 							$$ = new ASTnode("type", "greater");
 							$$->Set("left", $1);
 							$$->Set("right", $3);
+							$$->SetLine(yyget_lineno(scanner));
 						}
 	| expr GREATER_OR_EQUAL expr	{
 										std::cout << ("expression >= expression \n");
 										$$ = new ASTnode("type", "greater_or_equal");
 										$$->Set("left", $1);
 										$$->Set("right", $3);
+										$$->SetLine(yyget_lineno(scanner));
 									}
 	| expr LESS expr	{
 							std::cout << ("expression  < expression \n");
 							$$ = new ASTnode("type", "less");
 							$$->Set("left", $1);
 							$$->Set("right", $3);
+							$$->SetLine(yyget_lineno(scanner));
 						}
 	| expr LESS_OR_EQUAL expr		{
 										std::cout << ("expression <= expression \n" ); 
 										$$ = new ASTnode("type", "less_or_equal");
 										$$->Set("left", $1);
 										$$->Set("right", $3);
+										$$->SetLine(yyget_lineno(scanner));
 									}
 	| expr EQUAL expr	{
 							std::cout << ("expression == expression \n"); 
 							$$ = new ASTnode("type", "equal");
 							$$->Set("left", $1);
 							$$->Set("right", $3);
+							$$->SetLine(yyget_lineno(scanner));
 						}
 	| expr NOT_EQUAL expr	{
 								std::cout << ("expression != expression \n");
 								$$ = new ASTnode("type", "not_equal");
 								$$->Set("left", $1);
 								$$->Set("right", $3);
+								$$->SetLine(yyget_lineno(scanner));
 							}
 	| expr AND expr		{
 							std::cout << ("expression && expression \n");
 							$$ = new ASTnode("type", "and");
 							$$->Set("left", $1);
 							$$->Set("right", $3);
+							$$->SetLine(yyget_lineno(scanner));
 						}
 	| expr OR expr		{
 							std::cout << ("expression || expression \n");
 							$$ = new ASTnode("type", "or");
 							$$->Set("left", $1);
 							$$->Set("right", $3);
+							$$->SetLine(yyget_lineno(scanner));
 						}
 	| term			{	
 							std::cout << ("Terminal\n");
@@ -284,42 +303,49 @@ term :	 LEFT_PARENTHESIS expr RIGHT_PARENTHESIS
 				std::cout << ("( expression )\n");
 				$$ = new ASTnode("type", "parentheses");
 				$$->Set("expr", $2);
+				$$->SetLine(yyget_lineno(scanner));
 			}
 	| MINUS expr %prec UMINUS	
 			{
 				std::cout << ("- expression\n");
 				$$ = new ASTnode("type", "uminus");
 				$$->Set("expr", $2);
+				$$->SetLine(yyget_lineno(scanner));
 			}
 	| NOT expr
 			{
 				std::cout << ("!expression\n");
 				$$ = new ASTnode("type", "not");
 				$$->Set("expr", $2);
+				$$->SetLine(yyget_lineno(scanner));
 			}
 	| INCREMENT lvalue
 			{
 				std::cout << ("++ lvalue\n");
 				$$ = new ASTnode("type", "pre_increment");
 				$$->Set("lvalue", $2);
+				$$->SetLine(yyget_lineno(scanner));
 			}
 	| lvalue INCREMENT 
 			{
 				std::cout << ("lvalue ++\n");
 				$$ = new ASTnode("type", "post_increment");
 				$$->Set("lvalue", $1);
+				$$->SetLine(yyget_lineno(scanner));
 			}
 	| DECREMENT lvalue
 			{
 				std::cout << ("-- lvalue\n");
 				$$ = new ASTnode("type", "pre_decrement");
 				$$->Set("lvalue", $2);
+				$$->SetLine(yyget_lineno(scanner));
 			}
 	| lvalue DECREMENT
 			{
 				std::cout << ("lvalue --\n");
 				$$ = new ASTnode("type", "post_decrement");
 				$$->Set("lvalue", $1);
+				$$->SetLine(yyget_lineno(scanner));
 			}
 	| primary	{	
 					std::cout << ("Primary\n");
@@ -333,6 +359,7 @@ assignexpr : lvalue ASSIGN expr
 					$$ = new ASTnode("type", "assignexpr");
 					$$->Set("lvalue", $1);
 					$$->Set("expr", $3);
+					$$->SetLine(yyget_lineno(scanner));
 				}
 				;
 
@@ -366,13 +393,15 @@ lvalue : IDENT
 				std::cout << ("ID\n");
 				$$ = new ASTnode("type", "var");
 				$$->Set("ID", *$1);
-				delete $1; 
+				$$->SetLine(yyget_lineno(scanner));
+				delete $1;
 			}
 	| LOCAL IDENT	
 			{
 				std::cout << ("Local ID\n");
 				$$ = new ASTnode("type", "localVar");					
 				$$->Set("ID", *$2);
+				$$->SetLine(yyget_lineno(scanner));
 				delete $2; 
 			}
 	| SCOPE IDENT	
@@ -380,6 +409,7 @@ lvalue : IDENT
 				std::cout << ("::ID\n");
 				$$ = new ASTnode("type", "globalVar");		
 				$$->Set("ID", *$2);
+				$$->SetLine(yyget_lineno(scanner));
 				delete $2; 
 			}
 	| member	
@@ -395,6 +425,7 @@ member : lvalue DOT IDENT
 					$$ = new ASTnode("type", "member_lvalueVar");
 					$$->Set("lvalue", $1);
 					$$->Set("ID", *$3);
+					$$->SetLine(yyget_lineno(scanner));
 					delete $3; 
 				
 				}
@@ -404,6 +435,7 @@ member : lvalue DOT IDENT
 					$$ = new ASTnode("type", "member_lvalueBrackets");
 					$$->Set("lvalue", $1);
 					$$->Set("expr", $3);
+					$$->SetLine(yyget_lineno(scanner));
 				}
 	| call DOT IDENT 
 				{
@@ -411,6 +443,7 @@ member : lvalue DOT IDENT
 					$$ = new ASTnode("type", "member_callVar");
 					$$->Set("call", $1);
 					$$->Set("ID", *$3);
+					$$->SetLine(yyget_lineno(scanner));
 					delete $3; 
 				}
 	| call LEFT_SQUARE_BRACKET expr RIGHT_SQUARE_BRACKET
@@ -419,6 +452,7 @@ member : lvalue DOT IDENT
 					$$ = new ASTnode("type", "member_callBrackets");
 					$$->Set("call", $1);
 					$$->Set("expr", $3);
+					$$->SetLine(yyget_lineno(scanner));
 				}
 	;
 
@@ -428,6 +462,7 @@ call : call LEFT_PARENTHESIS argList RIGHT_PARENTHESIS
 					$$ = new ASTnode("type", "multiCall");
 					$$->Set("call", $1);
 					$$->Set("argList", $3);
+					$$->SetLine(yyget_lineno(scanner));
 				}
 	| lvalue normcall 
 				{
@@ -435,6 +470,7 @@ call : call LEFT_PARENTHESIS argList RIGHT_PARENTHESIS
 					$$ = new ASTnode("type", "lvalueNormCall");
 					$$->Set("lvalue", $1);
 					$$->Set("argList", $2);
+					$$->SetLine(yyget_lineno(scanner));
 				}
 	| lvalue methodcall 
 				{
@@ -449,6 +485,7 @@ call : call LEFT_PARENTHESIS argList RIGHT_PARENTHESIS
 					$$ = new ASTnode("type", "funcdefCall");
 					$$->Set("funcdef", $2);
 					$$->Set("argList", $5);
+					$$->SetLine(yyget_lineno(scanner));
 				}
 	;
 
@@ -466,6 +503,7 @@ methodcall : DOUBLE_DOT IDENT LEFT_PARENTHESIS argList RIGHT_PARENTHESIS
 				$$ = new ASTnode("type", "methodcall");
 				$$->Set("ID", *$2); 
 				$$->Set("argList", $4); 
+				$$->SetLine(yyget_lineno(scanner));
 				delete $2;
 			}
 			;
@@ -480,6 +518,7 @@ arg : expr	{
 				$$ = new ASTnode("type", "namedParam");
 				$$->Set("expr", $3);
 				$$->Set("ID", *$1);
+				$$->SetLine(yyget_lineno(scanner));
 				delete $1;
 			} 
 			;
@@ -491,6 +530,7 @@ argList : arg
 				$$->Set("numOfPositionalArgs", 0.0);
 				$$->Set("PositionalArgs", new Object());
 				$$->Set("NamedArgs", new Object());
+				$$->SetLine(yyget_lineno(scanner));
 				if($1->GetValue("type")->GetStringValue() == "namedParam") {		
 					$$->GetValue("NamedArgs")->GetObjectValue()->Set(*($1->GetValue("ID")), *($1->GetValue("expr")));
 				}
@@ -509,7 +549,7 @@ argList : arg
 				else {
 					double numOfPositionalArgs = $$->GetValue("numOfPositionalArgs")->GetNumberValue();
 					if(numOfTotalArgs != numOfPositionalArgs) {
-						throw RuntimeErrorException("Positional paramiter after named parameter"); 
+						throw RuntimeErrorException("Positional parameter after named parameter"); 
 					}
 					$$->GetValue("PositionalArgs")->GetObjectValue()->Set(numOfPositionalArgs, $3);
 					numOfPositionalArgs++;
@@ -521,6 +561,7 @@ argList : arg
 	|		{
 				std::cout << "empty argList\n";
 				$$ = new ASTnode("type", "emptyArgList");
+				$$->SetLine(yyget_lineno(scanner));
 			}
 	;
 
@@ -530,6 +571,7 @@ elist :  expr
 				$$ = new ASTnode("type", "elist");
 				$$->Set("numOfExprs", 1.0);
 				$$->Set("0", $1);
+				$$->SetLine(yyget_lineno(scanner));
 			}
 	| elist COMMA expr  
 			{
@@ -543,6 +585,7 @@ elist :  expr
 	|		{
 				std::cout << ("empty (elist)\n");
 				$$ = new ASTnode("type", "emptyElist");
+				$$->SetLine(yyget_lineno(scanner));
 			}
 	;
 
@@ -551,12 +594,14 @@ objectdef : LEFT_SQUARE_BRACKET elist RIGHT_SQUARE_BRACKET
 				std::cout << ("[elist]\n");
 				$$ = new ASTnode("type", "elistObjectdef");
 				$$->Set("elist", $2);
+				$$->SetLine(yyget_lineno(scanner));
 			}
 		| LEFT_SQUARE_BRACKET indexed RIGHT_SQUARE_BRACKET	
 			{
 				std::cout << ("[indexed]\n");
 				$$ = new ASTnode("type", "indexedObjectdef");
 				$$->Set("indexed", $2);
+				$$->SetLine(yyget_lineno(scanner));
 			}
 			;
 
@@ -566,6 +611,7 @@ indexed : indexedelem
 				$$ = new ASTnode("type", "indexed");
 				$$->Set("numOfElems", 1.0);
 				$$->Set("0", $1); 
+				$$->SetLine(yyget_lineno(scanner));
 			}
 	| indexed COMMA indexedelem	
 			{
@@ -584,6 +630,7 @@ indexedelem : LEFT_BRACKET expr COLON expr RIGHT_BRACKET
 					$$ = new ASTnode("type", "indexedElem");
 					$$->Set("keyExpr", $2);
 					$$->Set("valueExpr", $4);
+					$$->SetLine(yyget_lineno(scanner));
 				}
 				;
 
@@ -598,6 +645,7 @@ tmp_block: tmp_block stmt
 		|		{ 
 					$$ = new ASTnode("type", "block");
 					$$->Set("numOfStmt", 0.0);
+					$$->SetLine(yyget_lineno(scanner));
 				}
 		;
 
@@ -627,10 +675,13 @@ funcdef : FUNCTION IDENT
 					std::cout << ("function id(idlist) funcbody\n");
 					$$ = new ASTnode("type", "funcdef");
 					$$->Set("ID", *$2);
+					$$->SetLine(yyget_lineno(scanner));
 					ASTnode* funcEnter = new ASTnode("type", "funcEnter");
 					funcEnter->Set("idlist", $5);			//prosoxh an vgalw panw action
 					funcEnter->Set("funcbody", $7);
+					funcEnter->SetLine(yyget_lineno(scanner));
 					$$->Set("funcEnter", funcEnter);
+					
 					delete $2;
 				}
 		| FUNCTION 
@@ -644,7 +695,9 @@ funcdef : FUNCTION IDENT
 					ASTnode* funcEnter = new ASTnode("type", "funcEnter");
 					funcEnter->Set("idlist", $4);			//prosoxh an vgalw panq action	
 					funcEnter->Set("funcbody", $6);
+					funcEnter->SetLine(yyget_lineno(scanner));
 					$$->Set("funcEnter", funcEnter);
+					$$->SetLine(yyget_lineno(scanner));
 				}
 		; 
 
@@ -652,31 +705,37 @@ const : INTEGER {
 					std::cout << ("Integer\n");
 					$$ = new ASTnode("type", "numConst");
 					$$->Set("value", $1);
+					$$->SetLine(yyget_lineno(scanner));
 				}
 		| REALNUMBER {
 						std::cout << ("Real number\n");
 						$$ = new ASTnode("type", "numConst");
 						$$->Set("value", $1);
+						$$->SetLine(yyget_lineno(scanner));
 					}
 		| STRING {
 					std::cout << ("String\n");
 					$$ = new ASTnode("type", "stringConst");
 					$$->Set("value", *$1);
+					$$->SetLine(yyget_lineno(scanner));
 					delete $1;
 				}
 		| TRUE 	{
 					std::cout << ("TRUE\n");
 					$$ = new ASTnode("type", "boolConst");
 					$$->Set("value", true);
+					$$->SetLine(yyget_lineno(scanner));
 				}
 		| FALSE {
 					std::cout << ("FALSE\n");
 					$$ = new ASTnode("type", "boolConst");
 					$$->Set("value", false);
+					$$->SetLine(yyget_lineno(scanner));
 				}
 		| NIL 	{
 					std::cout << ("NIL\n");
 					$$ = new ASTnode("type", "nil");
+					$$->SetLine(yyget_lineno(scanner));
 				}
 		;
 
@@ -685,6 +744,7 @@ formal: IDENT
 			std::cout << ("id list\n");
 			$$ = new ASTnode("type", "param");
 			$$->Set("ID", *$1);
+			$$->SetLine(yyget_lineno(scanner));
 			delete $1;
 		}
 	
@@ -694,6 +754,7 @@ formal: IDENT
 			$$ = new ASTnode("type", "optionalParam");
 			$$->Set("ID", *$1);
 			$$->Set("expr", $3);
+			$$->SetLine(yyget_lineno(scanner));
 			delete $1;
 		}
 	;
@@ -705,6 +766,7 @@ idlist : formal
 			$$ = new ASTnode("type", "idlist");
 			$$->Set("numOfParams", 1.0);
 			$$->Set(0.0, $1); 
+			$$->SetLine(yyget_lineno(scanner));
 			}
 	| idlist COMMA formal	
 			{
@@ -719,6 +781,7 @@ idlist : formal
 				std::cout << ("Empty (idlist)\n");
 				$$ = new ASTnode("type", "emptyIdlist");
 				$$->Set("numOfParams", 0.0);
+				$$->SetLine(yyget_lineno(scanner));
 			}
 			;
 
@@ -728,6 +791,7 @@ ifstmt : IF LEFT_PARENTHESIS expr RIGHT_PARENTHESIS stmt
 				$$ = new ASTnode("type", "ifstmt");
 				$$->Set("condition", $3);					
 				$$->Set("stmt", $5);
+				$$->SetLine(yyget_lineno(scanner));
 
 			}
 		| ifstmt ELSE stmt 
@@ -736,6 +800,7 @@ ifstmt : IF LEFT_PARENTHESIS expr RIGHT_PARENTHESIS stmt
 				$$ = new ASTnode("type", "if_elsestmt");
 				$$->Set("ifstmt", $1);					
 				$$->Set("elsestmt", $3);
+				$$->SetLine(yyget_lineno(scanner));
 			}
 			;
 
@@ -748,6 +813,7 @@ whilestmt : WHILE
 				$$ = new ASTnode("type", "whilestmt");
 				$$->Set("condition", $4);						// SOS: change if the action removed!!!
 				$$->Set("stmt", $6);	
+				$$->SetLine(yyget_lineno(scanner));
 			}
 			;
 
@@ -762,6 +828,7 @@ forstmt : FOR
 				$$->Set("condition", $6);
 				$$->Set("elist", $8);
 				$$->Set("stmt", $10);	
+				$$->SetLine(yyget_lineno(scanner));
 			}
 			;
 
@@ -769,12 +836,14 @@ returnstmt : RETURN SEMICOLON
 				{
 					std::cout << ("RETURN;\n");
 					$$ = new ASTnode("type", "return");
+					$$->SetLine(yyget_lineno(scanner));
 				}
 		| RETURN expr SEMICOLON 
 				{
 					std::cout << ("RETURN expression;\n");
 					$$ = new ASTnode("type", "return_value");
 					$$->Set("expr", $2);
+					$$->SetLine(yyget_lineno(scanner));
 				}
 				;
 
@@ -805,8 +874,10 @@ meta_syntax : META_SYNTAX_OPEN expr META_SYNTAX_CLOSE
 						{
 							std::cout << "Meta Syntax\n" ;
 							$$ = new ASTnode("type", "meta_syntax");
-							 ASTnode* root = new ASTnode("type", "metaAST");
-							 root->Set("root", $2);
+							$$->SetLine(yyget_lineno(scanner));
+							ASTnode* root = new ASTnode("type", "metaAST");
+							root->SetLine(yyget_lineno(scanner));
+							root->Set("root", $2);
 							$$->Set("expr", root);
 						}
 						;
@@ -815,6 +886,7 @@ meta_escape: META_ESCAPE IDENT
 						{
 							std::cout << "Meta Escape\n" ;
 							$$ = new ASTnode("type", "meta_escape");
+							$$->SetLine(yyget_lineno(scanner));
 							$$->Set("ID", *$2);
 							delete $2;
 						}
@@ -824,6 +896,7 @@ meta_execute: META_EXECUTE expr
 						{
 							std::cout << "Meta Execute\n" ;
 							$$ = new ASTnode("type", "meta_execute");
+							$$->SetLine(yyget_lineno(scanner));
 							$$->Set("expr", $2);
 						}
 						;
@@ -832,6 +905,7 @@ meta_parse: META_PARSE STRING
 						{
 							std::cout << "Meta Escape\n" ;
 							$$ = new ASTnode("type", "meta_parse");
+							$$->SetLine(yyget_lineno(scanner));
 							$$->Set("stringConst", *$2);
 							delete $2;
 						}
@@ -839,9 +913,9 @@ meta_parse: META_PARSE STRING
 
 meta_unparse: META_UNPARSE expr
 						{
-							//TODO: check that expr is AST
 							std::cout << "Meta unparse\n" ;
 							$$ = new ASTnode("type", "meta_unparse");
+							$$->SetLine(yyget_lineno(scanner));
 							$$->Set("expr", $2);
 						}
 						;
