@@ -220,12 +220,14 @@ Value* interpreter::LocalLookUp(std::string id, Environment* envIterator) {		// 
  }
 
  Environment* interpreter::TemporarilySaveEnvironment(Environment* env) {
-	 env->IncreaseReferenceCounter();
+	 if(env)
+		env->IncreaseReferenceCounter();
 	 return env;
  }
 
  void interpreter::DecreaseTemporarilySavedEnvironment(Environment* env) {
-	 env->DecreaseReferenceCounter();
+	 if(env)
+		env->DecreaseReferenceCounter();
  }
 
  void interpreter::ClearEnvironment(){

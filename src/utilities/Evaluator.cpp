@@ -970,25 +970,48 @@ OPValue Evaluator::EvaluateEval(ASTnode* node, bool insertFlag) {
 	return Undefined();
 }
 
+// metaprogramming
+static Environment* meta_closure = nullptr;
+static bool isExecute = false;
+
+
 OPValue  Evaluator::EvaluateSyntax(ASTnode* node, bool insertFlag) {
 	Value* ast = node->GetValue("expr");
-	assert(isAST(*ast));							
-	return *ast;
+	assert(isAST(*ast));
+	ASTnode* closure_holder = new ASTnode("type", "closure_holder");
+	closure_holder->Set("AST", *ast);
+	if(isExecute)
+		closure_holder->Set("$meta_closure", meta_closure);
+	else 
+		closure_holder->Set("$meta_closure", EnvironmentHolder::getInstance()->GetCurrentEnv());
+	return closure_holder;				// na dw gia free
 }
 
 OPValue  Evaluator::EvaluateEscape(ASTnode* node, bool insertFlag) {
 	std::string id = node->GetValue("ID")->GetStringValue();
-	Value* ast =  NormalLookUp(id);
-	if (ast == nullptr) throw RuntimeErrorException("Undefined variable \"" + id + "\"");
+	Value* ast =  NormalLookUp(id, meta_closure);
+	if (ast == nullptr) throw RuntimeErrorException("Undefined variable \"" + id + "\"");	
 	if (!isAST(*ast)) throw RuntimeErrorException("Variable \"" + id + "\" is not an AST");
-	return *ast;
+
+	OPValue ret = Evaluator::getInstance()->Evaluate(ast->GetObjectValue()->GetValue("AST")->GetObjectValue()->GetValue("root")->GetObjectValue());
+	return ret;
 }
 
 OPValue  Evaluator::EvaluateExecute(ASTnode* node, bool insertFlag) {
+	Environment* old_meta_closure = TemporarilySaveEnvironment(meta_closure);
 	OPValue ast = Evaluate(node->GetValue("expr")->GetObjectValue());
-	std::cout << *ast << std::endl; 
-	if (!isAST(*ast)) throw RuntimeErrorException(" Can not execute right value. It is not an AST");
-	return Evaluator::getInstance()->Evaluate(ast->GetObjectValue()->GetValue("root")->GetObjectValue());
+	meta_closure = TemporarilySaveEnvironment(ast->GetObjectValue()->GetValue("$meta_closure")->GetObjectValue());
+	bool old_isExecute = isExecute;
+	isExecute = true;
+	if (!isAST(*ast)) throw RuntimeErrorException("Can not execute right value. It is not an AST");
+	ast->GetObjectValue()->IncreaseReferenceCounter();
+	OPValue ret = Evaluator::getInstance()->Evaluate(ast->GetObjectValue()->GetValue("AST")->GetObjectValue()->GetValue("root")->GetObjectValue());
+	DecreaseTemporarilySavedEnvironment(meta_closure);
+	meta_closure = old_meta_closure;
+	DecreaseTemporarilySavedEnvironment(old_meta_closure);
+	ast->GetObjectValue()->DecreaseReferenceCounter();
+	isExecute = old_isExecute;
+	return ret;
 }
 
 OPValue  Evaluator::EvaluateParse(ASTnode* node, bool insertFlag) {

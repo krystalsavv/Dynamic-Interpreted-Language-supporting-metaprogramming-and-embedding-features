@@ -186,8 +186,23 @@ bool  interpreter::isAST(const Value& value) {
 		return false;
 	ASTnode* node = value.GetObjectValue();
 	if ((node->HasProperty("type") && node->GetValue("type")->isString() && node->GetValue("type")->GetStringValue() == "metaAST") &&
-		(node->HasProperty("root") && node->GetValue("root")->isObject()))
+		(node->HasProperty("root") && node->GetValue("root")->isObject())){
 		return true;
-	else
+	}
+	else if ((node->HasProperty("type") && node->GetValue("type")->isString() && node->GetValue("type")->GetStringValue() == "closure_holder") &&
+		(node->HasProperty("$meta_closure") && node->GetValue("$meta_closure")->isObject()) &&
+		(node->HasProperty("AST") && node->GetValue("AST")->isObject())) {
+
+		ASTnode* ast = node->GetValue("AST")->GetObjectValue();
+		if ((ast->HasProperty("type") && ast->GetValue("type")->isString() && ast->GetValue("type")->GetStringValue() == "metaAST") &&
+			(ast->HasProperty("root") && ast->GetValue("root")->isObject())) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	else {
 		return false;
+	}
 }
