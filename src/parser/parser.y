@@ -149,8 +149,9 @@ program : program stmt
 
 stmt : expr SEMICOLON	{
 							std::cout << ("Expression ;\n");
-							$$ = $1;
-
+							$$ = new ASTnode();
+							$$->Set("type", "exprSemicolon");
+							$$->Set("expr", $1);
 						}		
 	| ifstmt			{
 							std::cout << ("IF statement\n");

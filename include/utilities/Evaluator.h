@@ -103,6 +103,7 @@ namespace interpreter {
 		OPValue EvaluateAssignExpr(ASTnode* node, bool insertFlag = true);
 
 		//stmt
+		OPValue EvaluateExprSemicolon(ASTnode* node, bool insertFlag = true);
 		OPValue EvaluateIfStmt(ASTnode* node, bool insertFlag = true);
 		OPValue EvaluateIfElseStmt(ASTnode* node, bool insertFlag = true);
 		OPValue EvaluateWhileStmt(ASTnode* node, bool insertFlag = true);
@@ -134,7 +135,7 @@ namespace interpreter {
 		OPValue EvaluateFuncdef(ASTnode* node, bool insertFlag = true);
 		OPValue EvaluateAnonymousFuncdef(ASTnode* node, bool insertFlag = true);
 		OPValue EvaluateFuncEnter(ASTnode* node, bool insertFlag = true);
-		OPValue EvaluateFuncBody(ASTnode* node, bool insertFlag);
+		OPValue EvaluateFuncBody(ASTnode* node, bool insertFlag = true);
 
 		// const
 		OPValue EvaluateNumberConst(ASTnode* node, bool insertFlag = true);

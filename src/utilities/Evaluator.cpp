@@ -46,6 +46,7 @@ std::map<std::string,OPValue(Evaluator::*)(ASTnode*,bool)> Evaluator::IntializeD
 	table["argList"] = &Evaluator::EvaluateArglist;
 	table["emptyArgList"] = &Evaluator::EvaluateEmptyArglist;
 	table["assignexpr"] = &Evaluator::EvaluateAssignExpr;
+	table["exprSemicolon"] = &Evaluator::EvaluateExprSemicolon;
 	table["ifstmt"] = &Evaluator::EvaluateIfStmt;
 	table["if_elsestmt"] = &Evaluator::EvaluateIfElseStmt;
 	table["whilestmt"] = &Evaluator::EvaluateWhileStmt;
@@ -583,6 +584,11 @@ OPValue interpreter::Evaluator::EvaluateAssignExpr(ASTnode* node, bool insertFla
 }
 
 // stmt
+
+OPValue Evaluator::EvaluateExprSemicolon(ASTnode* node, bool insertFlag) {
+	return Evaluate(node->GetValue("expr")->GetObjectValue());
+}
+
 OPValue Evaluator::EvaluateIfStmt(ASTnode* node, bool insertFlag) {
 	OPValue tmp;
 	if (Evaluate(node->GetValue("condition")->GetObjectValue())->toBool()) {
