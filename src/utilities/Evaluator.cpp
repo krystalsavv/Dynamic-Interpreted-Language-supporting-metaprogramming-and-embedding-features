@@ -120,13 +120,13 @@ void Evaluator::destroyInstance(){
 }
 
 OPValue Evaluator::Evaluate(ASTnode* node, bool insertFlag) {
-	lineno = node->GetLine();
+	lineNumber = node->GetLine();
 	OPValue ret = (this->*EvaluateDispatcher[node->GetValue("type")->GetStringValue()])(node, insertFlag);
 	return ret;
 }
 
 Value& Evaluator::EvaluateLvalue(ASTnode* node, bool insertFlag, Environment* env) {
-	lineno = node->GetLine();
+	lineNumber = node->GetLine();
 	Value& ret = (this->*EvaluateLvalueDispatcher[node->GetValue("type")->GetStringValue()])(node,insertFlag, env);
 	return ret;
 }

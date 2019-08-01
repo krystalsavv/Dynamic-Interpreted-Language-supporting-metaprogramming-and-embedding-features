@@ -2,7 +2,7 @@
 
 using namespace interpreter;
 
-size_t interpreter::lineno = 1;
+size_t interpreter::lineNumber = 1;
 
 void  Interpreter::InvokeInterpreter( char* file) {
 	if (file != NULL) {

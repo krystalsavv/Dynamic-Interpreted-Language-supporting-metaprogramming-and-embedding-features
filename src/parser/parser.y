@@ -9,6 +9,7 @@
 	#include "scanner.h"
 
 	using namespace interpreter; 
+	extern size_t  interpreter::lineNumber;
 	int yyerror (AST* ast, yyscan_t scanner, int isEval, const char* yaccProvidedMessage);
 	int yylex(YYSTYPE * yylval_param , yyscan_t yyscanner, int isEval);
 %}
@@ -549,6 +550,7 @@ argList : arg
 				else {
 					double numOfPositionalArgs = $$->GetValue("numOfPositionalArgs")->GetNumberValue();
 					if(numOfTotalArgs != numOfPositionalArgs) {
+						lineNumber = yyget_lineno(scanner);
 						throw RuntimeErrorException("Positional parameter after named parameter"); 
 					}
 					$$->GetValue("PositionalArgs")->GetObjectValue()->Set(numOfPositionalArgs, $3);
@@ -919,12 +921,11 @@ meta_unparse: META_UNPARSE expr
 							$$->Set("expr", $2);
 						}
 						;
-
-
 %%
 
 int yyerror(AST* ast, yyscan_t scanner, int isEval, const char *yaccProvidedMessage){
 	std::string yaccProvidedMessage_string = yaccProvidedMessage;
+	lineNumber =  yyget_lineno(scanner);
 	throw SyntaxErrorException(yaccProvidedMessage_string + " undefined token  \" "  + yyget_text(scanner) + "\"");
 	return 0;
 }

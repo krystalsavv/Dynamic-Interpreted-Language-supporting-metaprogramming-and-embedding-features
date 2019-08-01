@@ -1,5 +1,5 @@
-#include "utilities/Value.h"
-#include "utilities/Object.h"
+#include"utilities/Value.h"
+#include"utilities/Object.h"
 #include <cassert>
 
 using namespace interpreter;
@@ -157,9 +157,9 @@ std::string Value::toString() const {
 	else if (isObject() && GetObjectValue())
 		return GetObjectValue()->toString();
 	else if (isObject() && !GetObjectValue())
-		return "nil";
+		return"nil";
 	else if (isValueReference() && GetValueReference()) {
-		std::string s = "value reference: ";
+		std::string s ="value reference:";
 		if (GetValueReference()->isBool())
 			return (s + std::to_string(*GetValueReference()->GetBool()));
 		else if (GetValueReference()->isDouble())
@@ -172,7 +172,7 @@ std::string Value::toString() const {
 			return (s + GetValueReference()->GetType());
 	}
 	else {
-		return "undefined";
+		return"undefined";
 	}
 }
 
@@ -191,7 +191,7 @@ Value Value::operator+(Value& right) {
 	else if (isValueReference() && GetValueReference() && right.isValueReference() && right.GetValueReference())
 		val = Value(*GetValueReference() + *right.GetValueReference());
 	else {
-		return Undefined();
+		throw RuntimeErrorException("Not valid types in addition");
 	}
 	return val;
 }
@@ -203,7 +203,7 @@ Value Value::operator-(Value& right) {
 	else if (isValueReference() && GetValueReference() && right.isValueReference() && right.GetValueReference())
 		val = Value(*GetValueReference() - *right.GetValueReference());
 	else
-		throw RuntimeErrorException("Non numeric types in subtraction ");
+		throw RuntimeErrorException("Non numeric types in subtraction");
 	return val;
 }
 
@@ -215,7 +215,7 @@ Value Value::operator*(Value& right) {
 	else if (isValueReference() && GetValueReference() && right.isValueReference() && right.GetValueReference())
 		val = Value(*GetValueReference() * *right.GetValueReference());
 	else
-		throw RuntimeErrorException("Non numeric types in multiplication ");
+		throw RuntimeErrorException("Non numeric types in multiplication");
 	return val;
 }
 
@@ -226,7 +226,7 @@ Value Value::operator/(Value& right) {
 	else if (isValueReference() && GetValueReference() && right.isValueReference() && right.GetValueReference())
 		val = Value(*GetValueReference() / *right.GetValueReference());
 	else
-		throw RuntimeErrorException("Non numeric types in division ");
+		throw RuntimeErrorException("Non numeric types in division");
 	return val;
 }
 
@@ -237,7 +237,7 @@ Value Value::operator%(Value& right) {
 	else if (isValueReference() && GetValueReference() && right.isValueReference() && right.GetValueReference())
 		val = Value(*GetValueReference() % *right.GetValueReference());
 	else
-		throw RuntimeErrorException("Non numeric types in mod ");
+		throw RuntimeErrorException("Non numeric types in mod");
 	return val;
 }
 
@@ -246,7 +246,7 @@ Value& Value::operator++() {
 	if (isNumber())
 		Set(GetNumberValue() + 1);
 	else
-		throw RuntimeErrorException("Non numeric types in prefix increment ");
+		throw RuntimeErrorException("Non numeric types in prefix increment");
 	return *this;
 }
 
@@ -258,7 +258,7 @@ Value Value::operator++(int) {
 		Set(GetNumberValue() + 1);
 	}
 	else
-		throw RuntimeErrorException("Non numeric types in postfix increment ");
+		throw RuntimeErrorException("Non numeric types in postfix increment");
 	return val;
 }
 
@@ -267,7 +267,7 @@ Value& Value::Value::operator--() {
 	if (isNumber()) 
 		Set(GetNumberValue() - 1);
 	else
-		throw RuntimeErrorException("Non numeric types in prefix decrement ");
+		throw RuntimeErrorException("Non numeric types in prefix decrement");
 	return *this;
 }
 
@@ -279,7 +279,7 @@ Value Value::operator--(int) {
 		Set(GetNumberValue() - 1);
 	}
 	else
-		throw RuntimeErrorException("Non numeric types in postfix decrement ");
+		throw RuntimeErrorException("Non numeric types in postfix decrement");
 	return val;
 }
 
@@ -288,7 +288,7 @@ Value Value::Value::operator-() {
 	if (isNumber())
 		val = -(GetNumberValue());
 	else
-		throw RuntimeErrorException("Non numeric type in uminus ");
+		throw RuntimeErrorException("Non numeric type in uminus");
 	return val;
 }
 

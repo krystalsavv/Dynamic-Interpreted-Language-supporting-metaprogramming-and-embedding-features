@@ -3,7 +3,13 @@
 
 namespace interpreter {
 
-	extern size_t lineno;
+
+	extern size_t lineNumber;
+
+	#define WARNING(msg)  std::cout << "Warning: " << msg << " at line " << lineNumber << std::endl; 
+ 
+
+
 
 	class BreakException : public std::exception
 	{
@@ -11,11 +17,11 @@ namespace interpreter {
 	public:
 
 		BreakException(std::string str) {
-			message = "Error: Break outside of loop at line " + std::to_string(lineno);
+			message = "Error: Break outside of loop at line " + std::to_string(lineNumber);
 		}
 
 		BreakException() {
-			message = "Error: Break outside of loop at line " + std::to_string(lineno);
+			message = "Error: Break outside of loop at line " + std::to_string(lineNumber);
 		}
 
 		const char* what() const noexcept override {
@@ -29,11 +35,11 @@ namespace interpreter {
 	public:
 
 		ContinueException(std::string str) {
-			message = "Error: Continue outside of loop at line " + std::to_string(lineno);
+			message = "Error: Continue outside of loop at line " + std::to_string(lineNumber);
 		}
 
 		ContinueException() {
-			message = "Error: Continue outside of loop at line " + std::to_string(lineno);
+			message = "Error: Continue outside of loop at line " + std::to_string(lineNumber);
 		}
 
 		const char* what() const noexcept override {
@@ -47,11 +53,11 @@ namespace interpreter {
 	public:
 
 		ReturnException(std::string str) {
-			message = "Error: Return outside of function at line " + std::to_string(lineno);
+			message = "Error: Return outside of function at line " + std::to_string(lineNumber);
 		}
 
 		ReturnException() {
-			message = "Error: Return outside of function at line " + std::to_string(lineno);
+			message = "Error: Return outside of function at line " + std::to_string(lineNumber);
 		}
 
 		const char* what() const noexcept override {
@@ -65,11 +71,11 @@ namespace interpreter {
 	public:
 
 		ReturnValueException(std::string str) {
-			message = "Error: Return outside of function at line " + std::to_string(lineno);
+			message = "Error: Return outside of function at line " + std::to_string(lineNumber);
 		}
 
 		ReturnValueException() {
-			message = "Error: Return outside of function at line " + std::to_string(lineno);
+			message = "Error: Return outside of function at line " + std::to_string(lineNumber);
 		}
 
 		const char* what() const noexcept override {
@@ -83,11 +89,11 @@ namespace interpreter {
 	public:
 
 		RuntimeErrorException(std::string str) {
-			message = "Runtime Error: " + str + " at line " + std::to_string(lineno);
+			message = "Runtime Error: " + str + " at line " + std::to_string(lineNumber);
 		}
 
 		RuntimeErrorException() {
-			message = "Runtime Error at line " + std::to_string(lineno);
+			message = "Runtime Error at line " + std::to_string(lineNumber);
 		}
 
 		const char* what() const noexcept override {
@@ -101,11 +107,11 @@ namespace interpreter {
 	public:
 
 		SyntaxErrorException(std::string str) {
-			message = "Syntax Error: " + str + " at line " + std::to_string(lineno);
+			message = "Syntax Error: " + str + " at line " + std::to_string(lineNumber);
 		}
 
 		SyntaxErrorException() {
-			message = "Syntax Error at line" + std::to_string(lineno);
+			message = "Syntax Error at line" + std::to_string(lineNumber);
 		}
 
 		const char* what() const noexcept override {
