@@ -535,8 +535,9 @@ std::string MetaUnparser::UnparseSyntax(ASTnode* node){
 }
 
 std::string MetaUnparser::UnparseEscape(ASTnode* node){
-	std::string id = node->GetValue("ID")->GetStringValue();
-	return ".~" + id;
+	//std::string id = node->GetValue("ID")->GetStringValue();
+	std::string meta_var = Unparse(node->GetValue("meta_var")->GetObjectValue());
+	return ".~" + meta_var;
 }
 
 std::string MetaUnparser::UnparseExecute(ASTnode* node){
