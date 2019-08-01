@@ -11,4 +11,5 @@ target_link_libraries(  AlphaDI             # To
 						EnvironmentHolder
 						EvaluatorActions
 						ValueReference
+						MetaUnparser
                     )                

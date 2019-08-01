@@ -16,6 +16,7 @@ void  Interpreter::InvokeInterpreter( char* file) {
 			yyparse(ast, scanner, 0);	
 			InitGlobalEnvironment(); 
 			*Evaluator::getInstance()->Evaluate(ast->GetRoot()); 
+			std::cout << "---------AST to Text---------" <<std::endl << MetaUnparser::getInstance()->Unparse(ast->GetRoot());
 		}
 		catch (BreakException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
 		catch (ContinueException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
