@@ -99,6 +99,7 @@ namespace interpreter {
 		std::string UnparseAssignExpr(ASTnode* node);
 
 		//stmt
+		std::string UnparseExprSemicolon(ASTnode* node);
 		std::string UnparseIfStmt(ASTnode* node);
 		std::string UnparseIfElseStmt(ASTnode* node);
 		std::string UnparseWhileStmt(ASTnode* node);
@@ -153,7 +154,6 @@ namespace interpreter {
 		std::string UnparseExecute(ASTnode* node);
 		std::string UnparseParse(ASTnode* node);
 		std::string UnparseUnparse(ASTnode* node);
-		std::string UnparseMetaAST(ASTnode* node);
 	};
 
 }

@@ -41,6 +41,7 @@ std::map<std::string, std::string(MetaUnparser::*)(ASTnode*)> MetaUnparser::Inti
 	table["argList"] = &MetaUnparser::UnparseArglist;
 	table["emptyArgList"] = &MetaUnparser::UnparseEmptyArglist;
 	table["assignexpr"] = &MetaUnparser::UnparseAssignExpr;
+	table["exprSemicolon"] = &MetaUnparser::UnparseExprSemicolon;
 	table["ifstmt"] = &MetaUnparser::UnparseIfStmt;
 	table["if_elsestmt"] = &MetaUnparser::UnparseIfElseStmt;
 	table["whilestmt"] = &MetaUnparser::UnparseWhileStmt;
@@ -73,7 +74,6 @@ std::map<std::string, std::string(MetaUnparser::*)(ASTnode*)> MetaUnparser::Inti
 	table["meta_execute"] = &MetaUnparser::UnparseExecute;
 	table["meta_parse"] = &MetaUnparser::UnparseParse;
 	table["meta_unparse"] = &MetaUnparser::UnparseUnparse;
-	//table["metaAST"] = &MetaUnparser::UnparseMetaAST;
 
 	return table;
 }
@@ -100,15 +100,13 @@ std::string MetaUnparser::Unparse(ASTnode* node) {
 	return (this->*UnparserDispatcher[node->GetValue("type")->GetStringValue()])(node);
 }
 
-	
-
 // program
 std::string MetaUnparser::UnparseProgram(ASTnode* node){
 	std::string retString = "";
 	int numOfStmt = node->GetValue("numOfStmt")->GetNumberValue();
 	for (int i = 0; i < numOfStmt; i++) {
 		std::string stmt = Unparse(node->GetValue(std::to_string(i))->GetObjectValue());
-		retString += ";" + stmt + "\n";
+		retString += stmt + "\n";
 	}
 	return retString;
 }
@@ -342,6 +340,11 @@ std::string MetaUnparser::UnparseAssignExpr(ASTnode* node){
 }
 
 //stmt		
+std::string MetaUnparser::UnparseExprSemicolon(ASTnode* node) {
+	std::string expr = Unparse(node->GetValue("expr")->GetObjectValue());
+	return expr + ";";
+}
+
 std::string MetaUnparser::UnparseIfStmt(ASTnode* node){
 	std::string condition = Unparse(node->GetValue("condition")->GetObjectValue());
 	std::string stmt = Unparse(node->GetValue("stmt")->GetObjectValue());
@@ -550,19 +553,3 @@ std::string MetaUnparser::UnparseUnparse(ASTnode* node){
 	std::string expr = Unparse(node->GetValue("expr")->GetObjectValue());
 	return ".#" + expr;
 }
-
-std::string MetaUnparser::UnparseMetaAST(ASTnode* node){
-	return "";
-}
-
-
-//lvalue
-//std::string UnparseLvalueIdent(ASTnode* node);
-//std::string UnparseLvalueLocalIdent(ASTnode* node);
-//std::string UnparseLvalueGlobalIdent(ASTnode* node);
-
-//lvalue member
-//std::string UnparseLvalueMemberIdent(ASTnode* node);
-//std::string UnparseLvalueMemberBrackets(ASTnode* node);
-//std::string UnparseLvalueMemberCallIdent(ASTnode* node);
-//std::string UnparseLvalueMemberCallBrackets(ASTnode* node);
