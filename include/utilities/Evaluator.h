@@ -1,5 +1,4 @@
 #pragma once
-
 #include <string>
 #include <map>
 #include <optional>
@@ -12,6 +11,7 @@
 #define OPValue  std::optional<Value>
 
 namespace interpreter {
+	extern ASTnode* SyntaxParseOuter(ASTnode* node);
 
 	class Evaluator {
 	public:
@@ -19,9 +19,8 @@ namespace interpreter {
 		static void destroyInstance();
 		//generic Evaluate
 		OPValue Evaluate(ASTnode* node, bool insertFlag = true);
-		
-	private:
 
+	private:
 		std::map<std::string, OPValue (Evaluator::*)(ASTnode*, bool)> EvaluateDispatcher;
 		std::map<std::string, OPValue (Evaluator::*)(ASTnode*, bool)> IntializeDispatcher();
 		
@@ -166,5 +165,4 @@ namespace interpreter {
 		OPValue EvaluateUnparse(ASTnode* node, bool insertFlag = true);
 		OPValue EvaluateMetaAST(ASTnode* node, bool insertFlag = true);
 	};
-
 }

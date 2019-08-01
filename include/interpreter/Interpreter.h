@@ -10,6 +10,7 @@
 #include "..//utilities/AST.h"
 #include "..//utilities/EnvironmentHolder.h"
 #include "..//utilities/Evaluator.h"
+#include "..//utilities/MetaParser.h"
 
 namespace interpreter {
 

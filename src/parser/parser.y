@@ -60,7 +60,7 @@
 %type <objectVal> lvalue primary call objectdef const member
 %type <objectVal> elist idlist arg argList formal normcall methodcall indexed indexedelem
 %type <objectVal> program start eval eval_stmts
-%type <objectVal> meta meta_syntax meta_escape meta_execute meta_parse meta_unparse
+%type <objectVal> meta meta_syntax meta_escape meta_execute meta_parse meta_unparse meta_var
 
 %right ASSIGN
 %left OR
@@ -884,15 +884,30 @@ meta_syntax : META_SYNTAX_OPEN expr META_SYNTAX_CLOSE
 						}
 						;
 
-meta_escape: META_ESCAPE IDENT
+meta_escape: META_ESCAPE meta_var
 						{
 							std::cout << "Meta Escape\n" ;
 							$$ = new ASTnode("type", "meta_escape");
 							$$->SetLine(yyget_lineno(scanner));
-							$$->Set("ID", *$2);
-							delete $2;
+							$$->Set("meta_var", $2);
+							//$$->Set("meta_var", *$2);
+							//delete $2;
 						}
 						;
+
+meta_var : IDENT	
+				{
+					std::cout << ("lvalue\n");
+					$$ = new ASTnode("type", "var");
+					$$->Set("ID", *$1);
+					$$->SetLine(yyget_lineno(scanner));
+					delete $1;
+				}
+	| call		{
+					std::cout << ("Call\n");
+					$$ = $1;
+				}
+
 
 meta_execute: META_EXECUTE expr
 						{
@@ -921,6 +936,10 @@ meta_unparse: META_UNPARSE expr
 							$$->Set("expr", $2);
 						}
 						;
+
+
+
+
 %%
 
 int yyerror(AST* ast, yyscan_t scanner, int isEval, const char *yaccProvidedMessage){
