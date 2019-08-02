@@ -14,9 +14,8 @@ void  Interpreter::InvokeInterpreter( char* file) {
 		AST* ast = new AST();
 		try { 
 			yyparse(ast, scanner, 0);	
-			InitGlobalEnvironment(); 
+			InitGlobalEnvironment();
 			*Evaluator::getInstance()->Evaluate(ast->GetRoot()); 
-			//std::cout << "---------AST to Text---------" <<std::endl << MetaUnparser::getInstance()->Unparse(ast->GetRoot());
 		}
 		catch (BreakException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
 		catch (ContinueException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
@@ -24,7 +23,6 @@ void  Interpreter::InvokeInterpreter( char* file) {
 		catch (ReturnValueException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
 		catch (RuntimeErrorException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
 		catch (SyntaxErrorException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
-		//ast->Print();
 		//std::cout << "------------------------------ EnvironmentChain -----------------------------------" << std::endl << std::endl;
 		//EnvironmentHolder::getInstance()->PrintEnvironmentChain();
 		//std::cout << "------------------------------ GlobalEnvironment -----------------------------------" << std::endl << std::endl;
@@ -53,7 +51,6 @@ void  Interpreter::InvokeInterpreter( char* file) {
 			catch (RuntimeErrorException& e) { std::cout << std::endl << e.what() << std::endl; TerminateLoopInteractive(ast, scanner); continue; }
 			catch (SyntaxErrorException& e) { std::cout << std::endl << e.what() << std::endl; TerminateLoopInteractive(ast, scanner); continue; }
 			TerminateLoopInteractive(ast, scanner);
-
 		}
 		//ast->Print();
 		//std::cout << "------------------------------ EnvironmentChain -----------------------------------" << std::endl << std::endl;

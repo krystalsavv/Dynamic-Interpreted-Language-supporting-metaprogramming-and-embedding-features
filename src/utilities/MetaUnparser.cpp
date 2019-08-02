@@ -103,7 +103,7 @@ std::string MetaUnparser::Unparse(ASTnode* node) {
 // program
 std::string MetaUnparser::UnparseProgram(ASTnode* node){
 	std::string retString = "";
-	int numOfStmt = node->GetValue("numOfStmt")->GetNumberValue();
+	double numOfStmt = node->GetValue("numOfStmt")->GetNumberValue();
 	for (int i = 0; i < numOfStmt; i++) {
 		std::string stmt = Unparse(node->GetValue(std::to_string(i))->GetObjectValue());
 		retString += stmt + "\n";
@@ -228,13 +228,19 @@ std::string MetaUnparser::UnparsePostDecrement(ASTnode* node){
 
 // primary	
 std::string MetaUnparser::UnparseParenthesisFuncdef(ASTnode* node){
-	std::string id = node->GetValue("ID")->GetStringValue();
 	std::string idlist = Unparse(node->GetValue("funcEnter")->GetObjectValue()->GetValue("idlist")->GetObjectValue());
 	std::string funcbody = Unparse(node->GetValue("funcEnter")->GetObjectValue()->GetValue("funcbody")->GetObjectValue());
-	if (id.rfind("$", 0) == 0) {
-		return "(function (" + idlist + ")" + funcbody + ")";
+	if (!node->HasProperty("ID")) {
+		return "(function (" + idlist + ") " + funcbody + ")";
 	}
-	return "(function " + id + "(" + idlist + ")" + funcbody + ")";
+	else {
+		std::string id = node->GetValue("ID")->GetStringValue();
+		if (id.rfind("$", 0) == 0) {
+			return "(function (" + idlist + ") " + funcbody + ")";
+		}
+		return "(function " + id + "(" + idlist + ") " + funcbody + ")";
+	}
+
 }
 
 
@@ -323,7 +329,6 @@ std::string MetaUnparser::UnparseArglist(ASTnode* node){
 		else
 			retString += ", " + kv.first.toString() + " : " + Unparse(kv.second.GetObjectValue());
 		iterationNamed++;
-		//myArgTable->GetValue("NamedArgs")->GetObjectValue()->Set(kv.first, *Evaluate(kv.second.GetObjectValue()));
 	}
 	return retString;
 }
@@ -348,19 +353,19 @@ std::string MetaUnparser::UnparseExprSemicolon(ASTnode* node) {
 std::string MetaUnparser::UnparseIfStmt(ASTnode* node){
 	std::string condition = Unparse(node->GetValue("condition")->GetObjectValue());
 	std::string stmt = Unparse(node->GetValue("stmt")->GetObjectValue());
-	return "if ( " + condition + " )" + stmt;
+	return "if ( " + condition + " ) \n" + stmt;
 }
 
 std::string MetaUnparser::UnparseIfElseStmt(ASTnode* node){
 	std::string ifstmt = Unparse(node->GetValue("ifstmt")->GetObjectValue());
 	std::string elsestmt = Unparse(node->GetValue("elsestmt")->GetObjectValue());
-	return ifstmt + "else" + elsestmt;
+	return ifstmt + "\n else \n" + elsestmt;
 }
 
 std::string MetaUnparser::UnparseWhileStmt(ASTnode* node){
 	std::string condition = Unparse(node->GetValue("condition")->GetObjectValue());
 	std::string stmt = Unparse(node->GetValue("stmt")->GetObjectValue());
-	return "while (" + condition + ")" + stmt;
+	return "while (" + condition + ") \n" + stmt;
 }
 
 std::string MetaUnparser::UnparseForStmt(ASTnode* node){
@@ -368,7 +373,7 @@ std::string MetaUnparser::UnparseForStmt(ASTnode* node){
 	std::string condition = Unparse(node->GetValue("condition")->GetObjectValue());
 	std::string elist = Unparse(node->GetValue("elist")->GetObjectValue());
 	std::string stmt = Unparse(node->GetValue("stmt")->GetObjectValue());
-	return "for (" + init_elist + ";" + condition + ";" + elist + ")" + stmt;
+	return "for (" + init_elist + "; " + condition + "; " + elist + ") \n" + stmt;
 }
 
 std::string MetaUnparser::UnparseReturnStmt(ASTnode* node){
@@ -396,8 +401,8 @@ std::string MetaUnparser::UnparseSemicolon(ASTnode* node){
 std::string MetaUnparser::UnparseElist(ASTnode* node){
 	std::string retString = "";
 	double numOfExprs = node->GetValue("numOfExprs")->GetNumberValue();
-	for (double i = 0; i < numOfExprs; i++) {
-		std::string expr = Unparse(node->GetValue(i)->GetObjectValue());
+	for (int i = 0; i < numOfExprs; i++) {
+		std::string expr = Unparse(node->GetValue(std::to_string(i))->GetObjectValue());
 		if(i==0)
 			retString += expr;
 		else
@@ -413,7 +418,7 @@ std::string MetaUnparser::UnparseEmptyElist(ASTnode* node){
 //indexed	
 std::string MetaUnparser::UnparseIndexed(ASTnode* node){
 	std::string retString = "";
-	int numOfElems = node->GetValue("numOfElems")->GetNumberValue();
+	double numOfElems = node->GetValue("numOfElems")->GetNumberValue();
 	for (int i = 0; i < numOfElems; i++) {
 		std::string indexed = Unparse(node->GetValue(std::to_string(i))->GetObjectValue());
 		if (i == 0)
@@ -445,12 +450,12 @@ std::string MetaUnparser::UnparseIndexedObjectdef(ASTnode* node){
 //block		
 std::string MetaUnparser::UnparseBlock(ASTnode* node){
 	std::string retString = "{\n";
-	int numOfStmt = node->GetValue("numOfStmt")->GetNumberValue();
+	double numOfStmt = node->GetValue("numOfStmt")->GetNumberValue();
 	for (int i = 0; i < numOfStmt; i++) {
 		std::string stmt = Unparse(node->GetValue(std::to_string(i))->GetObjectValue());
 		retString += stmt + "\n";
 	}
-	retString += "}";
+	retString += "}\n";
 	return retString;
 }
 
@@ -459,13 +464,13 @@ std::string MetaUnparser::UnparseFuncdef(ASTnode* node){
 	std::string id = node->GetValue("ID")->GetStringValue();
 	std::string idlist = Unparse(node->GetValue("funcEnter")->GetObjectValue()->GetValue("idlist")->GetObjectValue());
 	std::string funcbody = Unparse(node->GetValue("funcEnter")->GetObjectValue()->GetValue("funcbody")->GetObjectValue());
-	return "function " + id + "(" + idlist + ")" + funcbody;
+	return "function " + id + "(" + idlist + ") \n" + funcbody;
 }
 
 std::string MetaUnparser::UnparseAnonymousFuncdef(ASTnode* node){
 	std::string idlist = Unparse(node->GetValue("funcEnter")->GetObjectValue()->GetValue("idlist")->GetObjectValue());
 	std::string funcbody = Unparse(node->GetValue("funcEnter")->GetObjectValue()->GetValue("funcbody")->GetObjectValue());
-	return "function (" + idlist + ")" + funcbody;
+	return "function (" + idlist + ") \n" + funcbody;
 }
 
 //std::string MetaUnparser::UnparseFuncEnter(ASTnode* node){}
@@ -477,7 +482,7 @@ std::string MetaUnparser::UnparseFuncBody(ASTnode* node){
 		std::string stmt = Unparse(node->GetValue(std::to_string(i))->GetObjectValue());
 		retString += stmt + "\n";
 	}
-	retString += "}";
+	retString += "}\n";
 	return retString;
 }
 
