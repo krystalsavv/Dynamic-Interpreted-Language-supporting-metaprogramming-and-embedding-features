@@ -536,18 +536,26 @@ OPValue Evaluator::EvaluateArglist(ASTnode* node, bool insertFlag) {
 	double numOfPositionalArgs = node->GetValue("numOfPositionalArgs")->GetNumberValue();
 	Object* PositionalArgs = node->GetValue("PositionalArgs")->GetObjectValue();
 	Object* NamedArgs = node->GetValue("NamedArgs")->GetObjectValue();
+	Object* myPositionalArgs = new Object();
+	Object* myNamedArgs = new Object();
 
 	myArgTable->Set("numOfTotalArgs", numOfTotalArgs);
 	myArgTable->Set("numOfPositionalArgs", numOfPositionalArgs);
-	myArgTable->Set("PositionalArgs", new Object());
-	myArgTable->Set("NamedArgs", new Object());
+	//myArgTable->Set("PositionalArgs", new Object());
+	//myArgTable->Set("NamedArgs", new Object());
 
 	for (double i = 0; i < numOfPositionalArgs; ++i) {
-		myArgTable->GetValue("PositionalArgs")->GetObjectValue()->Set(i, *Evaluate(PositionalArgs->GetValue(i)->GetObjectValue()));
+		//myArgTable->GetValue("PositionalArgs")->GetObjectValue()->Set(i, *Evaluate(PositionalArgs->GetValue(i)->GetObjectValue()));
+		myPositionalArgs->Set(i, *Evaluate(PositionalArgs->GetValue(i)->GetObjectValue()));
 	}
 	for (auto kv : NamedArgs->GetMap()) {
-		myArgTable->GetValue("NamedArgs")->GetObjectValue()->Set(kv.first, *Evaluate(kv.second.GetObjectValue()));
+		//myArgTable->GetValue("NamedArgs")->GetObjectValue()->Set(kv.first, *Evaluate(kv.second.GetObjectValue()));
+		myNamedArgs->Set(kv.first, *Evaluate(kv.second.GetObjectValue()));
 	}
+
+	myArgTable->Set("PositionalArgs", myPositionalArgs);
+	myArgTable->Set("NamedArgs", myNamedArgs);
+
 	argTable = myArgTable;
 	return std::nullopt;
 }
@@ -977,19 +985,23 @@ OPValue Evaluator::EvaluateEval(ASTnode* node, bool insertFlag) {
 }
 
 // metaprogramming
+bool inSyntax = false;
 
 OPValue  Evaluator::EvaluateSyntax(ASTnode* node, bool insertFlag) {
 	Value* ast = node->GetValue("expr");
 	assert(isAST(*ast));
 	ASTnode* metaAst = new  ASTnode("type","metaAST");
+	bool old_inSyntax = inSyntax;
+	inSyntax = true;
 	metaAst->Set("root", SyntaxParseOuter(ast->GetObjectValue()));
+	inSyntax = old_inSyntax;
 	return metaAst; 
 }
 
 OPValue  Evaluator::EvaluateEscape(ASTnode* node, bool insertFlag) {
-	// na tsekarw oti einai mesa se syntax
+	if (!inSyntax) throw RuntimeErrorException("Meta tag Escape out of Syntax");
 	OPValue ast = Evaluate(node->GetValue("meta_var")->GetObjectValue());
-//	if (!isAST(*ast)) throw RuntimeErrorException("Not AST input for meta tag Escape");
+	if (!isAST(*ast)) throw RuntimeErrorException("Not AST input for meta tag Escape");
 	return ast;
 }
 

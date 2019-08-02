@@ -408,11 +408,23 @@ ASTnode* SyntaxParser::SyntaxParseFuncdefCall(ASTnode* node) {
 
 //arglist
 ASTnode* SyntaxParser::SyntaxParseArglist(ASTnode* node) {
+	double numOfTotalArgs = node->GetValue("numOfTotalArgs")->GetNumberValue();
+	double numOfPositionalArgs = node->GetValue("numOfPositionalArgs")->GetNumberValue();
+	Object* PositionalArgs = node->GetValue("PositionalArgs")->GetObjectValue();
+	Object* NamedArgs = node->GetValue("NamedArgs")->GetObjectValue();
+	Object* myPositionalArgs = new Object();
+	Object* myNamedArgs = new Object();
+	for (double i = 0; i < numOfPositionalArgs; ++i) {
+		myPositionalArgs->Set(i, SyntaxParse(PositionalArgs->GetValue(i)->GetObjectValue()));
+	}
+	for (auto kv : NamedArgs->GetMap()) {
+		myNamedArgs->Set(kv.first, SyntaxParse(kv.second.GetObjectValue()));
+	}
 	ASTnode* metaNode = new ASTnode("type", "argList");
-	metaNode->Set("numOfTotalArgs", *node->GetValue("numOfTotalArgs"));
-	metaNode->Set("numOfPositionalArgs", *node->GetValue("numOfPositionalArgs"));
-	metaNode->Set("PositionalArgs", *node->GetValue("PositionalArgs"));
-	metaNode->Set("NamedArgs", *node->GetValue("NamedArgs"));
+	metaNode->Set("numOfTotalArgs", numOfTotalArgs);
+	metaNode->Set("numOfPositionalArgs", numOfPositionalArgs);
+	metaNode->Set("PositionalArgs", myPositionalArgs);
+	metaNode->Set("NamedArgs", myNamedArgs);
 	metaNode->SetLine(node->GetLine());
 	return metaNode;
 }
@@ -439,34 +451,34 @@ ASTnode* interpreter::SyntaxParser::SyntaxParseAssignExpr(ASTnode* node)
 // stmt
 ASTnode* SyntaxParser::SyntaxParseIfStmt(ASTnode* node) {
 	ASTnode* metaNode = new ASTnode("type", "ifstmt");
-	metaNode->Set("condition", *node->GetValue("condition"));
-	metaNode->Set("stmt", *node->GetValue("stmt"));
+	metaNode->Set("condition", SyntaxParse(node->GetValue("condition")->GetObjectValue()));
+	metaNode->Set("stmt", SyntaxParse(node->GetValue("stmt")->GetObjectValue()));
 	metaNode->SetLine(node->GetLine());
 	return metaNode;
 }
 
 ASTnode* SyntaxParser::SyntaxParseIfElseStmt(ASTnode* node) {
 	ASTnode* metaNode = new ASTnode("type", "if_elsestmt");
-	metaNode->Set("condition", *node->GetValue("condition"));
-	metaNode->Set("stmt", *node->GetValue("stmt"));
+	metaNode->Set("condition", SyntaxParse(node->GetValue("condition")->GetObjectValue()));
+	metaNode->Set("stmt", SyntaxParse(node->GetValue("stmt")->GetObjectValue()));
 	metaNode->SetLine(node->GetLine());
 	return metaNode;
 }
 
 ASTnode* SyntaxParser::SyntaxParseWhileStmt(ASTnode* node) {
 	ASTnode* metaNode = new ASTnode("type", "whilestmt");
-	metaNode->Set("condition", *node->GetValue("condition"));
-	metaNode->Set("stmt", *node->GetValue("stmt"));
+	metaNode->Set("condition", SyntaxParse(node->GetValue("condition")->GetObjectValue()));
+	metaNode->Set("stmt", SyntaxParse(node->GetValue("stmt")->GetObjectValue()));
 	metaNode->SetLine(node->GetLine());
 	return metaNode;
 }
 
 ASTnode* SyntaxParser::SyntaxParseForStmt(ASTnode* node) {
 	ASTnode* metaNode = new ASTnode("type", "forstmt");
-	metaNode->Set("init_elist", *node->GetValue("init_elist"));
-	metaNode->Set("condition", *node->GetValue("condition"));
-	metaNode->Set("elist", *node->GetValue("elist"));
-	metaNode->Set("stmt", *node->GetValue("stmt"));
+	metaNode->Set("init_elist", SyntaxParse(node->GetValue("init_elist")->GetObjectValue()));
+	metaNode->Set("condition", SyntaxParse(node->GetValue("condition")->GetObjectValue()));
+	metaNode->Set("elist", SyntaxParse(node->GetValue("elist")->GetObjectValue()));
+	metaNode->Set("stmt", SyntaxParse(node->GetValue("stmt")->GetObjectValue()));
 	metaNode->SetLine(node->GetLine());
 	return metaNode;
 }
@@ -479,7 +491,7 @@ ASTnode* SyntaxParser::SyntaxParseReturnStmt(ASTnode* node) {
 
 ASTnode* SyntaxParser::SyntaxParseReturnValueStmt(ASTnode* node) {
 	ASTnode* metaNode = new ASTnode("type", "return_value");
-	metaNode->Set("expr", *node->GetValue("expr"));
+	metaNode->Set("expr", SyntaxParse(node->GetValue("expr")->GetObjectValue()));
 	metaNode->SetLine(node->GetLine());
 	return metaNode;
 }
@@ -500,7 +512,7 @@ ASTnode* SyntaxParser::SyntaxParseContinue(ASTnode* node)
 
 ASTnode* SyntaxParser::SyntaxParseExprSemicolon(ASTnode* node) {
 	ASTnode* metaNode = new ASTnode("type", "exprSemicolon");
-	metaNode->Set("expr", *node->GetValue("expr"));
+	metaNode->Set("expr", SyntaxParse(node->GetValue("expr")->GetObjectValue()));
 	metaNode->SetLine(node->GetLine());
 	return metaNode;
 }
@@ -518,7 +530,7 @@ ASTnode* SyntaxParser::SyntaxParseElist(ASTnode* node) {
 	double numOfExprs = node->GetValue("numOfExprs")->GetNumberValue();
 	metaNode->Set("numOfExprs", *node->GetValue("numOfExprs"));
 	for (double i = 0; i < numOfExprs; ++i) {
-		metaNode->Set(std::to_string((int)i), *node->GetValue(std::to_string((int)i)));
+		metaNode->Set(std::to_string((int)i), SyntaxParse(node->GetValue(std::to_string((int)i))->GetObjectValue()));
 	}
 	metaNode->SetLine(node->GetLine());
 	return metaNode;
@@ -535,18 +547,18 @@ ASTnode* SyntaxParser::SyntaxParseIndexed(ASTnode* node) {
 	double numOfElems = node->GetValue("numOfElems")->GetNumberValue();
 	ASTnode* metaNode = new ASTnode("type", "indexed");
 	metaNode->Set("numOfElems", numOfElems);
-	metaNode->Set("expr", *node->GetValue("expr"));
+	metaNode->Set("expr", SyntaxParse(node->GetValue("expr")->GetObjectValue()));
 	metaNode->SetLine(node->GetLine());
 	for (int i = 0; i < numOfElems; i++) 
-		metaNode->Set(std::to_string((int)i), *node->GetValue(std::to_string((int)i)));
+		metaNode->Set(std::to_string((int)i), SyntaxParse(node->GetValue(std::to_string((int)i))->GetObjectValue()));
 	return metaNode;
 }
 
 //indexedElem
 ASTnode* SyntaxParser::SyntaxParseIndexedElem(ASTnode* node) {
 	ASTnode* metaNode = new ASTnode("type", "indexedElem");
-	metaNode->Set("keyExpr", *node->GetValue("keyExpr"));
-	metaNode->Set("valueExpr", *node->GetValue("valueExpr"));
+	metaNode->Set("keyExpr", SyntaxParse(node->GetValue("keyExpr")->GetObjectValue()));
+	metaNode->Set("valueExpr", SyntaxParse(node->GetValue("valueExpr")->GetObjectValue()));
 	metaNode->SetLine(node->GetLine());
 	return metaNode;
 }
@@ -554,14 +566,14 @@ ASTnode* SyntaxParser::SyntaxParseIndexedElem(ASTnode* node) {
 //object
 ASTnode* SyntaxParser::SyntaxParseElistObjectdef(ASTnode* node) {
 	ASTnode* metaNode = new ASTnode("type", "elistObjectdef");
-	metaNode->Set("elist", *node->GetValue("elist"));
+	metaNode->Set("elist", SyntaxParse(node->GetValue("elist")->GetObjectValue()));
 	metaNode->SetLine(node->GetLine());
 	return metaNode;
 }
 
 ASTnode* SyntaxParser::SyntaxParseIndexedObjectdef(ASTnode* node) {
 	ASTnode* metaNode = new ASTnode("type", "indexedObjectdef");
-	metaNode->Set("indexed", *node->GetValue("indexed"));
+	metaNode->Set("indexed", SyntaxParse(node->GetValue("indexed")->GetObjectValue()));
 	metaNode->SetLine(node->GetLine());
 	return metaNode;
 }
@@ -574,7 +586,7 @@ ASTnode* SyntaxParser::SyntaxParseBlock(ASTnode* node) {
 	metaNode->Set("numOfStmt", numOfStmt);
 	metaNode->SetLine(node->GetLine());
 	for (int i = 0; i < numOfStmt; i++) {
-		metaNode->Set(std::to_string((int)i), *node->GetValue(std::to_string((int)i)));
+		metaNode->Set(std::to_string((int)i), SyntaxParse(node->GetValue(std::to_string((int)i))->GetObjectValue()));
 	}
 	return metaNode;
 }
@@ -582,14 +594,14 @@ ASTnode* SyntaxParser::SyntaxParseBlock(ASTnode* node) {
 ASTnode* interpreter::SyntaxParser::SyntaxParseFuncdef(ASTnode* node) {
 	ASTnode* metaNode = new ASTnode("type", "funcdef");
 	metaNode->Set("ID", *node->GetValue("ID"));
-	metaNode->Set("funcEnter", *node->GetValue("funcEnter"));
+	metaNode->Set("funcEnter", SyntaxParse(node->GetValue("funcEnter")->GetObjectValue()));
 	metaNode->SetLine(node->GetLine());
 	return metaNode;
 }
 
 ASTnode* interpreter::SyntaxParser::SyntaxParseAnonymousFuncdef(ASTnode* node) {
 	ASTnode* metaNode = new ASTnode("type", "anonymousFuncdef");
-	metaNode->Set("funcEnter", *node->GetValue("funcEnter"));
+	metaNode->Set("funcEnter", SyntaxParse(node->GetValue("funcEnter")->GetObjectValue()));
 	metaNode->SetLine(node->GetLine());
 	return metaNode;
 }
@@ -597,8 +609,8 @@ ASTnode* interpreter::SyntaxParser::SyntaxParseAnonymousFuncdef(ASTnode* node) {
 
 ASTnode* SyntaxParser::SyntaxParseFuncEnter(ASTnode* node) {
 	ASTnode* metaNode = new ASTnode("type", "funcEnter");
-	metaNode->Set("idlist", *node->GetValue("idlist"));
-	metaNode->Set("funcbody", *node->GetValue("funcbody"));
+	metaNode->Set("idlist", SyntaxParse(node->GetValue("idlist")->GetObjectValue()));
+	metaNode->Set("funcbody", SyntaxParse(node->GetValue("funcbody")->GetObjectValue()));
 	metaNode->SetLine(node->GetLine());
 	return metaNode;
 }
@@ -609,7 +621,7 @@ ASTnode* SyntaxParser::SyntaxParseFuncBody(ASTnode* node) {
 	metaNode->Set("numOfStmt", numOfStmt);
 	metaNode->SetLine(node->GetLine());
 	for (int i = 0; i < numOfStmt; i++) {
-		metaNode->Set(std::to_string((int)i), *node->GetValue(std::to_string((int)i)));
+		metaNode->Set(std::to_string((int)i), SyntaxParse(node->GetValue(std::to_string((int)i))->GetObjectValue()));
 	}
 	return metaNode;
 }
@@ -654,7 +666,7 @@ ASTnode* SyntaxParser::SyntaxParseParam(ASTnode* node) {
 ASTnode* SyntaxParser::SyntaxParseOptionalParam(ASTnode* node) {
 	ASTnode* metaNode = new ASTnode("type", "optionalParam");
 	metaNode->Set("ID", *node->GetValue("ID"));
-	metaNode->Set("expr", *node->GetValue("expr"));
+	metaNode->Set("expr", SyntaxParse(node->GetValue("expr")->GetObjectValue()));
 	metaNode->SetLine(node->GetLine());
 	return metaNode;
 }
@@ -666,7 +678,7 @@ ASTnode* SyntaxParser::SyntaxParseIdlist(ASTnode* node) {
 	metaNode->Set("numOfParams", numOfParams);
 	metaNode->SetLine(node->GetLine());
 	for (double i = 0; i < numOfParams; ++i) {
-		metaNode->Set(i, *node->GetValue(*node->GetValue(std::to_string((int)i))));
+		metaNode->Set(i, SyntaxParse(node->GetValue(std::to_string((int)i))->GetObjectValue()));
 	}
 	return metaNode;
 }
@@ -681,7 +693,7 @@ ASTnode* SyntaxParser::SyntaxParseEmptyIdlist(ASTnode* node) {
 // metaprogramming
 ASTnode* SyntaxParser::SyntaxParseSyntax(ASTnode* node) {
 	ASTnode* metaNode = new ASTnode("type", "meta_syntax");
-	metaNode->Set("expr", *node->GetValue("expr"));
+	metaNode->Set("expr", SyntaxParse(node->GetValue("expr")->GetObjectValue()));
 	metaNode->SetLine(node->GetLine());
 	return metaNode;
 }
@@ -707,10 +719,9 @@ ASTnode* SyntaxParser::SyntaxParseParse(ASTnode* node) {
 
 ASTnode* SyntaxParser::SyntaxParseUnparse(ASTnode* node) {
 	ASTnode* metaNode = new ASTnode("type", "meta_unparse");
-	metaNode->Set("expr", *node->GetValue("expr"));
+	metaNode->Set("expr", SyntaxParse(node->GetValue("expr")->GetObjectValue()));
 	metaNode->SetLine(node->GetLine());
 	return metaNode;
-
 }
 
 ASTnode* SyntaxParser::SyntaxParseMetaAST(ASTnode* node) {

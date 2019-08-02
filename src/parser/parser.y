@@ -885,7 +885,7 @@ meta_syntax : META_SYNTAX_OPEN expr META_SYNTAX_CLOSE
 						}
 						;
 
-meta_escape: META_ESCAPE meta_var
+meta_escape: META_ESCAPE expr
 						{
 							std::cout << "Meta Escape\n" ;
 							$$ = new ASTnode("type", "meta_escape");
@@ -895,20 +895,6 @@ meta_escape: META_ESCAPE meta_var
 							//delete $2;
 						}
 						;
-
-meta_var : IDENT	
-				{
-					std::cout << ("lvalue\n");
-					$$ = new ASTnode("type", "var");
-					$$->Set("ID", *$1);
-					$$->SetLine(yyget_lineno(scanner));
-					delete $1;
-				}
-	| call		{
-					std::cout << ("Call\n");
-					$$ = $1;
-				}
-
 
 meta_execute: META_EXECUTE expr
 						{
@@ -937,10 +923,6 @@ meta_unparse: META_UNPARSE expr
 							$$->Set("expr", $2);
 						}
 						;
-
-
-
-
 %%
 
 int yyerror(AST* ast, yyscan_t scanner, int isEval, const char *yaccProvidedMessage){
