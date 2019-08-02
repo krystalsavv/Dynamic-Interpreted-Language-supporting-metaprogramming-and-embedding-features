@@ -16,7 +16,6 @@ void  Interpreter::InvokeInterpreter( char* file) {
 			yyparse(ast, scanner, 0);	
 			InitGlobalEnvironment();
 			*Evaluator::getInstance()->Evaluate(ast->GetRoot()); 
-			//std::cout << "---------AST to Text---------" <<std::endl << MetaUnparser::getInstance()->Unparse(ast->GetRoot());
 		}
 		catch (BreakException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
 		catch (ContinueException& e) { std::cout << std::endl << e.what() << std::endl; exit(0); }
@@ -52,7 +51,6 @@ void  Interpreter::InvokeInterpreter( char* file) {
 			catch (RuntimeErrorException& e) { std::cout << std::endl << e.what() << std::endl; TerminateLoopInteractive(ast, scanner); continue; }
 			catch (SyntaxErrorException& e) { std::cout << std::endl << e.what() << std::endl; TerminateLoopInteractive(ast, scanner); continue; }
 			TerminateLoopInteractive(ast, scanner);
-
 		}
 		//ast->Print();
 		//std::cout << "------------------------------ EnvironmentChain -----------------------------------" << std::endl << std::endl;

@@ -11,7 +11,6 @@
 #include "..//utilities/EnvironmentHolder.h"
 #include "..//utilities/Evaluator.h"
 #include "..//utilities/MetaParser.h"
-#include "..//utilities/MetaUnparser.h"
 
 namespace interpreter {
 

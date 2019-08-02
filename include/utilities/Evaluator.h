@@ -7,6 +7,7 @@
 #include "utilities/Object.h"
 #include "utilities/AST.h"
 #include "utilities/EvaluatorActions.h"
+#include "utilities/MetaUnparser.h"
 
 #define OPValue  std::optional<Value>
 
