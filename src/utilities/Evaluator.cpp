@@ -987,7 +987,7 @@ OPValue Evaluator::EvaluateEval(ASTnode* node, bool insertFlag) {
 // metaprogramming
 bool inSyntax = false;
 
-OPValue  Evaluator::EvaluateSyntax(ASTnode* node, bool insertFlag) {
+OPValue Evaluator::EvaluateSyntax(ASTnode* node, bool insertFlag) {
 	Value* ast = node->GetValue("expr");
 	assert(isAST(*ast));
 	ASTnode* metaAst = new  ASTnode("type","metaAST");
@@ -998,14 +998,14 @@ OPValue  Evaluator::EvaluateSyntax(ASTnode* node, bool insertFlag) {
 	return metaAst; 
 }
 
-OPValue  Evaluator::EvaluateEscape(ASTnode* node, bool insertFlag) {
+OPValue Evaluator::EvaluateEscape(ASTnode* node, bool insertFlag) {
 	if (!inSyntax) throw RuntimeErrorException("Meta tag Escape out of Syntax");
 	OPValue ast = Evaluate(node->GetValue("meta_var")->GetObjectValue());
 	if (!isAST(*ast)) throw RuntimeErrorException("Not AST input for meta tag Escape");
 	return ast;
 }
 
-OPValue  Evaluator::EvaluateExecute(ASTnode* node, bool insertFlag) {
+OPValue Evaluator::EvaluateExecute(ASTnode* node, bool insertFlag) {
 	OPValue ast = Evaluate(node->GetValue("expr")->GetObjectValue());
 	if (!isAST(*ast)) throw RuntimeErrorException("Can not execute right value. It is not an AST");
 	ast->GetObjectValue()->IncreaseReferenceCounter();
@@ -1015,10 +1015,12 @@ OPValue  Evaluator::EvaluateExecute(ASTnode* node, bool insertFlag) {
 }
 
 
-OPValue  Evaluator::EvaluateParse(ASTnode* node, bool insertFlag) {
+OPValue Evaluator::EvaluateParse(ASTnode* node, bool insertFlag) {
+	OPValue value = Evaluate(node->GetValue("expr")->GetObjectValue());
+	if (!value->isString()) throw RuntimeErrorException("Can not Parse right value. It is not a string");
 	yyscan_t scanner;
 	yylex_init(&scanner);
-	yy_scan_string(node->GetValue("stringConst")->GetStringValue().c_str(), scanner);
+	yy_scan_string(value->GetStringValue().c_str(), scanner);
 	
 	AST* ast = new AST();
 	yyparse(ast, scanner, 2);
@@ -1033,7 +1035,7 @@ OPValue  Evaluator::EvaluateParse(ASTnode* node, bool insertFlag) {
 	return metaAST;
 }
 
-OPValue  Evaluator::EvaluateUnparse(ASTnode* node, bool insertFlag) {
+OPValue Evaluator::EvaluateUnparse(ASTnode* node, bool insertFlag) {
 	ASTnode* ast = node->GetValue("expr")->GetObjectValue();
 	if (!isAST(ast)) throw RuntimeErrorException(" Can not Unparse right value. It is not an AST");
 	std::string text = MetaUnparser::getInstance()->Unparse(ast);
@@ -1041,6 +1043,6 @@ OPValue  Evaluator::EvaluateUnparse(ASTnode* node, bool insertFlag) {
 	return text;
 }
 
-OPValue  Evaluator::EvaluateMetaAST(ASTnode* node, bool insertFlag) {
+OPValue Evaluator::EvaluateMetaAST(ASTnode* node, bool insertFlag) {
 	return node; 
 }
