@@ -115,14 +115,14 @@ eval_stmts: eval_stmts stmt
 						{
 							$$ = $1;
 							double numOfStmt = $$->GetValue("numOfStmt")->GetNumberValue();
-							$$->Set(std::to_string((int)numOfStmt), $2);
+							$$->Set(numOfStmt, $2);
 							numOfStmt++;
 							$$->Set("numOfStmt", numOfStmt);
 						}
 					|	stmt 
 						{
 							$$ = new ASTnode("type", "program");
-							$$->Set(std::to_string(0), $1);
+							$$->Set(0.0, $1);
 							$$->Set("numOfStmt", 1.0);
 							$$->SetLine(yyget_lineno(scanner));
 						}
@@ -134,7 +134,7 @@ program : program stmt
 					std::cout << "stmt program" << std::endl;
 					$$ = $1;
 					double numOfStmt = $$->GetValue("numOfStmt")->GetNumberValue();
-					$$->Set(std::to_string((int)numOfStmt), $2);
+					$$->Set(numOfStmt, $2);
 					numOfStmt++;
 					$$->Set("numOfStmt", numOfStmt);
 				}
@@ -573,7 +573,7 @@ elist :  expr
 				std::cout << ("expression\n");
 				$$ = new ASTnode("type", "elist");
 				$$->Set("numOfExprs", 1.0);
-				$$->Set("0", $1);
+				$$->Set(0.0, $1);
 				$$->SetLine(yyget_lineno(scanner));
 			}
 	| elist COMMA expr  
@@ -581,7 +581,7 @@ elist :  expr
 				std::cout << ("elist, expression\n");
 				$$ = $1;
 				double numOfExprs = $$->GetValue("numOfExprs")->GetNumberValue();
-				$$->Set(std::to_string((int)numOfExprs), $3);
+				$$->Set(numOfExprs, $3);
 				numOfExprs++;
 				$$->Set("numOfExprs", numOfExprs);
 			}
@@ -613,7 +613,7 @@ indexed : indexedelem
 				std::cout << ("indexedelem\n");
 				$$ = new ASTnode("type", "indexed");
 				$$->Set("numOfElems", 1.0);
-				$$->Set("0", $1); 
+				$$->Set(0.0, $1); 
 				$$->SetLine(yyget_lineno(scanner));
 			}
 	| indexed COMMA indexedelem	
@@ -621,7 +621,7 @@ indexed : indexedelem
 				std::cout << ("indexedelem, intexedelem\n");
 				$$ = $1;
 				double numOfElems = $$->GetValue("numOfElems")->GetNumberValue();
-				$$->Set(std::to_string((int)numOfElems), $3);
+				$$->Set(numOfElems, $3);
 				numOfElems++;
 				$$->Set("numOfElems", numOfElems);
 			}
@@ -641,7 +641,7 @@ tmp_block: tmp_block stmt
 				{
 					$$ = $1;
 					double numOfStmt = $$->GetValue("numOfStmt")->GetNumberValue();
-					$$->Set(std::to_string((int)numOfStmt), $2);
+					$$->Set(numOfStmt, $2);
 					numOfStmt++;
 					$$->Set("numOfStmt", numOfStmt);
 				}
@@ -682,6 +682,8 @@ funcdef : FUNCTION IDENT
 					ASTnode* funcEnter = new ASTnode("type", "funcEnter");
 					funcEnter->Set("idlist", $5);			//prosoxh an vgalw panw action
 					funcEnter->Set("funcbody", $7);
+					//funcEnter->Set("AddFirst);
+					//funcEnter->Set("AddAtAllExitPoints",);
 					funcEnter->SetLine(yyget_lineno(scanner));
 					$$->Set("funcEnter", funcEnter);
 					

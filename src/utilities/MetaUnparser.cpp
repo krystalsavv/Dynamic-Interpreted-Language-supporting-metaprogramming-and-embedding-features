@@ -104,8 +104,8 @@ std::string MetaUnparser::Unparse(ASTnode* node) {
 std::string MetaUnparser::UnparseProgram(ASTnode* node){
 	std::string retString = "";
 	double numOfStmt = node->GetValue("numOfStmt")->GetNumberValue();
-	for (int i = 0; i < numOfStmt; i++) {
-		std::string stmt = Unparse(node->GetValue(std::to_string(i))->GetObjectValue());
+	for (double i = 0; i < numOfStmt; i++) {
+		std::string stmt = Unparse(node->GetValue(i)->GetObjectValue());
 		retString += stmt + "\n";
 	}
 	return retString;
@@ -401,8 +401,8 @@ std::string MetaUnparser::UnparseSemicolon(ASTnode* node){
 std::string MetaUnparser::UnparseElist(ASTnode* node){
 	std::string retString = "";
 	double numOfExprs = node->GetValue("numOfExprs")->GetNumberValue();
-	for (int i = 0; i < numOfExprs; i++) {
-		std::string expr = Unparse(node->GetValue(std::to_string(i))->GetObjectValue());
+	for (double i = 0; i < numOfExprs; i++) {
+		std::string expr = Unparse(node->GetValue(i)->GetObjectValue());
 		if(i==0)
 			retString += expr;
 		else
@@ -419,8 +419,8 @@ std::string MetaUnparser::UnparseEmptyElist(ASTnode* node){
 std::string MetaUnparser::UnparseIndexed(ASTnode* node){
 	std::string retString = "";
 	double numOfElems = node->GetValue("numOfElems")->GetNumberValue();
-	for (int i = 0; i < numOfElems; i++) {
-		std::string indexed = Unparse(node->GetValue(std::to_string(i))->GetObjectValue());
+	for (double i = 0; i < numOfElems; i++) {
+		std::string indexed = Unparse(node->GetValue(i)->GetObjectValue());
 		if (i == 0)
 			retString += indexed;
 		else
@@ -451,8 +451,8 @@ std::string MetaUnparser::UnparseIndexedObjectdef(ASTnode* node){
 std::string MetaUnparser::UnparseBlock(ASTnode* node){
 	std::string retString = "{\n";
 	double numOfStmt = node->GetValue("numOfStmt")->GetNumberValue();
-	for (int i = 0; i < numOfStmt; i++) {
-		std::string stmt = Unparse(node->GetValue(std::to_string(i))->GetObjectValue());
+	for (double i = 0; i < numOfStmt; i++) {
+		std::string stmt = Unparse(node->GetValue(i)->GetObjectValue());
 		retString += stmt + "\n";
 	}
 	retString += "}\n";
@@ -478,8 +478,8 @@ std::string MetaUnparser::UnparseAnonymousFuncdef(ASTnode* node){
 std::string MetaUnparser::UnparseFuncBody(ASTnode* node){
 	std::string retString = "{\n";
 	double numOfStmt = node->GetValue("numOfStmt")->GetNumberValue();
-	for (int i = 0; i < numOfStmt; i++) {
-		std::string stmt = Unparse(node->GetValue(std::to_string(i))->GetObjectValue());
+	for (double i = 0; i < numOfStmt; i++) {
+		std::string stmt = Unparse(node->GetValue(i)->GetObjectValue());
 		retString += stmt + "\n";
 	}
 	retString += "}\n";

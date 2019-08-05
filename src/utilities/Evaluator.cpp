@@ -135,8 +135,8 @@ Value& Evaluator::EvaluateLvalue(ASTnode* node, bool insertFlag, Environment* en
 OPValue Evaluator::EvaluateProgram(ASTnode* node, bool insertFlag) {
 	OPValue tmp;
 	double numOfStmt = node->GetValue("numOfStmt")->GetNumberValue();
-	for (int i = 0; i < numOfStmt; i++) {
-		tmp = Evaluate(node->GetValue(std::to_string(i))->GetObjectValue());
+	for (double i = 0; i < numOfStmt; i++) {
+		tmp = Evaluate(node->GetValue(i)->GetObjectValue());
 	}
 	return std::nullopt;
 }
@@ -687,8 +687,8 @@ OPValue Evaluator::EvaluateSemicolon(ASTnode* node, bool insertFlag) { return st
 OPValue Evaluator::EvaluateElist(ASTnode* node, bool insertFlag) {
 	Object* elistMap = new Object();
 	double numOfExprs = node->GetValue("numOfExprs")->GetNumberValue();
-	for (int i = 0; i < numOfExprs; i++) {
-		elistMap->Set((double)i, *Evaluate(node->GetValue(std::to_string(i))->GetObjectValue()));
+	for (double i = 0; i < numOfExprs; i++) {
+		elistMap->Set(i, *Evaluate(node->GetValue(i)->GetObjectValue()));
 	}
 	return elistMap;
 }
@@ -701,8 +701,8 @@ OPValue Evaluator::EvaluateEmptyElist(ASTnode* node, bool insertFlag) {
 OPValue Evaluator::EvaluateIndexed(ASTnode* node, bool insertFlag) {
 	Object* indexedMap = new Object();
 	double numOfElems = node->GetValue("numOfElems")->GetNumberValue();
-	for (int i = 0; i < numOfElems; i++) {
-		Object* obj = Evaluate(node->GetValue(std::to_string(i))->GetObjectValue())->GetObjectValue();
+	for (double i = 0; i < numOfElems; i++) {
+		Object* obj = Evaluate(node->GetValue(i)->GetObjectValue())->GetObjectValue();
 		for (auto kv : obj->GetMap()) {
 			indexedMap->Set(kv.first, kv.second);
 		}
@@ -739,8 +739,8 @@ OPValue Evaluator::EvaluateBlock(ASTnode* node, bool insertFlag) {
 
 	OPValue tmp;
 	double numOfStmt = node->GetValue("numOfStmt")->GetNumberValue();
-	for (int i = 0; i < numOfStmt; i++) {
-		tmp = Evaluate(node->GetValue(std::to_string(i))->GetObjectValue());
+	for (double i = 0; i < numOfStmt; i++) {
+		tmp = Evaluate(node->GetValue(i)->GetObjectValue());
 	}
 
 	LeaveBlockEnvironment();
@@ -833,8 +833,8 @@ OPValue Evaluator::EvaluateFuncEnter(ASTnode* node, bool insertFlag) {
 OPValue Evaluator::EvaluateFuncBody(ASTnode* node, bool insertFlag) {
 	OPValue tmp;
 	double numOfStmt = node->GetValue("numOfStmt")->GetNumberValue();
-	for (int i = 0; i < numOfStmt; i++) {
-		tmp = Evaluate(node->GetValue(std::to_string(i))->GetObjectValue());
+	for (double i = 0; i < numOfStmt; i++) {
+		tmp = Evaluate(node->GetValue(i)->GetObjectValue());
 	}
 	return std::nullopt;
 }
