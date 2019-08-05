@@ -92,8 +92,8 @@ SyntaxParser* SyntaxParser::getInstance() {
 }
 
 void SyntaxParser::destroyInstance() {
-	assert(syntaxParser);
-	delete syntaxParser;
+	if(syntaxParser)
+		delete syntaxParser;
 }
 
 ASTnode* SyntaxParser::SyntaxParse(ASTnode* node) {

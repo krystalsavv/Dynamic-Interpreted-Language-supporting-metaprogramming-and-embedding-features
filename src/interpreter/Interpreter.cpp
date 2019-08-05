@@ -68,6 +68,7 @@ void  Interpreter::TerminateInterpreterNonInteractive(AST* ast, yyscan_t& scanne
 	delete ast;
 	EnvironmentHolder::destroyInstance();
 	Evaluator::destroyInstance();
+	SyntaxParser::destroyInstance();
 	MetaUnparser::destroyInstance();
 }
 
