@@ -158,6 +158,7 @@ namespace interpreter {
 		OPValue EvaluateObject_keys(ASTnode* node, bool insertFlag = true);
 		OPValue EvaluateObject_size(ASTnode* node, bool insertFlag = true);
 		OPValue EvaluateEval(ASTnode* node, bool insertFlag = true);
+		OPValue EvaluateToString(ASTnode* node, bool insertFlag = true);
 
 		// metaprogramming
 		OPValue EvaluateSyntax(ASTnode* node, bool insertFlag = true);

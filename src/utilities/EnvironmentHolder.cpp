@@ -67,6 +67,7 @@ void insertLibFunctions() {
 	curr->Set("object_keys", new ASTnode("type", "object_keys"));
 	curr->Set("object_size", new ASTnode("type", "object_size"));
 	curr->Set("eval", new ASTnode("type", "eval"));
+	curr->Set("toString", new ASTnode("type", "toString"));
 	DecreaseTemporarilySavedEnvironment(curr);
 }
 

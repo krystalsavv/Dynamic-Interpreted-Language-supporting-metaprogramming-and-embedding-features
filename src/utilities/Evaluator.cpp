@@ -80,6 +80,7 @@ std::map<std::string,OPValue(Evaluator::*)(ASTnode*,bool)> Evaluator::IntializeD
 	table["object_keys"] = &Evaluator::EvaluateObject_keys;
 	table["object_size"] = &Evaluator::EvaluateObject_size;
 	table["eval"] = &Evaluator::EvaluateEval;
+	table["toString"] = &Evaluator::EvaluateToString;
 	table["meta_syntax"] = &Evaluator::EvaluateSyntax;
 	table["meta_escape"] = &Evaluator::EvaluateEscape;
 	table["meta_execute"] = &Evaluator::EvaluateExecute;
@@ -983,6 +984,24 @@ OPValue Evaluator::EvaluateEval(ASTnode* node, bool insertFlag) {
 	
 	return Undefined();
 }
+
+OPValue Evaluator::EvaluateToString(ASTnode* node, bool insertFlag) {
+	Object* PositionalArgs = argTable->GetValue("PositionalArgs")->GetObjectValue();
+	double numOfTotalArgs = argTable->GetValue("numOfTotalArgs")->GetNumberValue();
+	double numOfPositionalArgs = argTable->GetValue("numOfPositionalArgs")->GetNumberValue();
+	if (numOfTotalArgs - numOfPositionalArgs != 0) throw RuntimeErrorException("Cannot use named argument in library function toString()");
+
+	if (numOfTotalArgs != 1)
+		throw RuntimeErrorException("Size of arguments in library function toString must be equal to 1");
+
+	Value argument = *(PositionalArgs->GetValue(0.0));
+
+	if (argument.isObject() && argument.GetObjectValue() && isAST(argument.GetObjectValue()))
+		return EvaluateUnparse(argument.GetObjectValue());
+
+	return argument.toString();
+}
+
 
 // metaprogramming
 bool inSyntax = false;
