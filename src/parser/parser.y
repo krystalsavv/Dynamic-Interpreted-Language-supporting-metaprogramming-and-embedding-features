@@ -71,7 +71,7 @@
 %left MULTI DIV MOD
 %right NOT INCREMENT DECREMENT UMINUS
 %left DOT DOUBLE_DOT
-%right META_UNPARSE
+%right META_UNPARSE META_PARSE 
 %right META_EXECUTE
 %right META_SYNTAX_OPEN META_SYNTAX_CLOSE
 %right META_ESCAPE
@@ -907,13 +907,12 @@ meta_execute: META_EXECUTE expr
 						}
 						;
 
-meta_parse: META_PARSE STRING
+meta_parse: META_PARSE expr
 						{
 							std::cout << "Meta Escape\n" ;
 							$$ = new ASTnode("type", "meta_parse");
 							$$->SetLine(yyget_lineno(scanner));
-							$$->Set("stringConst", *$2);
-							delete $2;
+							$$->Set("expr", $2);
 						}
 						;
 
