@@ -79,7 +79,7 @@ void interpreter::InitGlobalEnvironment() {
 
 bool interpreter::hasCollisionWithLibFunc(std::string str)
 {
-	if(str=="print" || str == "typeof" || str == "object_keys" || str == "object_size" || str == "eval")
+	if(str=="print" || str == "typeof" || str == "object_keys" || str == "object_size" || str == "eval" || str == "toString")
 		return true;
 	return false;
 }
