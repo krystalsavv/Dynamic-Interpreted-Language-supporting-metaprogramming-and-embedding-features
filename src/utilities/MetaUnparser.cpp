@@ -74,7 +74,7 @@ std::map<std::string, std::string(MetaUnparser::*)(ASTnode*)> MetaUnparser::Inti
 	table["meta_execute"] = &MetaUnparser::UnparseExecute;
 	table["meta_parse"] = &MetaUnparser::UnparseParse;
 	table["meta_unparse"] = &MetaUnparser::UnparseUnparse;
-
+	table["metaAST"] = &MetaUnparser::UnparseMetaAST;
 	return table;
 }
 
@@ -558,4 +558,9 @@ std::string MetaUnparser::UnparseParse(ASTnode* node){
 std::string MetaUnparser::UnparseUnparse(ASTnode* node){
 	std::string expr = Unparse(node->GetValue("expr")->GetObjectValue());
 	return ".#" + expr;
+}
+
+std::string MetaUnparser::UnparseMetaAST(ASTnode* node) {
+	std::string root = Unparse(node->GetValue("root")->GetObjectValue());
+	return root;
 }

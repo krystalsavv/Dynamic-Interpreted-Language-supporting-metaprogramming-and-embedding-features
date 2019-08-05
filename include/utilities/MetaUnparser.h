@@ -154,6 +154,7 @@ namespace interpreter {
 		std::string UnparseExecute(ASTnode* node);
 		std::string UnparseParse(ASTnode* node);
 		std::string UnparseUnparse(ASTnode* node);
+		std::string UnparseMetaAST(ASTnode* node);
 	};
 
 }
