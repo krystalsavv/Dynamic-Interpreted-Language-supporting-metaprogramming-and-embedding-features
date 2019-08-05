@@ -16,12 +16,19 @@ namespace interpreter {
 
 	class Interpreter
 	{
-		void TerminateInterpreterNonInteractive(AST* ast, yyscan_t& scanner);
+		void InitializeEveryLoopInteractive(yyscan_t& scanner, std::string& inputString);
+		bool ParseInteractive(AST* ast, yyscan_t& scanner);
+		bool Interpreter::EvaluateInteractive(AST* ast, yyscan_t& scanner);
 		void TerminateLoopInteractive(AST* ast, yyscan_t& scanner);
+
 		std::string InputToString(const char* filename);
-	
+
 	public:
 		Interpreter() = default;
+		void InitializeNonInteractive(yyscan_t& scanner, char* file);
+		void Parse(AST* ast, yyscan_t& scanner);
+		void Evaluate(AST* ast);
+		void TerminateInterpreterNonInteractive(AST* ast, yyscan_t& scanner);
 		void  InvokeInterpreter(char* file);
 	};
 

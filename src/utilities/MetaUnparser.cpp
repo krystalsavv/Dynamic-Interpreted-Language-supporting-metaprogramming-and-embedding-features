@@ -90,8 +90,8 @@ MetaUnparser* MetaUnparser::getInstance() {
 }
 
 void  MetaUnparser::destroyInstance() {
-	assert(unparser);
-	delete unparser;
+	if(unparser)
+		delete unparser;
 }
 
 //generic Unparse
