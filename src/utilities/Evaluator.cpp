@@ -1061,9 +1061,9 @@ OPValue Evaluator::EvaluateParse(ASTnode* node, bool insertFlag) {
 }
 
 OPValue Evaluator::EvaluateUnparse(ASTnode* node, bool insertFlag) {
-	ASTnode* ast = node->GetValue("expr")->GetObjectValue();
-	if (!isAST(ast)) throw RuntimeErrorException(" Can not Unparse right value. It is not an AST");
-	std::string text = MetaUnparser::getInstance()->Unparse(ast);
+	OPValue ast = Evaluate(node->GetValue("expr")->GetObjectValue());
+	if (!isAST(ast->GetObjectValue())) throw RuntimeErrorException(" Can not Unparse right value. It is not an AST");
+	std::string text = MetaUnparser::getInstance()->Unparse(ast->GetObjectValue());
 	MetaUnparser::getInstance()->destroyInstance();
 	return text;
 }
