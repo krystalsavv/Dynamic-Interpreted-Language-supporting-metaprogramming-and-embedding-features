@@ -996,8 +996,14 @@ OPValue Evaluator::EvaluateToString(ASTnode* node, bool insertFlag) {
 
 	Value argument = *(PositionalArgs->GetValue(0.0));
 
-	if (argument.isObject() && argument.GetObjectValue() && isAST(argument.GetObjectValue()))
-		return EvaluateUnparse(argument.GetObjectValue());
+
+
+	if (argument.isObject() && argument.GetObjectValue() && isAST(argument.GetObjectValue())) {
+		std::string text = MetaUnparser::getInstance()->Unparse(argument.GetObjectValue());
+		MetaUnparser::getInstance()->destroyInstance();
+		return text;
+	}
+
 
 	return argument.toString();
 }
