@@ -89,7 +89,7 @@ std::string Object::toString()  {
 	nestedCounterPrint--;
 	AddTabs(s);
 	s += "}\n";
-	s += std::to_string(GetReferenceCounter());
+	//s += std::to_string(GetReferenceCounter());
 	isPrinted = false;
 	return s;
 }
