@@ -216,7 +216,7 @@ Value* interpreter::LocalLookUp(std::string id, Environment* envIterator) {		// 
 }
 
  Value* interpreter::GlobalLookUp(std::string id, Environment* envIterator ) {
-	 return LocalLookUp(id, envIterator);
+	 return LocalLookUp(id, EnvironmentHolder::getInstance()->GetGlobalEnv());
  }
 
  Environment* interpreter::TemporarilySaveEnvironment(Environment* env) {
