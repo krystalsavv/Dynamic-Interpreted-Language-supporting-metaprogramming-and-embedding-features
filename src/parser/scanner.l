@@ -46,7 +46,6 @@ punc 		[\[\]\{\}\(\)\;\,]|(\:{1,2})|(\.{1,2})
 
 <STRING_>"\""				{
 								yylval->stringVal = new std::string(stringVal); 
-								std::cout << stringVal << std::endl;
 								BEGIN(INITIAL);
 								return STRING;
 							}
