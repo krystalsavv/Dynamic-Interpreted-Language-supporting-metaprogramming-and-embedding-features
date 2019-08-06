@@ -22,10 +22,6 @@ namespace interpreter {
 		std::map<std::string, std::string(MetaUnparser::*)(ASTnode*)> UnparserDispatcher;
 		std::map<std::string, std::string(MetaUnparser::*)(ASTnode*)> IntializeDispatcher();
 
-		//Value& UnparseLvalue(ASTnode* node, Environment* env = EnvironmentHolder::getInstance()->GetCurrentEnv());
-		//std::map<std::string, Value& (MetaUnparser::*)(ASTnode* Environment*)> UnparserLvalueDispatcher;
-		//std::map<std::string, Value& (MetaUnparser::*)(ASTnode* Environment*)> IntializeLvalueDispatcher();
-
 		inline static MetaUnparser* unparser = nullptr;
 		MetaUnparser();
 
@@ -60,21 +56,10 @@ namespace interpreter {
 		// primary
 		std::string UnparseParenthesisFuncdef(ASTnode* node);
 
-		//lvalue
-		//Value& UnparseLvalueIdent(ASTnode* node, Environment* env = EnvironmentHolder::getInstance()->GetCurrentEnv());
-		//Value& UnparseLvalueLocalIdent(ASTnode* node, Environment* env = EnvironmentHolder::getInstance()->GetCurrentEnv());
-		//Value& UnparseLvalueGlobalIdent(ASTnode* node, Environment* env = EnvironmentHolder::getInstance()->GetGlobalEnv());
-
 		//rvalue
 		std::string UnparseIdent(ASTnode* node);
 		std::string UnparseLocalIdent(ASTnode* node);
 		std::string UnparseGlobalIdent(ASTnode* node);
-
-		//lvalue member
-		//Value& UnparseLvalueMemberIdent(ASTnode* node, Environment* env = EnvironmentHolder::getInstance()->GetCurrentEnv());
-		//Value& UnparseLvalueMemberBrackets(ASTnode* node, Environment* env = EnvironmentHolder::getInstance()->GetCurrentEnv());
-		//Value& UnparseLvalueMemberCallIdent(ASTnode* node, Environment* env = EnvironmentHolder::getInstance()->GetCurrentEnv());
-		//Value& UnparseLvalueMemberCallBrackets(ASTnode* node, Environment* env = EnvironmentHolder::getInstance()->GetCurrentEnv());
 
 		//member
 		std::string UnparseMemberIdent(ASTnode* node);

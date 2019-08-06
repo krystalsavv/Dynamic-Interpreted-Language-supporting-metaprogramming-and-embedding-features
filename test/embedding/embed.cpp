@@ -4,6 +4,7 @@
 
 using namespace interpreter;
 
+/*
 int main() {
 
 	int x = 5,y=3;
@@ -27,5 +28,32 @@ int main() {
 	Value value2 = val2;
 
 	std::cout << "Result of multiplication for value " << value << " and value " << value2 << " is " << value * value2 << std::endl;
+
+}
+*/
+
+int main() {
+
+	Interpreter inter;
+	yyscan_t scanner;
+	AST* ast = new AST();
+
+	int x = 10,y=50;
+
+	ValueReference val(&x);
+	ValueReference val2(&y);
+
+	inter.Initialize();
+
+	inter.AddVariable("x",val);
+	inter.AddVariable("y",val2);
+
+	inter.Execute(ast,scanner,"function f(i,j){ " 
+												"k = y+x;"
+												"return k;"
+										 "}"
+										"print(f(x,y));"	
+	);
+	delete ast;
 
 }

@@ -4,30 +4,6 @@ using namespace interpreter;
 
 size_t interpreter::lineNumber = 1;
 
-void  Interpreter::InvokeInterpreter( char* file) {
-	if (file != NULL) {
-		yyscan_t scanner;
-		InitializeNonInteractive(scanner,file);
-		AST* ast = new AST();
-		Parse(ast, scanner);
-		Evaluate(ast);
-		TerminateInterpreterNonInteractive(ast, scanner);
-	}
-	else {
-		std::string inputString = "";
-		InitGlobalEnvironment();
-		while (true) {
-			yyscan_t scanner;
-			InitializeEveryLoopInteractive(scanner, inputString);
-			AST* ast = new AST();
-			if (!ParseInteractive(ast, scanner))	continue;
-			if (!EvaluateInteractive(ast,scanner)) continue;
-			TerminateLoopInteractive(ast, scanner);
-		}
-	}
-}
-
-
 void Interpreter::InitializeNonInteractive(yyscan_t& scanner, char* file) {
 	yylex_init(&scanner);
 	std::string inputString = InputToString(file);
@@ -73,9 +49,8 @@ void  Interpreter::TerminateInterpreterNonInteractive(AST* ast, yyscan_t& scanne
 }
 
 
-void Interpreter::InitializeEveryLoopInteractive(yyscan_t& scanner, std::string& inputString) {
+void Interpreter::InitializeEveryLoopInteractive(yyscan_t& scanner, std::string inputString) {
 	yylex_init(&scanner);
-	std::cout << "\nAlphaDI > ";
 	getline(std::cin, inputString);
 	yy_scan_string(inputString.c_str(), scanner);
 	yyset_lineno(1, scanner);
@@ -120,3 +95,49 @@ std::string  Interpreter::InputToString(const char* filename) {
 	return str;
 }
 
+
+void  Interpreter::InvokeInterpreter(char* file) {
+	if (file != NULL) {
+		yyscan_t scanner;
+		InitializeNonInteractive(scanner, file);
+		AST* ast = new AST();
+		Parse(ast, scanner);
+		Evaluate(ast);
+		TerminateInterpreterNonInteractive(ast, scanner);
+	}
+	else {
+		std::string inputString = "";
+		InitGlobalEnvironment();
+		while (true) {
+			yyscan_t scanner;
+			std::cout << "\nAlphaDI > ";
+			InitializeEveryLoopInteractive(scanner, inputString);
+			AST* ast = new AST();
+			if (!ParseInteractive(ast, scanner))	continue;
+			if (!EvaluateInteractive(ast, scanner)) continue;
+			TerminateLoopInteractive(ast, scanner);
+		}
+	}
+}
+
+
+
+void Interpreter::Initialize() {
+	InitGlobalEnvironment();
+}
+
+void Interpreter::AddVariable(std::string id,Value value) {
+	Value* val = LvalueVarActions(id);
+	*val = value;
+}
+
+void Interpreter::Execute(AST* ast, yyscan_t& scanner, std::string inputString) {
+	yylex_init(&scanner);
+	yy_scan_string(inputString.c_str(), scanner);
+	yyset_lineno(1, scanner);
+	ParseInteractive(ast, scanner);
+	EvaluateInteractive(ast, scanner);
+	yylex_destroy(scanner);
+	if (ast->GetRoot())
+		ast->GetRoot()->DecreaseReferenceCounter();
+}

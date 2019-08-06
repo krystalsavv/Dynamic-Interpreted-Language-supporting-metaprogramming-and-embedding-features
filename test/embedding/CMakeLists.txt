@@ -9,4 +9,6 @@ target_link_libraries(  Embedding             # To
 						EnvironmentHolder
 						EvaluatorActions
 						ValueReference
+						MetaParser
+						MetaUnparser
                         )            
