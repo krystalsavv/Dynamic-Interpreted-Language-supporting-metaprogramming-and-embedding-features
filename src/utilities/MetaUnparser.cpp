@@ -311,7 +311,6 @@ std::string MetaUnparser::UnparseFuncdefCall(ASTnode* node){
 std::string MetaUnparser::UnparseArglist(ASTnode* node){
 	std::string retString = "";
 	int iterationNamed = 0;
-	double numOfTotalArgs = node->GetValue("numOfTotalArgs")->GetNumberValue();
 	double numOfPositionalArgs = node->GetValue("numOfPositionalArgs")->GetNumberValue();
 	Object* PositionalArgs = node->GetValue("PositionalArgs")->GetObjectValue();
 	Object* NamedArgs = node->GetValue("NamedArgs")->GetObjectValue();

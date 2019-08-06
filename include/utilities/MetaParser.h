@@ -92,7 +92,7 @@ namespace interpreter {
 		ASTnode* SyntaxParseReturnValueStmt(ASTnode* node);
 		ASTnode* SyntaxParseBreak(ASTnode* node);
 		ASTnode* SyntaxParseContinue(ASTnode* node);
-		ASTnode* SyntaxParser::SyntaxParseExprSemicolon(ASTnode* node);
+		ASTnode* SyntaxParseExprSemicolon(ASTnode* node);
 		ASTnode* SyntaxParseSemicolon(ASTnode* node);
 		
 		//elist

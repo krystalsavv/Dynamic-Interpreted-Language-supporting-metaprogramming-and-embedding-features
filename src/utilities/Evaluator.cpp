@@ -798,7 +798,6 @@ OPValue Evaluator::EvaluateFuncEnter(ASTnode* node, bool insertFlag) {
 	Object* NamedArgs = argTable->GetValue("NamedArgs")->GetObjectValue();
 	double numOfParams = idList->GetValue("numOfParams")->GetNumberValue();
 	double numOfTotalArgs = argTable->GetValue("numOfTotalArgs")->GetNumberValue();
-	double numOfPositionalArgs = argTable->GetValue("numOfPositionalArgs")->GetNumberValue();
 
 	if (argTable == nullptr) assert(false);
 	if (numOfTotalArgs > numOfParams) throw RuntimeErrorException("More actual arguments than function parameters"); 

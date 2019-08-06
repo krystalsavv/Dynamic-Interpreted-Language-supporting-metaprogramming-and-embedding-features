@@ -24,7 +24,7 @@ namespace interpreter {
 
 		void InitializeEveryLoopInteractive(yyscan_t& scanner, std::string inputString);
 		bool ParseInteractive(AST* ast, yyscan_t& scanner);
-		bool Interpreter::EvaluateInteractive(AST* ast, yyscan_t& scanner);
+		bool EvaluateInteractive(AST* ast, yyscan_t& scanner);
 		void TerminateLoopInteractive(AST* ast, yyscan_t& scanner);
 
 		std::string InputToString(const char* filename);
