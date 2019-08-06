@@ -38,7 +38,6 @@ void Interpreter::Evaluate(AST* ast) {
 
 void  Interpreter::TerminateInterpreterNonInteractive(AST* ast, yyscan_t& scanner) {
 	yylex_destroy(scanner);
-	TraverseAndClearAst(ast->GetRoot());
 	ClearEnvironment();
 	DestroyAst(ast->GetRoot());
 	delete ast;

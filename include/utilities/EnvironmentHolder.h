@@ -42,7 +42,7 @@ namespace interpreter {
 	BlockEnvironment* SliceEnvironment(Environment* previous);
 
 	Value* InsertFunctionDefinition(std::string id, ASTnode* node);
-	void ExpressionfunctionDefinition(ASTnode* node);
+	Object* ExpressionfunctionDefinition(ASTnode* node);
 	Value* InsertLvalue(std::string id, const Value& value, Environment* envIterator = EnvironmentHolder::getInstance()->GetCurrentEnv());
 	Value* LocalLookUp(std::string id, Environment* envIterator = EnvironmentHolder::getInstance()->GetCurrentEnv());
 	Value* NormalLookUp(std::string id, Environment* envIterator = EnvironmentHolder::getInstance()->GetCurrentEnv());

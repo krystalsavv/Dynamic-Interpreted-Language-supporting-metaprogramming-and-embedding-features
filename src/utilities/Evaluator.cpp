@@ -260,7 +260,7 @@ OPValue Evaluator::EvaluatePostDecrement(ASTnode* node, bool insertFlag) {
 // primary
 OPValue Evaluator::EvaluateParenthesisFuncdef(ASTnode* node, bool insertFlag) {
 //	return Evaluate(node->GetValue("funcdef")->GetObjectValue()); 
-	ExpressionfunctionDefinition(node);
+	Object* funcdef_obj = ExpressionfunctionDefinition(node);
 	// Error checking
 	Object* idList = node->GetValue("funcEnter")->GetObjectValue()->GetValue("idlist")->GetObjectValue();
 	double numOfParams = idList->GetValue("numOfParams")->GetNumberValue();
@@ -276,8 +276,8 @@ OPValue Evaluator::EvaluateParenthesisFuncdef(ASTnode* node, bool insertFlag) {
 		idList_withoutIndex.Set(id, Undefined());
 	}
 
-	return (Object *)node;
-
+	//return (Object *)node;
+	return funcdef_obj;
 }
 
 //lvalue
@@ -449,7 +449,7 @@ OPValue Evaluator::EvaluateMultiCall(ASTnode* node, bool insertFlag) {
 	
 	funcdef = CallerEnvironmentActions(*funcdef);
 
-	OPValue retValue = Evaluate(funcdef->GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
+	OPValue retValue = Evaluate(funcdef->GetObjectValue()->GetValue("funcdef")->GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
 	DeleteArgTable();
 	argTable = old_argTable;
 	LeaveFunctionEnvironment(oldCurrent);
@@ -478,7 +478,7 @@ OPValue Evaluator::EvaluateLvalueNormalCall(ASTnode* node, bool insertFlag){
 	}
 	else {
 		funcdef = CallerEnvironmentActions(*funcdef);
-		retValue = Evaluate(funcdef->GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
+		retValue = Evaluate(funcdef->GetObjectValue()->GetValue("funcdef")->GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
 		DeleteArgTable();
 		argTable = old_argTable;
 		LeaveFunctionEnvironment(oldCurrent);
@@ -504,7 +504,7 @@ OPValue Evaluator::EvaluateLvalueMethodCall(ASTnode* node, bool insertFlag) {
 	Value* funcdef = Object_get(*lvalue, node->GetValue("ID")->GetStringValue());
 	*funcdef = CallerEnvironmentActions(*funcdef);
 	
-	OPValue retValue = Evaluate(funcdef->GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
+	OPValue retValue = Evaluate(funcdef->GetObjectValue()->GetValue("funcdef")->GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
 	DeleteArgTable();
 	argTable = old_argTable;
 	LeaveFunctionEnvironment(oldCurrent);	
@@ -521,7 +521,7 @@ OPValue Evaluator::EvaluateFuncdefCall(ASTnode* node, bool insertFlag) {
 	OPValue funcdef = Evaluate(node->GetValue("funcdef")->GetObjectValue(), false);
 	funcdef = CallerEnvironmentActions(*funcdef);
 
-	OPValue retValue = Evaluate(funcdef->GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
+	OPValue retValue = Evaluate(funcdef->GetObjectValue()->GetValue("funcdef")->GetObjectValue()->GetValue("funcEnter")->GetObjectValue());
 	DeleteArgTable();
 	argTable = old_argTable;
 	LeaveFunctionEnvironment(oldCurrent);
@@ -542,15 +542,11 @@ OPValue Evaluator::EvaluateArglist(ASTnode* node, bool insertFlag) {
 
 	myArgTable->Set("numOfTotalArgs", numOfTotalArgs);
 	myArgTable->Set("numOfPositionalArgs", numOfPositionalArgs);
-	//myArgTable->Set("PositionalArgs", new Object());
-	//myArgTable->Set("NamedArgs", new Object());
 
 	for (double i = 0; i < numOfPositionalArgs; ++i) {
-		//myArgTable->GetValue("PositionalArgs")->GetObjectValue()->Set(i, *Evaluate(PositionalArgs->GetValue(i)->GetObjectValue()));
 		myPositionalArgs->Set(i, *Evaluate(PositionalArgs->GetValue(i)->GetObjectValue()));
 	}
 	for (auto kv : NamedArgs->GetMap()) {
-		//myArgTable->GetValue("NamedArgs")->GetObjectValue()->Set(kv.first, *Evaluate(kv.second.GetObjectValue()));
 		myNamedArgs->Set(kv.first, *Evaluate(kv.second.GetObjectValue()));
 	}
 

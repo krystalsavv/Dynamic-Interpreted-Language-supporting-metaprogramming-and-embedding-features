@@ -88,7 +88,6 @@ void interpreter::CreateFunctionEnvironment(ASTnode* funcClosure) {
 	FunctionEnvironment* funcEnv = new FunctionEnvironment();
 	funcEnv->Set("$sliced", false);
 	funcEnv->Set("$outer", funcClosure);
-	//funcClosure->IncreaseReferenceCounter();
 	EnvironmentHolder::getInstance()->SetCurrentEnv(funcEnv);
 }
 
@@ -99,8 +98,6 @@ void interpreter::LeaveFunctionEnvironment(Environment* oldCurrent) {
 void interpreter::CreateBlockEnvironment() {
 	BlockEnvironment* blockEnv = new BlockEnvironment();
 	blockEnv->Set("$outer", EnvironmentHolder::getInstance()->GetCurrentEnv());
-	/*if(EnvironmentHolder::getInstance()->GetCurrentEnv())
-		EnvironmentHolder::getInstance()->GetCurrentEnv()->IncreaseReferenceCounter();*/
 	blockEnv->Set("$sliced", false);
 	EnvironmentHolder::getInstance()->SetCurrentEnv(blockEnv);
 }
@@ -126,19 +123,20 @@ void interpreter::LeaveBlockEnvironment() {
 BlockEnvironment* interpreter::SliceEnvironment(Environment* previous) {
 	BlockEnvironment* blockEnv = new BlockEnvironment();
 	blockEnv->Set("$previous", previous);
-	//previous->IncreaseReferenceCounter();
+	
 	return blockEnv; 
 }
 
 Value* interpreter::InsertFunctionDefinition(std::string id, ASTnode* node) {
-	EnvironmentHolder::getInstance()->GetCurrentEnv()->Set(id, node);
-	//node->IncreaseReferenceCounter();
+	Object* funcdef_obj = new Object(); 
+	funcdef_obj->Set("funcdef", node); 
+	funcdef_obj->Set("$closure", EnvironmentHolder::getInstance()->GetCurrentEnv());
+	funcdef_obj->Set("$global", EnvironmentHolder::getInstance()->GetGlobalEnv());
+
+	EnvironmentHolder::getInstance()->GetCurrentEnv()->Set(id, funcdef_obj);
+
 	Value* value = EnvironmentHolder::getInstance()->GetCurrentEnv()->GetValue(id);
-	node->Set("$closure", EnvironmentHolder::getInstance()->GetCurrentEnv());
-	//EnvironmentHolder::getInstance()->GetCurrentEnv()->IncreaseReferenceCounter();
-	node->Set("$global", EnvironmentHolder::getInstance()->GetGlobalEnv());
-	//EnvironmentHolder::getInstance()->GetGlobalEnv()->IncreaseReferenceCounter();
-	//std::cout << "=============================" << std::endl << EnvironmentHolder::getInstance()->GetGlobalEnv()->GetReferenceCounter() << std::endl;
+	
 	if (EnvironmentHolder::getInstance()->GetCurrentEnv()->HasProperty("$outer")) {
 		EnvironmentHolder::getInstance()->GetCurrentEnv()->Set("$sliced", true);
 	}
@@ -147,19 +145,19 @@ Value* interpreter::InsertFunctionDefinition(std::string id, ASTnode* node) {
 		EnvironmentHolder::getInstance()->SetGlobalEnv(block);
 	}
 	EnvironmentHolder::getInstance()->SetCurrentEnv(block);
-	//std::cout << "=============================" << std::endl << EnvironmentHolder::getInstance()->GetGlobalEnv()->GetReferenceCounter() << std::endl;
+
 	DecreaseTemporarilySavedEnvironment(block);
 	return value;
 }
 
 
 
-void interpreter::ExpressionfunctionDefinition(ASTnode* node) {
-	node->Set("$closure", EnvironmentHolder::getInstance()->GetCurrentEnv());
-	//EnvironmentHolder::getInstance()->GetCurrentEnv()->IncreaseReferenceCounter();
-	node->Set("$global", EnvironmentHolder::getInstance()->GetGlobalEnv());
-	//EnvironmentHolder::getInstance()->GetGlobalEnv()->IncreaseReferenceCounter();
-	//std::cout << "---------------------------------------------" << std::endl << *EnvironmentHolder::getInstance()->GetCurrentEnv() << std::endl;
+Object* interpreter::ExpressionfunctionDefinition(ASTnode* node) {
+	Object* funcdef_obj = new Object();
+	funcdef_obj->Set("funcdef", node);
+	funcdef_obj->Set("$closure", EnvironmentHolder::getInstance()->GetCurrentEnv());
+	funcdef_obj->Set("$global", EnvironmentHolder::getInstance()->GetGlobalEnv());
+
 	if (EnvironmentHolder::getInstance()->GetCurrentEnv()->HasProperty("$outer")) {
 		EnvironmentHolder::getInstance()->GetCurrentEnv()->Set("$sliced", true);
 	}
@@ -169,6 +167,8 @@ void interpreter::ExpressionfunctionDefinition(ASTnode* node) {
 	}
 	EnvironmentHolder::getInstance()->SetCurrentEnv(block);
 	DecreaseTemporarilySavedEnvironment(block);
+
+	return funcdef_obj;
 }
 
 
