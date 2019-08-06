@@ -530,7 +530,7 @@ ASTnode* SyntaxParser::SyntaxParseElist(ASTnode* node) {
 	double numOfExprs = node->GetValue("numOfExprs")->GetNumberValue();
 	metaNode->Set("numOfExprs", *node->GetValue("numOfExprs"));
 	for (double i = 0; i < numOfExprs; ++i) {
-		metaNode->Set(std::to_string((int)i), SyntaxParse(node->GetValue(std::to_string((int)i))->GetObjectValue()));
+		metaNode->Set(i, SyntaxParse(node->GetValue(i)->GetObjectValue()));
 	}
 	metaNode->SetLine(node->GetLine());
 	return metaNode;
@@ -549,8 +549,8 @@ ASTnode* SyntaxParser::SyntaxParseIndexed(ASTnode* node) {
 	metaNode->Set("numOfElems", numOfElems);
 	metaNode->Set("expr", SyntaxParse(node->GetValue("expr")->GetObjectValue()));
 	metaNode->SetLine(node->GetLine());
-	for (int i = 0; i < numOfElems; i++) 
-		metaNode->Set(std::to_string((int)i), SyntaxParse(node->GetValue(std::to_string((int)i))->GetObjectValue()));
+	for (double i = 0; i < numOfElems; i++) 
+		metaNode->Set(i, SyntaxParse(node->GetValue(i)->GetObjectValue()));
 	return metaNode;
 }
 
@@ -585,8 +585,8 @@ ASTnode* SyntaxParser::SyntaxParseBlock(ASTnode* node) {
 	double numOfStmt = node->GetValue("numOfStmt")->GetNumberValue();
 	metaNode->Set("numOfStmt", numOfStmt);
 	metaNode->SetLine(node->GetLine());
-	for (int i = 0; i < numOfStmt; i++) {
-		metaNode->Set(std::to_string((int)i), SyntaxParse(node->GetValue(std::to_string((int)i))->GetObjectValue()));
+	for (double i = 0; i < numOfStmt; i++) {
+		metaNode->Set(i, SyntaxParse(node->GetValue(i)->GetObjectValue()));
 	}
 	return metaNode;
 }
@@ -620,8 +620,8 @@ ASTnode* SyntaxParser::SyntaxParseFuncBody(ASTnode* node) {
 	double numOfStmt = node->GetValue("numOfStmt")->GetNumberValue();
 	metaNode->Set("numOfStmt", numOfStmt);
 	metaNode->SetLine(node->GetLine());
-	for (int i = 0; i < numOfStmt; i++) {
-		metaNode->Set(std::to_string((int)i), SyntaxParse(node->GetValue(std::to_string((int)i))->GetObjectValue()));
+	for (double i = 0; i < numOfStmt; i++) {
+		metaNode->Set(i, SyntaxParse(node->GetValue(i)->GetObjectValue()));
 	}
 	return metaNode;
 }
@@ -678,7 +678,7 @@ ASTnode* SyntaxParser::SyntaxParseIdlist(ASTnode* node) {
 	metaNode->Set("numOfParams", numOfParams);
 	metaNode->SetLine(node->GetLine());
 	for (double i = 0; i < numOfParams; ++i) {
-		metaNode->Set(i, SyntaxParse(node->GetValue(std::to_string((int)i))->GetObjectValue()));
+		metaNode->Set(i, SyntaxParse(node->GetValue(i)->GetObjectValue()));
 	}
 	return metaNode;
 }
