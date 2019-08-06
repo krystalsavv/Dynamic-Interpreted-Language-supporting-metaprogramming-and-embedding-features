@@ -35,10 +35,8 @@ int main() {
 int main() {
 
 	Interpreter inter;
-	yyscan_t scanner;
-	AST* ast = new AST();
 
-	int x = 10,y=50;
+	double x = 10, y = 50;
 
 	ValueReference val(&x);
 	ValueReference val2(&y);
@@ -48,12 +46,14 @@ int main() {
 	inter.AddVariable("x",val);
 	inter.AddVariable("y",val2);
 
-	inter.Execute(ast,scanner,"function f(i,j){ " 
-												"k = y+x;"
-												"return k;"
-										 "}"
-										"print(f(x,y));"	
-	);
-	delete ast;
+	x = 15;
 
+	inter.Execute("function f(i,j){ " 
+							"y = 20;"
+							"return y+x;"
+						 "}"
+						"print(f(x,y));"	
+	);
+
+	std::cout << std::endl << "The c++ var y has value: " << y << std::endl;
 }

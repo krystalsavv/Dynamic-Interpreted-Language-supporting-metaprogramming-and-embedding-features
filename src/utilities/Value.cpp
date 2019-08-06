@@ -123,11 +123,6 @@ bool Value::toBool() const {
 				return true;
 			return false;
 		}
-		else if (GetValueReference()->isInteger()) {
-			if (*GetValueReference()->GetInteger() > 0)
-				return true;
-			return false;
-		}
 		else if (GetValueReference()->isString()) {
 			if (GetValueReference()->GetString()->empty())
 				return false;
@@ -164,12 +159,10 @@ std::string Value::toString() const {
 			return (s + std::to_string(*GetValueReference()->GetBool()));
 		else if (GetValueReference()->isDouble())
 			return (s + std::to_string(*GetValueReference()->GetDouble()));
-		else if (GetValueReference()->isInteger())
-			return (s + std::to_string(*GetValueReference()->GetInteger()));
 		else if (GetValueReference()->isString())
 			return (s + *GetValueReference()->GetString());
 		else
-			return (s + GetValueReference()->GetType());
+			return (s + " null");
 	}
 	else {
 		return"undefined";
@@ -309,9 +302,7 @@ Value Value::operator>(Value& right) {
 	if (isNumber() && right.isNumber())
 		val = (GetNumberValue() > right.GetNumberValue());
 	else if (isValueReference() && GetValueReference() && right.isValueReference() && right.GetValueReference()) {
-		if (GetValueReference()->isInteger() && right.GetValueReference()->isInteger())
-			val = (double)(*GetValueReference()->GetInteger() > *right.GetValueReference()->GetInteger());
-		else if (GetValueReference()->isDouble() && right.GetValueReference()->isDouble())
+		if (GetValueReference()->isDouble() && right.GetValueReference()->isDouble())
 			val = *GetValueReference()->GetDouble() > *right.GetValueReference()->GetDouble();
 	}
 	else
@@ -324,9 +315,7 @@ Value Value::operator>=(Value& right) {
 	if (isNumber() && right.isNumber())
 		val = (GetNumberValue() >= right.GetNumberValue());
 	else if (isValueReference() && GetValueReference() && right.isValueReference() && right.GetValueReference()) {
-		if (GetValueReference()->isInteger() && right.GetValueReference()->isInteger())
-			val = (double)(*GetValueReference()->GetInteger() >= *right.GetValueReference()->GetInteger());
-		else if (GetValueReference()->isDouble() && right.GetValueReference()->isDouble())
+		 if (GetValueReference()->isDouble() && right.GetValueReference()->isDouble())
 			val = *GetValueReference()->GetDouble() >= *right.GetValueReference()->GetDouble();
 	}
 	else
@@ -339,9 +328,7 @@ Value Value::operator<(Value& right) {
 	if (isNumber() && right.isNumber())
 		val = (GetNumberValue() < right.GetNumberValue());
 	else if (isValueReference() && GetValueReference() && right.isValueReference() && right.GetValueReference()) {
-		if (GetValueReference()->isInteger() && right.GetValueReference()->isInteger())
-			val = (double)(*GetValueReference()->GetInteger() < *right.GetValueReference()->GetInteger());
-		else if (GetValueReference()->isDouble() && right.GetValueReference()->isDouble())
+		if (GetValueReference()->isDouble() && right.GetValueReference()->isDouble())
 			val = *GetValueReference()->GetDouble() < *right.GetValueReference()->GetDouble();
 	}
 	else
@@ -354,9 +341,7 @@ Value Value::operator<=(Value& right) {
 	if (isNumber() && right.isNumber())
 		val = (GetNumberValue() <= right.GetNumberValue());
 	else if (isValueReference() && GetValueReference() && right.isValueReference() && right.GetValueReference()) {
-		if (GetValueReference()->isInteger() && right.GetValueReference()->isInteger())
-			val = (double)(*GetValueReference()->GetInteger() <= *right.GetValueReference()->GetInteger());
-		else if (GetValueReference()->isDouble() && right.GetValueReference()->isDouble())
+		if (GetValueReference()->isDouble() && right.GetValueReference()->isDouble())
 			val = *GetValueReference()->GetDouble() <= *right.GetValueReference()->GetDouble();
 	}
 	else
@@ -378,8 +363,6 @@ Value Value::operator==(Value& right) {
 	else if (isValueReference() && GetValueReference() && right.isValueReference() && right.GetValueReference()) {
 		if (GetValueReference()->isBool() && right.GetValueReference()->isBool())
 			val = *GetValueReference()->GetBool() == *right.GetValueReference()->GetBool();
-		else if (GetValueReference()->isInteger() && right.GetValueReference()->isInteger())
-			val = *GetValueReference()->GetInteger() == *right.GetValueReference()->GetInteger();
 		else if (GetValueReference()->isDouble() && right.GetValueReference()->isDouble())
 			val = *GetValueReference()->GetDouble() == *right.GetValueReference()->GetDouble();
 		else if (GetValueReference()->isString() && right.GetValueReference()->isString())
@@ -405,8 +388,6 @@ Value Value::operator!=(Value& right) {
 	else if (isValueReference() && GetValueReference() && right.isValueReference() && right.GetValueReference()) {
 		if (GetValueReference()->isBool() && right.GetValueReference()->isBool())
 			val = *GetValueReference()->GetBool() != *right.GetValueReference()->GetBool();
-		else if (GetValueReference()->isInteger() && right.GetValueReference()->isInteger())
-			val = *GetValueReference()->GetInteger() != *right.GetValueReference()->GetInteger();
 		else if (GetValueReference()->isDouble() && right.GetValueReference()->isDouble())
 			val = *GetValueReference()->GetDouble() != *right.GetValueReference()->GetDouble();
 		else if (GetValueReference()->isString() && right.GetValueReference()->isString())
@@ -432,8 +413,6 @@ bool Value::operator==(const Value& right) const {
 	else if (isValueReference() && GetValueReference() && right.isValueReference() && right.GetValueReference()) {
 		if (GetValueReference()->isBool() && right.GetValueReference()->isBool())
 			b = *GetValueReference()->GetBool() == *right.GetValueReference()->GetBool();
-		else if (GetValueReference()->isInteger() && right.GetValueReference()->isInteger())
-			b = *GetValueReference()->GetInteger() == *right.GetValueReference()->GetInteger();
 		else if (GetValueReference()->isDouble() && right.GetValueReference()->isDouble())
 			b = *GetValueReference()->GetDouble() == *right.GetValueReference()->GetDouble();
 		else if (GetValueReference()->isString() && right.GetValueReference()->isString())
@@ -459,8 +438,6 @@ bool Value::operator!=(const Value& right) const {
 	else if (isValueReference() && GetValueReference() && right.isValueReference() && right.GetValueReference()) {
 		if (GetValueReference()->isBool() && right.GetValueReference()->isBool())
 			b = *GetValueReference()->GetBool() != *right.GetValueReference()->GetBool();
-		else if (GetValueReference()->isInteger() && right.GetValueReference()->isInteger())
-			b = *GetValueReference()->GetInteger() != *right.GetValueReference()->GetInteger();
 		else if (GetValueReference()->isDouble() && right.GetValueReference()->isDouble())
 			b = *GetValueReference()->GetDouble() != *right.GetValueReference()->GetDouble();
 		else if (GetValueReference()->isString() && right.GetValueReference()->isString())

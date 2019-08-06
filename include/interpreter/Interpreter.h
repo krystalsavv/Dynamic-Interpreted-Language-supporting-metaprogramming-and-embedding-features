@@ -35,7 +35,7 @@ namespace interpreter {
 
 		void Initialize();
 		void AddVariable(std::string id, Value value);
-		void Execute(AST* ast, yyscan_t& scanner, std::string inputString);
+		void Execute(std::string inputString);
 	};
 
 }

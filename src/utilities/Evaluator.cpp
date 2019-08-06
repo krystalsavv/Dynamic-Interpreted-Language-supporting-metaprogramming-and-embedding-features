@@ -588,7 +588,20 @@ OPValue interpreter::Evaluator::EvaluateAssignExpr(ASTnode* node, bool insertFla
 
 	DecreaseTemporarilySavedEnvironment(savedEnvironment);
 
-	lvalue = *expr;
+	if (lvalue.isValueReference()) {
+		if (expr->isValueReference())
+			lvalue.GetValueReference()->Set(expr->GetValueReference());
+		else if (expr->isNumber())
+			lvalue.GetValueReference()->Set(expr->GetNumberValue());
+		else if (expr->isBool())
+			lvalue.GetValueReference()->Set(expr->GetBoolValue());
+		else if (expr->isString())
+			lvalue.GetValueReference()->Set(expr->GetStringValue());
+		else
+			throw RuntimeErrorException("Cannot assign a non c++ member on ValueReference");
+	}
+	else
+		lvalue = *expr;
 	return lvalue;
 }
 

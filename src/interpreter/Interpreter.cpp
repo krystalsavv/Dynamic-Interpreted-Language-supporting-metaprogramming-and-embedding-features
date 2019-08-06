@@ -131,13 +131,25 @@ void Interpreter::AddVariable(std::string id,Value value) {
 	*val = value;
 }
 
-void Interpreter::Execute(AST* ast, yyscan_t& scanner, std::string inputString) {
+void Interpreter::Execute (std::string inputString) {
+	yyscan_t scanner;
+	AST* ast = new AST();
 	yylex_init(&scanner);
 	yy_scan_string(inputString.c_str(), scanner);
 	yyset_lineno(1, scanner);
-	ParseInteractive(ast, scanner);
-	EvaluateInteractive(ast, scanner);
+	try {
+		yyparse(ast, scanner, 1);
+		*Evaluator::getInstance()->Evaluate(ast->GetRoot());
+	}
+	catch (BreakException& e) { std::cout << std::endl << e.what() << std::endl; TerminateLoopInteractive(ast, scanner); exit(0); }
+	catch (ContinueException& e) { std::cout << std::endl << e.what() << std::endl; TerminateLoopInteractive(ast, scanner); exit(0); }
+	catch (ReturnException& e) { std::cout << std::endl << e.what() << std::endl; TerminateLoopInteractive(ast, scanner); exit(0); }
+	catch (ReturnValueException& e) { std::cout << std::endl << e.what() << std::endl; TerminateLoopInteractive(ast, scanner); exit(0); }
+	catch (RuntimeErrorException& e) { std::cout << std::endl << e.what() << std::endl; TerminateLoopInteractive(ast, scanner); exit(0); }
+	catch (SyntaxErrorException& e) { std::cout << std::endl << e.what() << std::endl; TerminateLoopInteractive(ast, scanner); exit(0); }
+
 	yylex_destroy(scanner);
 	if (ast->GetRoot())
 		ast->GetRoot()->DecreaseReferenceCounter();
+	delete ast;
 }
