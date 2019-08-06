@@ -1,0 +1,77 @@
+About AlphaDI:
+    - Untyped object-based language with dynamically typed variables 
+    
+    - Types: 
+        Bool 
+        String 
+        Number 
+        Undefined 
+        NIL 
+        ValueReference
+        Object
+            - unordered map for key - value pairs 
+            - reference counter
+            - (...) 
+
+    - AST:
+        At the begining, lexical analyser and parser generate the AST
+        All AST's nodes are Objects (so we can have pointers to them in the environment (eg for functions))
+
+    - Evaluator: 
+        Singleton class
+        there is a dispacher to call the appropriate function for each node of AST
+    
+    - Environments: 
+        3 Types (Block, Function, Closure) 
+        The environment chain's nodes are conected via an $outer pointer
+        In function definition:
+            * The chain is sliced using a special $previous pointer to support function's closure
+            * Current and global environments are saved to special pointers ($closure, $global) in functions definitions environments
+              which are used in function calls
+
+    - functions:
+        Definition: 
+            Extra node (funcEnter) is inserted before the funcBody node for callee's actions       
+
+        Call:
+            Caller: 
+                * Evaluate the arglist 
+                * find and call the function 
+                * set the curr environment pointer to the closure and create the new chain
+            Callee (in funcEnter evaluation): 
+                * evaluate the idlist (definition params)
+                * map the argList with the params 
+                * calculate the defult params
+                * insert the params in the environment 
+
+        Named and optional parameters:
+            As project's explanation 
+
+    - break, continue, return, errors : Exceptions
+
+    - Lib Functions: 
+        print, typeof, object_keys, object_size, eval + toString
+
+        Eval:     
+            * As JavaScript (expr, stmt, stmts as a string)
+            * Parse the input string, adds an extra token to separate the parsing (support also single expr) 
+
+    -Garbage Collection:
+        * When Object's referenceCounter is decreased, if it is equal with 0
+            decrease inner objects' reference counter and delete the object
+        * At the end: 
+            decrease curr & global environment pointers (delete the chain)
+            decrease AST's root pointer (delete all the nodes)
+
+    - Metaprogramming: 
+        As project's explanation 
+
+    -Embeding: 
+        Types: 
+            double
+            string 
+            bool
+        Simple wrappers to native C++ variables. 
+        Functionality: 
+            Add C++ variables in alpha environment via wrappers
+            Execute alpha code inside C++ 
