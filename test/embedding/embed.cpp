@@ -48,7 +48,7 @@ int main() {
 
 	x = 15;
 
-	inter.Execute("function f(i,j){ " 
+	inter.Execute("function f(i,j) { " 
 							"y = 20;"
 							"return y+x;"
 						 "}"
