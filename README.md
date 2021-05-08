@@ -66,6 +66,6 @@
 
 
 
-#### P.S Bitbucket accounts were used from all members so commits' signatures are not representative.
+#### PS Git accounts were used from all members so commits' signatures are not representative.
 
 #### *This project is implemented by Crystal and Dimi with :heart: for CS540*
